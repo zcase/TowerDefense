@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html lang = "en-US">
+<head>
+    <meta charset = "UTF-8">
+    <title>Tower Defense</title>
+    
+    <link rel="stylesheet" type ="text/css" href="scripts/styles.css">    
+</head>
+
+<body onload="towerDefense.screens.initialize();">
+    <div id="game">
+        
+        <!-- This is the screen that displays the Main menu -->
+        <div id="mainMenu" class="screen">
+            <p>TOWER DEFENSE</p>
+            <ul class="menu">
+                <li><button id="newGame">New Game</button></li>
+                <li><button id="highScores">High Scores</button></li>
+                <li><button id="controls">Controls</button></li>
+                <li><button id="about">About</button></li>
+            </ul> 
+        </div>
+        
+        <!-- The screen where the game is played -->
+        <div id="gameScreen" class="screen">
+            <canvas id="myCanvas" width="800" height="600"></canvas>
+            
+            <button id="createTower" onclick="towerDefense.model.createLowLevelTower()">Create Tower</button>
+            <ul class="menu">
+                <li><button id = "gameBack">Back</button></li>
+            </ul>
+        </div>
+        
+        <!-- This is the screen where the High Scores are displayed -->
+        <div id="highScoresScreen" class="screen">
+            <h1>High Scores</h1>
+            
+            <ol id ="highScoresList">
+                <li id="1"></li>
+                <li id="2"></li>
+                <li id="3"></li>
+                <li id="4"></li>
+                <li id="5"></li>
+            </ol>
+            
+            <ul class="menu">
+                <li><button id = "highScoresBack">Back</button></li>
+            </ul>
+        </div>
+        
+        <!-- This is the screen where the controls of the game are configured -->
+        <div id="controlsScreen" class="screen">
+            
+            <ul class="menu">
+                <li><button id = "controlsBack">Back</button></li>
+            </ul>
+        </div>
+        
+        <!-- This is the screen that displays the about information -->
+        <div id="aboutScreen" class="screen">
+            <h1>About</h1>
+            <p>Developed by</p>
+            <p>Zachary Case</p>
+            
+            <ul class="menu">
+                <li><button id = "aboutBack">Back</button></li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        var towerDefense = {
+            myScreens : {},
+        };
+    </script>
+    <script type = "text/javascript"src="scripts/Graphics.js"></script>
+    <script type = "text/javascript"src="scripts/input.js"></script>
+    <script type = "text/javascript"src="scripts/screens.js"></script>
+    <script type = "text/javascript"src="scripts/Components.js"></script>
+    <script type = "text/javascript"src="scripts/Model.js"></script>
+    <script type = "text/javascript"src="scripts/MainMenuScreen.js"></script>
+    <script type = "text/javascript"src="scripts/AboutScreen.js"></script>
+    <script type = "text/javascript"src="scripts/ControlScreen.js"></script>
+    <script type = "text/javascript"src="scripts/HighScoresScreen.js"></script>
+    <script type = "text/javascript"src="scripts/GameScreen.js"></script>
+</body>
+</html>
