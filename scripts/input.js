@@ -23,6 +23,24 @@ towerDefense.input = (function() {
             that.mouseMove.push(e);
         }
         
+        that.mouseDownEffects = function(mouseCapture, tower) {
+            if(mouseCapture === true) {
+                mouseCapture = false;
+                tower.isSelected = false;
+                that.deregisterCommand('mousedown');
+            }
+            else {
+                mouseCapture = true;
+                tower.isSelected = true;
+            }
+        }
+        
+        that.mouseMoveEffects = function(mouseCapture, tower) {
+            if(mouseCapture) {
+                tower.moveTo({x : e.clientX, y : e.clientY });
+            }
+        }
+        
         that.update = function (elapsedTime) {
             var event,
                 handler;
@@ -60,13 +78,26 @@ towerDefense.input = (function() {
             else if(type === 'mousemove') {
                 that.handlersMove.push(handler);
             }
-            
         };
+        
+        that.deregisterCommand = function(type){
+            if (type === 'mousedown') {
+                myCanvas.removeEventListener('mousedown', mouseDown);
+                // that.handlersDown.length = 0;
+                that.handlersMove.length = 0; 
+            } 
+            else if(type === 'mouseup') {
+                myCanvas.removeEventListener('mouseup', mouseUp.unbind(that));
+            }
+            else if(type === 'mousemove') {
+                myCanvas.removeEventListener('mousemove', mouseMove.unbind(that));
+            }
+        }
             
         var myCanvas = document.getElementById('myCanvas');
             
         myCanvas.addEventListener('mousedown', mouseDown.bind(that));
-        myCanvas.addEventListener('mouseup', mouseUp.bind(that));
+        // myCanvas.addEventListener('mouseup', mouseUp.bind(that));
         myCanvas.addEventListener('mousemove', mouseMove.bind(that));
         
         

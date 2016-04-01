@@ -7,7 +7,8 @@ towerDefense.model = (function (components, graphics, input) {
         score,
         livesRemaining = 10,
         keyboard = input.Keyboard(),
-        mouse = input.Mouse(),
+        mouseArray = [],
+        mouse = input.Keyboard(),
         mouseCapture = true,
         internalUpdate,
         internalRender;
@@ -33,7 +34,7 @@ towerDefense.model = (function (components, graphics, input) {
     function createLowLevelTower() {
         var createdTower = components.Tower({
             image : 'images/USU-Logo.png',
-            center : {x : 900, y : 300},
+            center : {x : 12000, y : 300},
             width : 40,
             height : 40,
             rotation : 0,
@@ -44,20 +45,26 @@ towerDefense.model = (function (components, graphics, input) {
         
         towers.push(createdTower);
         
-        
-        mouse.registerCommand('mousedown', function(e, elapsedTime) {
-            if(mouseCapture === true) {
-                mouseCapture = false;
+        var createdMouse = input.Mouse();
+        createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
+        // mouse.registerCommand('mousedown', function(e, elapsedTime) {
+            if(createdTower.isSelected === true) {
+                // mouseCapture = false;
                 createdTower.isSelected = false;
+                createdMouse.deregisterCommand('mousedown');
             }
             else {
-                mouseCapture = true;
-                createdTower.isSelected = true;
+                // mouseCapture = true;
+                // createdTower.isSelected = true;
             }
         });
         
-        mouse.registerCommand('mousemove', function(e, elapsedTime) {
-            if(mouseCapture || createdTower.isSelected == true) {
+        // createdMouse.registerCommand('mousedown', createdMouse.mouseDownEffects(mouseCapture, createdTower));
+        
+        
+        createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
+        // mouse.registerCommand('mousemove', function(e, elapsedTime) {
+            if(createdTower.isSelected) {
                 // for(var i = 0; i < towers.length; i++ ) {
                 //     if(tower.placed === false){
                 //         towers[i].moveTo({x : e.clientX, y : e.clientY });
@@ -66,6 +73,10 @@ towerDefense.model = (function (components, graphics, input) {
                 createdTower.moveTo({x : e.clientX, y : e.clientY });
             }
         });
+        
+        // createdMouse.registerCommand('mousemove', createdMouse.mouseMoveEffects(mouseCapture, createdTower,));
+        
+        mouseArray.push(createdMouse);
 
         
         // return createdTower;
@@ -105,7 +116,10 @@ towerDefense.model = (function (components, graphics, input) {
     
     function processInput(elapsedTime) {
         keyboard.update(elapsedTime);
-        mouse.update(elapsedTime);
+        // mouse.update(elapsedTime);
+        for(var i = 0; i < mouseArray.length; i++){
+            mouseArray[i].update(elapsedTime);
+        }
     } // End processInput
     
     function update(elapsedTime) {
