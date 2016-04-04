@@ -57,7 +57,12 @@ towerDefense.graphics = (function() {
     function drawTowerRange(spec) {
         ctx.beginPath();
         
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.1)'; // Red, Green, Blue, Alpha
+        if(spec.rangeColor === 'red'){
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Red, Green, Blue, Alpha  
+        }else {
+            ctx.fillStyle = 'rgba(0, 255, 0, 0.3)'; // Red, Green, Blue, Alpha
+        }
+      
         ctx.arc(spec.x, spec.y, spec.attackDistance, 0, 2*Math.PI);
         ctx.fill();
         ctx.stroke();

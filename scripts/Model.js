@@ -12,9 +12,10 @@ towerDefense.model = (function (components, graphics, input) {
         mouseCapture = true,
         internalUpdate,
         internalRender;
+        towerCount = 0;
         
     function initializeGameGrid() {
-        gameGrid = components.Grid(graphics.width(), graphics.height());
+        gameGrid = components.Grid(Math.floor(graphics.width() / 40), Math.floor(graphics.height() / 40));
     } // End initializeGameGrid
     
     
@@ -32,6 +33,8 @@ towerDefense.model = (function (components, graphics, input) {
     
         
     function createLowLevelTower() {
+        towerCount++;
+        
         var createdTower = components.Tower({
             image : 'images/USU-Logo.png',
             center : {x : 12000, y : 300},
@@ -41,41 +44,62 @@ towerDefense.model = (function (components, graphics, input) {
             moveRate : 200,
             rotateRate : 3.14159,
             isSelected : true,
+            towerNum : towerCount,
         });
         
         towers.push(createdTower);
         
         var createdMouse = input.Mouse();
         createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
-        // mouse.registerCommand('mousedown', function(e, elapsedTime) {
             if(createdTower.isSelected === true) {
-                // mouseCapture = false;
-                createdTower.isSelected = false;
-                createdMouse.deregisterCommand('mousedown');
+                                
+                var x = e.clientX / 40;
+                var y = e.clientY / 40;
+                var xPos = Math.ceil(x);
+                var yPos = Math.ceil(y);
+                var actX = Math.ceil(e.clientX);
+                var actY = Math.ceil(e.clientY);
+                console.log("Mouse X: " + xPos);
+                console.log("Mouse Y: " + yPos);
+                console.log("Act X: " + actX);
+                console.log("Act Y: " + actY);
+                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row);
+                
+                // This snaps the object to the nearest square to the left
+                if(gameGrid.layout[xPos][yPos].taken === false){
+                    createdTower.moveTo(({ x: (xPos*40)-20, y : (yPos*40)-20}))
+                    gameGrid.layout[xPos][yPos].taken = true;
+                    createdTower.render(graphics);
+                    createdMouse.deregisterCommand('mousedown');
+                    createdTower.isSelected = false;   
+                }
+                
             }
             else {
-                // mouseCapture = true;
-                // createdTower.isSelected = true;
+                // Do nothing for now...
             }
         });
-        
-        // createdMouse.registerCommand('mousedown', createdMouse.mouseDownEffects(mouseCapture, createdTower));
-        
+                
         
         createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
-        // mouse.registerCommand('mousemove', function(e, elapsedTime) {
             if(createdTower.isSelected) {
-                // for(var i = 0; i < towers.length; i++ ) {
-                //     if(tower.placed === false){
-                //         towers[i].moveTo({x : e.clientX, y : e.clientY });
-                //     }
-                // }
+                var x = e.clientX / 40;
+                var y = e.clientY / 40;
+                var xPos = Math.ceil(x);
+                var yPos = Math.ceil(y);
+                
                 createdTower.moveTo({x : e.clientX, y : e.clientY });
+                
+                if(gameGrid.layout[xPos][yPos].taken === true){
+                    createdTower.rangeColor = 'red';
+                } else {
+                    createdTower.rangeColor = 'green';
+                } 
             }
+            
+            
         });
-        
-        // createdMouse.registerCommand('mousemove', createdMouse.mouseMoveEffects(mouseCapture, createdTower,));
-        
+                
         mouseArray.push(createdMouse);
 
         

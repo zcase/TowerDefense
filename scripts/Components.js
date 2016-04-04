@@ -2,14 +2,15 @@ towerDefense.components = (function() {
     
     function gridCell(row, col) {
         var that = {
-            mazeRow: row,
-            mazeCol: col,
-            North: true, // true means that there is a wall.
+            col: col, // y value
+            row: row, // x value
+            North: true, 
             South: true,
             East: true,
             West: true,
             end: false,
             start: false,
+            taken: false,
         };
         return that;
     }
@@ -20,8 +21,8 @@ towerDefense.components = (function() {
         var that = {
             
             numberofCells : 0,
-            width : GridWidth/4,
-            height : GridHeight/4,
+            width : GridWidth,
+            height : GridHeight,
             layout : new Array(GridWidth),
             filledSpots : [],
             tileSize : 40,
@@ -51,7 +52,9 @@ towerDefense.components = (function() {
     }
     
     
-    
+    //************************************************************
+    //                    Tower Component Area
+    //************************************************************
     function Tower(spec) {
         var that = {},
             ready = false,
@@ -91,8 +94,8 @@ towerDefense.components = (function() {
       that.moveTo = function(center) {
           var myCanvas = document.getElementById('myCanvas');
           
-          center.x -= myCanvas.offsetLeft;
-          center.y -= myCanvas.offsetTop;
+        //   center.x -= myCanvas.offsetLeft;
+        //   center.y -= myCanvas.offsetTop;
           spec.center = center;
       };
       
@@ -104,6 +107,7 @@ towerDefense.components = (function() {
       that.height = spec.height;
       that.attackDistance = that.width * 3;
       that.isSelected = true;
+      that.rangeColor = 'green';
   
       that.render = function(graphics) {
           if(ready) {
@@ -118,12 +122,40 @@ towerDefense.components = (function() {
                   rotateRate : spec.roatateRate,
                   isSelected : that.isSelected,
                   attackDistance : that.attackDistance,
+                  rangeColor : that.rangeColor,
               });
           }
       }
       
       return that;
     };
+    
+    
+    //************************************************************
+    //                    Creep Component Area
+    //************************************************************
+    function Creep(spec) {
+        var ready = false,
+            image = new Image();
+            
+        image.onload = function () {
+            ready = true;
+        }
+        
+        image.src = spec.imge;
+        
+        var that = {
+            x : spec.x,
+            y : spec.y,
+            width: spec.width,
+            height : spec.width,
+            speed : 5,
+            health : 100,
+            
+        };
+        
+        return that;
+    }
     
     
     return {
