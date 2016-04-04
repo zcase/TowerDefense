@@ -15,7 +15,7 @@ towerDefense.model = (function (components, graphics, input) {
         towerCount = 0;
         
     function initializeGameGrid() {
-        gameGrid = components.Grid(Math.floor(graphics.width() / 40), Math.floor(graphics.height() / 40));
+        gameGrid = components.Grid(graphics.width(), graphics.height());
     } // End initializeGameGrid
     
     
@@ -32,7 +32,7 @@ towerDefense.model = (function (components, graphics, input) {
     } // End initialize
     
         
-    function createLowLevelTower() {
+    function createLowLevelTower1() {
         towerCount++;
 
         var createdTower = components.Tower({
@@ -50,35 +50,55 @@ towerDefense.model = (function (components, graphics, input) {
         
         var createdMouse = input.Mouse();
         createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
-        // mouse.registerCommand('mousedown', function(e, elapsedTime) {
             if(createdTower.isSelected === true) {
-                // mouseCapture = false;
-                createdTower.isSelected = false;
-                createdMouse.deregisterCommand('mousedown');
+                                
+                var x = e.clientX / 40;
+                var y = e.clientY / 40;
+                var xPos = Math.ceil(x);
+                var yPos = Math.ceil(y);
+                var actX = Math.ceil(e.clientX);
+                var actY = Math.ceil(e.clientY);
+                console.log("Mouse X: " + xPos);
+                console.log("Mouse Y: " + yPos);
+                console.log("Act X: " + actX);
+                console.log("Act Y: " + actY);
+                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row);
+                
+                // This snaps the object to the nearest square to the left
+                if(gameGrid.layout[xPos][yPos].taken === false){
+                    createdTower.moveTo(({ x: (xPos*40)-80, y : (yPos*40)-80}));
+                    gameGrid.layout[xPos][yPos].taken = true;
+                    createdTower.render(graphics);
+                    createdMouse.deregisterCommand('mousedown');
+                    createdTower.isSelected = false;   
+                }
+                
             }
             else {
-                // mouseCapture = true;
-                // createdTower.isSelected = true;
+                // Do nothing for now...
             }
         });
-        
-        // createdMouse.registerCommand('mousedown', createdMouse.mouseDownEffects(mouseCapture, createdTower));
-        
+                
         
         createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
-        // mouse.registerCommand('mousemove', function(e, elapsedTime) {
             if(createdTower.isSelected) {
-                // for(var i = 0; i < towers.length; i++ ) {
-                //     if(tower.placed === false){
-                //         towers[i].moveTo({x : e.clientX, y : e.clientY });
-                //     }
-                // }
-                createdTower.moveTo({x : e.clientX, y : e.clientY });
+                var x = e.clientX / 40;
+                var y = e.clientY / 40;
+                var xPos = Math.ceil(x);
+                var yPos = Math.ceil(y);
+                
+                createdTower.moveTo({x : e.clientX-40, y : e.clientY-50 });
+                
+                if(gameGrid.layout[xPos][yPos].taken === true){
+                    createdTower.rangeColor = 'red';
+                } else {
+                    createdTower.rangeColor = 'green';
+                } 
+                
             }
+            
+            
         });
-        
-        // createdMouse.registerCommand('mousemove', createdMouse.mouseMoveEffects(mouseCapture, createdTower,));
-        
         mouseArray.push(createdMouse);
 
         
@@ -99,36 +119,56 @@ towerDefense.model = (function (components, graphics, input) {
         towers.push(createdTower);
         
         var createdMouse = input.Mouse();
-        createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
-        // mouse.registerCommand('mousedown', function(e, elapsedTime) {
+         createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
             if(createdTower.isSelected === true) {
-                // mouseCapture = false;
-                createdTower.isSelected = false;
-                createdMouse.deregisterCommand('mousedown');
+                                
+                var x = e.clientX / 40;
+                var y = e.clientY / 40;
+                var xPos = Math.ceil(x);
+                var yPos = Math.ceil(y);
+                var actX = Math.ceil(e.clientX);
+                var actY = Math.ceil(e.clientY);
+                console.log("Mouse X: " + xPos);
+                console.log("Mouse Y: " + yPos);
+                console.log("Act X: " + actX);
+                console.log("Act Y: " + actY);
+                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row);
+                
+                // This snaps the object to the nearest square to the left
+                if(gameGrid.layout[xPos][yPos].taken === false){
+                    createdTower.moveTo(({ x: (xPos*40)-80, y : (yPos*40)-80}));
+                    gameGrid.layout[xPos][yPos].taken = true;
+                    createdTower.render(graphics);
+                    createdMouse.deregisterCommand('mousedown');
+                    createdTower.isSelected = false;   
+                }
+                
             }
             else {
-                // mouseCapture = true;
-                // createdTower.isSelected = true;
+                // Do nothing for now...
             }
         });
-        
-        // createdMouse.registerCommand('mousedown', createdMouse.mouseDownEffects(mouseCapture, createdTower));
-        
+                
         
         createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
-        // mouse.registerCommand('mousemove', function(e, elapsedTime) {
             if(createdTower.isSelected) {
-                // for(var i = 0; i < towers.length; i++ ) {
-                //     if(tower.placed === false){
-                //         towers[i].moveTo({x : e.clientX, y : e.clientY });
-                //     }
-                // }
-                createdTower.moveTo({x : e.clientX, y : e.clientY });
+                var x = e.clientX / 40;
+                var y = e.clientY / 40;
+                var xPos = Math.ceil(x);
+                var yPos = Math.ceil(y);
+                
+                createdTower.moveTo({x : e.clientX-40, y : e.clientY-40 });
+                
+                if(gameGrid.layout[xPos][yPos].taken === true){
+                    createdTower.rangeColor = 'red';
+                } else {
+                    createdTower.rangeColor = 'green';
+                } 
+                
             }
+            
+            
         });
-        
-        // createdMouse.registerCommand('mousemove', createdMouse.mouseMoveEffects(mouseCapture, createdTower,));
-        
         mouseArray.push(createdMouse);
 
         
@@ -149,36 +189,56 @@ towerDefense.model = (function (components, graphics, input) {
         towers.push(createdTower);
         
         var createdMouse = input.Mouse();
-        createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
-        // mouse.registerCommand('mousedown', function(e, elapsedTime) {
+         createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
             if(createdTower.isSelected === true) {
-                // mouseCapture = false;
-                createdTower.isSelected = false;
-                createdMouse.deregisterCommand('mousedown');
+                                
+                var x = e.clientX / 40;
+                var y = e.clientY / 40;
+                var xPos = Math.ceil(x);
+                var yPos = Math.ceil(y);
+                var actX = Math.ceil(e.clientX);
+                var actY = Math.ceil(e.clientY);
+                console.log("Mouse X: " + xPos);
+                console.log("Mouse Y: " + yPos);
+                console.log("Act X: " + actX);
+                console.log("Act Y: " + actY);
+                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row);
+                
+                // This snaps the object to the nearest square to the left
+                if(gameGrid.layout[xPos][yPos].taken === false){
+                    createdTower.moveTo(({ x: (xPos*40)-80, y : (yPos*40)-80}));
+                    gameGrid.layout[xPos][yPos].taken = true;
+                    createdTower.render(graphics);
+                    createdMouse.deregisterCommand('mousedown');
+                    createdTower.isSelected = false;   
+                }
+                
             }
             else {
-                // mouseCapture = true;
-                // createdTower.isSelected = true;
+                // Do nothing for now...
             }
         });
-        
-        // createdMouse.registerCommand('mousedown', createdMouse.mouseDownEffects(mouseCapture, createdTower));
-        
+                
         
         createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
-        // mouse.registerCommand('mousemove', function(e, elapsedTime) {
             if(createdTower.isSelected) {
-                // for(var i = 0; i < towers.length; i++ ) {
-                //     if(tower.placed === false){
-                //         towers[i].moveTo({x : e.clientX, y : e.clientY });
-                //     }
-                // }
-                createdTower.moveTo({x : e.clientX, y : e.clientY });
+                var x = e.clientX / 40;
+                var y = e.clientY / 40;
+                var xPos = Math.ceil(x);
+                var yPos = Math.ceil(y);
+                
+                createdTower.moveTo({x : e.clientX-40, y : e.clientY-40 });
+                
+                if(gameGrid.layout[xPos][yPos].taken === true){
+                    createdTower.rangeColor = 'red';
+                } else {
+                    createdTower.rangeColor = 'green';
+                } 
+                
             }
+            
+            
         });
-        
-        // createdMouse.registerCommand('mousemove', createdMouse.mouseMoveEffects(mouseCapture, createdTower,));
-        
         mouseArray.push(createdMouse);
 
         
@@ -217,7 +277,7 @@ towerDefense.model = (function (components, graphics, input) {
                 
                 // This snaps the object to the nearest square to the left
                 if(gameGrid.layout[xPos][yPos].taken === false){
-                    createdTower.moveTo(({ x: (xPos*40)-20, y : (yPos*40)-20}))
+                    createdTower.moveTo(({ x: (xPos*40)-80, y : (yPos*40)-80}));
                     gameGrid.layout[xPos][yPos].taken = true;
                     createdTower.render(graphics);
                     createdMouse.deregisterCommand('mousedown');
@@ -238,23 +298,14 @@ towerDefense.model = (function (components, graphics, input) {
                 var xPos = Math.ceil(x);
                 var yPos = Math.ceil(y);
                 
-                createdTower.moveTo({x : e.clientX, y : e.clientY });
-                
-                // if(e.clientX <= graphics.width && e.clientX >= 0 && e.clientY <= graphics.height && e.clientY >= 0 ) {
-                //     createdTower.inScreen = true;
-                // }else {
-                //     createdTower.inScreen = false;
-                // }
+                createdTower.moveTo({x : e.clientX-40, y : e.clientY-40 });
                 
                 if(gameGrid.layout[xPos][yPos].taken === true){
                     createdTower.rangeColor = 'red';
                 } else {
                     createdTower.rangeColor = 'green';
-                } 
-                
+                }    
             }
-            
-            
         });
                 
         mouseArray.push(createdMouse);
