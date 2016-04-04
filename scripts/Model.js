@@ -90,11 +90,18 @@ towerDefense.model = (function (components, graphics, input) {
                 
                 createdTower.moveTo({x : e.clientX, y : e.clientY });
                 
+                // if(e.clientX <= graphics.width && e.clientX >= 0 && e.clientY <= graphics.height && e.clientY >= 0 ) {
+                //     createdTower.inScreen = true;
+                // }else {
+                //     createdTower.inScreen = false;
+                // }
+                
                 if(gameGrid.layout[xPos][yPos].taken === true){
                     createdTower.rangeColor = 'red';
                 } else {
                     createdTower.rangeColor = 'green';
                 } 
+                
             }
             
             

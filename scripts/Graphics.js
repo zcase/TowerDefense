@@ -106,8 +106,8 @@ towerDefense.graphics = (function() {
      * Draws the grid of game
      */
     function drawGrid(spec) {
-        for(var i = 0; i < spec.width; i++) {
-            for(var j = 0; j < spec.height; j++){
+        for(var i = 1; i <= spec.width; i++) {
+            for(var j = 1; j <= spec.height; j++){
                 var tile = spec.grid[i][j];
                 
                 if(i % 2 === 0){

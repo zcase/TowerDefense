@@ -29,9 +29,9 @@ towerDefense.components = (function() {
             
         };
         
-        for(var i = 0; i < that.width; i++) {
+        for(var i = 1; i <= that.width; i++) {
             that.layout[i] = new Array(that.height);
-            for(var j = 0; j < that.width; j++ ) {
+            for(var j = 1; j <= that.width; j++ ) {
                 var cell = gridCell(i, j);
                 that.layout[i][j] = cell;
                 that.numberofCells++;
@@ -108,6 +108,7 @@ towerDefense.components = (function() {
       that.attackDistance = that.width * 3;
       that.isSelected = true;
       that.rangeColor = 'green';
+      that.inScreen = false;
   
       that.render = function(graphics) {
           if(ready) {
