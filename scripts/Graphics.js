@@ -57,11 +57,13 @@ towerDefense.graphics = (function() {
     function drawTowerRange(spec) {
         ctx.beginPath();
         
-        if(spec.rangeColor === 'red'){
+        if(spec.positionColor === 'red'){
             ctx.fillStyle = 'rgba(255, 0, 0, 0.3)'; // Red, Green, Blue, Alpha  
         }else {
-            ctx.fillStyle = 'rgba(0, 255, 0, 0.3)'; // Red, Green, Blue, Alpha
+            ctx.fillStyle = 'rgba(0, 0, 255, 0.3)'; // Red, Green, Blue, Alpha
         }
+        
+        
       
         ctx.arc(spec.x, spec.y, spec.attackDistance, 0, 2*Math.PI);
         ctx.fill();
@@ -69,17 +71,24 @@ towerDefense.graphics = (function() {
         ctx.closePath();
     }
     
+    
     /**
      * 
      * Draws a Tower location
      * 
      */
     
-    function drawTowerLoaction(spec){
+    function drawTowerLocation(spec){
         ctx.beginPath();
         
-        ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Red, Green, Blue, Alpha
-        ctx.fillRect(spec.x, spec.y, spec.attackDistance, 0);
+        if(spec.positionColor === 'red'){
+            ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Red, Green, Blue, Alpha
+        }
+        else if(spec.positionColor === 'green') {
+            ctx.fillStyle = 'rgba(0, 255, 0, 0.5)'; // Red, Green, Blue, Alpha
+        }
+        
+        ctx.fillRect(spec.x- spec.width/2, spec.y-spec.height/2, spec.width, spec.height);
         ctx.fill();
         ctx.stroke();
         ctx.closePath();
@@ -95,7 +104,9 @@ towerDefense.graphics = (function() {
         
         if(spec.isSelected === true){
             drawTowerRange(spec);
+            drawTowerLocation(spec);
         }
+        
         
         ctx.save();
         
@@ -146,7 +157,7 @@ towerDefense.graphics = (function() {
                 }
                 
                 ctx.fillRect(i*spec.tilesize, j*spec.tilesize, spec.tilesize, spec.tilesize);
-                // ctx.strokeRect(i* spec.tilesize, j * spec.tilesize, spec.tilesize, spec.tilesize);
+                ctx.strokeRect(i* spec.tilesize*2, j * spec.tilesize*2, spec.tilesize*2, spec.tilesize*2);
             }
         }
     }

@@ -62,7 +62,7 @@ towerDefense.model = (function (components, graphics, input) {
                 console.log("Mouse Y: " + yPos);
                 console.log("Act X: " + actX);
                 console.log("Act Y: " + actY);
-                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row);
+                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col);
                 
                 // This snaps the object to the nearest square to the left
                 if(gameGrid.layout[xPos][yPos].taken === false){
@@ -78,7 +78,6 @@ towerDefense.model = (function (components, graphics, input) {
                 // Do nothing for now...
             }
         });
-                
         
         createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
             if(createdTower.isSelected) {
@@ -90,15 +89,13 @@ towerDefense.model = (function (components, graphics, input) {
                 createdTower.moveTo({x : e.clientX-70, y : e.clientY-50 });
                 
                 if(gameGrid.layout[xPos][yPos].taken === true){
-                    createdTower.rangeColor = 'red';
+                    createdTower.positionColor = 'red'
                 } else {
-                    createdTower.rangeColor = 'green';
+                    createdTower.positionColor = 'green';
                 } 
-                
             }
-            
-            
         });
+        
         mouseArray.push(createdMouse);
 
         
@@ -119,7 +116,7 @@ towerDefense.model = (function (components, graphics, input) {
         towers.push(createdTower);
         
         var createdMouse = input.Mouse();
-         createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
+        createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
             if(createdTower.isSelected === true) {
                                 
                 var x = e.clientX / 40;
@@ -132,7 +129,7 @@ towerDefense.model = (function (components, graphics, input) {
                 console.log("Mouse Y: " + yPos);
                 console.log("Act X: " + actX);
                 console.log("Act Y: " + actY);
-                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row);
+                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col);
                 
                 // This snaps the object to the nearest square to the left
                 if(gameGrid.layout[xPos][yPos].taken === false){
@@ -148,7 +145,6 @@ towerDefense.model = (function (components, graphics, input) {
                 // Do nothing for now...
             }
         });
-                
         
         createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
             if(createdTower.isSelected) {
@@ -160,14 +156,11 @@ towerDefense.model = (function (components, graphics, input) {
                 createdTower.moveTo({x : e.clientX-70, y : e.clientY-50 });
                 
                 if(gameGrid.layout[xPos][yPos].taken === true){
-                    createdTower.rangeColor = 'red';
+                    createdTower.positionColor = 'red'
                 } else {
-                    createdTower.rangeColor = 'green';
+                    createdTower.positionColor = 'green';
                 } 
-                
             }
-            
-            
         });
         mouseArray.push(createdMouse);
 
@@ -189,7 +182,7 @@ towerDefense.model = (function (components, graphics, input) {
         towers.push(createdTower);
         
         var createdMouse = input.Mouse();
-         createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
+        createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
             if(createdTower.isSelected === true) {
                                 
                 var x = e.clientX / 40;
@@ -202,7 +195,7 @@ towerDefense.model = (function (components, graphics, input) {
                 console.log("Mouse Y: " + yPos);
                 console.log("Act X: " + actX);
                 console.log("Act Y: " + actY);
-                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row);
+                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col);
                 
                 // This snaps the object to the nearest square to the left
                 if(gameGrid.layout[xPos][yPos].taken === false){
@@ -218,7 +211,6 @@ towerDefense.model = (function (components, graphics, input) {
                 // Do nothing for now...
             }
         });
-                
         
         createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
             if(createdTower.isSelected) {
@@ -230,14 +222,11 @@ towerDefense.model = (function (components, graphics, input) {
                 createdTower.moveTo({x : e.clientX-70, y : e.clientY-50 });
                 
                 if(gameGrid.layout[xPos][yPos].taken === true){
-                    createdTower.rangeColor = 'red';
+                    createdTower.positionColor = 'red'
                 } else {
-                    createdTower.rangeColor = 'green';
+                    createdTower.positionColor = 'green';
                 } 
-                
             }
-            
-            
         });
         mouseArray.push(createdMouse);
 
@@ -263,8 +252,8 @@ towerDefense.model = (function (components, graphics, input) {
         createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
             if(createdTower.isSelected === true) {
                                 
-                var x = e.clientX / 20;
-                var y = e.clientY / 20;
+                var x = e.clientX / 40;
+                var y = e.clientY / 40;
                 var xPos = Math.ceil(x);
                 var yPos = Math.ceil(y);
                 var actX = Math.ceil(e.clientX);
@@ -273,11 +262,11 @@ towerDefense.model = (function (components, graphics, input) {
                 console.log("Mouse Y: " + yPos);
                 console.log("Act X: " + actX);
                 console.log("Act Y: " + actY);
-                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row);
+                console.log("Gamegrid[mousex][mousey] = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col);
                 
                 // This snaps the object to the nearest square to the left
                 if(gameGrid.layout[xPos][yPos].taken === false){
-                    createdTower.moveTo(({ x: (xPos*20)-40, y : (yPos*20)-40}));
+                    createdTower.moveTo(({ x: (xPos*40)-80, y : (yPos*40)-80}));
                     gameGrid.layout[xPos][yPos].taken = true;
                     createdTower.render(graphics);
                     createdMouse.deregisterCommand('mousedown');
@@ -289,7 +278,6 @@ towerDefense.model = (function (components, graphics, input) {
                 // Do nothing for now...
             }
         });
-                
         
         createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
             if(createdTower.isSelected) {
@@ -301,10 +289,10 @@ towerDefense.model = (function (components, graphics, input) {
                 createdTower.moveTo({x : e.clientX-70, y : e.clientY-50 });
                 
                 if(gameGrid.layout[xPos][yPos].taken === true){
-                    createdTower.rangeColor = 'red';
+                    createdTower.positionColor = 'red'
                 } else {
-                    createdTower.rangeColor = 'green';
-                }    
+                    createdTower.positionColor = 'green';
+                } 
             }
         });
                 

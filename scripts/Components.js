@@ -107,8 +107,9 @@ towerDefense.components = (function() {
       that.height = spec.height;
       that.attackDistance = that.width * 3;
       that.isSelected = true;
-      that.rangeColor = 'green';
+      that.rangeColor = 'blue';
       that.inScreen = false;
+      that.positionColor = 'green';
   
       that.render = function(graphics) {
           if(ready) {
@@ -124,6 +125,7 @@ towerDefense.components = (function() {
                   isSelected : that.isSelected,
                   attackDistance : that.attackDistance,
                   rangeColor : that.rangeColor,
+                  positionColor : that.positionColor,
               });
           }
       }
