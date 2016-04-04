@@ -1,5 +1,5 @@
 body {
-    margin: 0;
+    margin: auto;
 }
 
 #game {
@@ -90,7 +90,93 @@ ul.menu li button:active {
 	list-style: decimal;
     color: white;
 }
-
+#tower1{
+    width: 275px;
+    height: auto;
+    text-align: right;
+}
+#tower2{
+    width: 275px;
+    height: auto;
+    text-align: right;
+}
+#tower3{
+    width: 275px;
+    height: auto;
+    text-align: right;
+}
+#tower4{
+    width: 275px;
+    height: auto;
+    text-align: right;
+}
+div.right{
+    float: right;
+    margin-right: 100px;
+    width: 300px;
+    height: auto;
+}
+p.name_button{
+    margin: 0 0 0 75px;
+    font-family:"Lucida Console", Monaco, monospace;
+}
+#createTower1{
+    text-align: left;
+    background-image: url(../images/gun1.png);
+    background-color:whitesmoke;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    width: 50px;
+    height: 50px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+div.button:hover{
+    background-color: cornflowerblue;
+    cursor: pointer;
+}
+#createTower2{
+    background-image: url(../images/cannon1.png);
+    background-color:whitesmoke;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    width: 50px;
+    height: 50px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+#createTower3{
+    background-image: url(../images/tower1.png);
+    background-color:whitesmoke;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    width: 50px;
+    height: 50px;
+    padding: 20px;
+    margin-bottom:  20px;
+    border-radius: 5px;
+}
+#createTower4{
+    background-image: url(../images/missile1.png);
+    background-color:whitesmoke;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    width: 50px;
+    height: 50px;
+    padding: 20px;
+    margin-bottom:  20px;
+    border-radius: 5px;
+}
+#canvasCenter {
+    margin-top: 50px;
+    width:90%;
+    height:auto; 
+    margin-right:auto;
+    
+    margin-left:auto;
+}
 #myCanvas {
-    background-color: azure;
+    background-image: url(../images/groundb.jpg);
 }
