@@ -66,9 +66,26 @@ towerDefense.graphics = (function() {
     
     /**
      * 
+     * Draws a Tower location
+     * 
+     */
+    
+    function drawTowerLoaction(spec){
+        ctx.beginPath();
+        
+        ctx.fillStyle = 'rgba(255, 0, 0, 0.5)'; // Red, Green, Blue, Alpha
+        ctx.fillRect(spec.x, spec.y, spec.attackDistance, 0);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+    }
+    
+    /**
+     * 
      * Draws a Tower
      * 
      */
+    
     function drawTower(spec) {
         
         if(spec.isSelected === true){
@@ -106,14 +123,25 @@ towerDefense.graphics = (function() {
                 var tile = spec.grid[i][j];
                 
                 if(i % 2 === 0){
-                    ctx.fillStyle = 'rgba(0, 255, 0, 0.8)';
+                    if (j % 2 === 0){
+                        ctx.fillStyle = 'rgba(235, 235, 235, 0.1)';
+                    }
+                    else{
+                        ctx.fillStyle = 'rgba(235, 235, 235, 0.5)';
+                    }
                     
                 }else {
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                    if (j % 2 === 0){
+                        ctx.fillStyle = 'rgba(235, 235, 235, 0.5)';
+                    }
+                    else{
+                        ctx.fillStyle = 'rgba(235, 235, 235, 0.1)';
+                    }
+                    
                 }
                 
                 ctx.fillRect(i*spec.tilesize, j*spec.tilesize, spec.tilesize, spec.tilesize);
-                ctx.strokeRect(i* spec.tilesize, j * spec.tilesize, spec.tilesize, spec.tilesize);
+                // ctx.strokeRect(i* spec.tilesize, j * spec.tilesize, spec.tilesize, spec.tilesize);
             }
         }
     }

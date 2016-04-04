@@ -31,9 +31,159 @@ towerDefense.model = (function (components, graphics, input) {
     } // End initialize
     
         
-    function createLowLevelTower() {
+    function createLowLevelTower1() {
         var createdTower = components.Tower({
-            image : 'images/USU-Logo.png',
+            image : 'images/gun1.png',
+            center : {x : 12000, y : 300},
+            width : 40,
+            height : 40,
+            rotation : 0,
+            moveRate : 200,
+            rotateRate : 3.14159,
+            isSelected : true,
+        });
+        
+        towers.push(createdTower);
+        
+        var createdMouse = input.Mouse();
+        createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
+        // mouse.registerCommand('mousedown', function(e, elapsedTime) {
+            if(createdTower.isSelected === true) {
+                // mouseCapture = false;
+                createdTower.isSelected = false;
+                createdMouse.deregisterCommand('mousedown');
+            }
+            else {
+                // mouseCapture = true;
+                // createdTower.isSelected = true;
+            }
+        });
+        
+        // createdMouse.registerCommand('mousedown', createdMouse.mouseDownEffects(mouseCapture, createdTower));
+        
+        
+        createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
+        // mouse.registerCommand('mousemove', function(e, elapsedTime) {
+            if(createdTower.isSelected) {
+                // for(var i = 0; i < towers.length; i++ ) {
+                //     if(tower.placed === false){
+                //         towers[i].moveTo({x : e.clientX, y : e.clientY });
+                //     }
+                // }
+                createdTower.moveTo({x : e.clientX, y : e.clientY });
+            }
+        });
+        
+        // createdMouse.registerCommand('mousemove', createdMouse.mouseMoveEffects(mouseCapture, createdTower,));
+        
+        mouseArray.push(createdMouse);
+
+        
+        // return createdTower;
+    } // End createLowLevelTower
+    function createLowLevelTower2() {
+        var createdTower = components.Tower({
+            image : 'images/cannon1.png',
+            center : {x : 12000, y : 300},
+            width : 40,
+            height : 40,
+            rotation : 0,
+            moveRate : 200,
+            rotateRate : 3.14159,
+            isSelected : true,
+        });
+        
+        towers.push(createdTower);
+        
+        var createdMouse = input.Mouse();
+        createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
+        // mouse.registerCommand('mousedown', function(e, elapsedTime) {
+            if(createdTower.isSelected === true) {
+                // mouseCapture = false;
+                createdTower.isSelected = false;
+                createdMouse.deregisterCommand('mousedown');
+            }
+            else {
+                // mouseCapture = true;
+                // createdTower.isSelected = true;
+            }
+        });
+        
+        // createdMouse.registerCommand('mousedown', createdMouse.mouseDownEffects(mouseCapture, createdTower));
+        
+        
+        createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
+        // mouse.registerCommand('mousemove', function(e, elapsedTime) {
+            if(createdTower.isSelected) {
+                // for(var i = 0; i < towers.length; i++ ) {
+                //     if(tower.placed === false){
+                //         towers[i].moveTo({x : e.clientX, y : e.clientY });
+                //     }
+                // }
+                createdTower.moveTo({x : e.clientX, y : e.clientY });
+            }
+        });
+        
+        // createdMouse.registerCommand('mousemove', createdMouse.mouseMoveEffects(mouseCapture, createdTower,));
+        
+        mouseArray.push(createdMouse);
+
+        
+        // return createdTower;
+    } // End createLowLevelTower
+    function createLowLevelTower3() {
+        var createdTower = components.Tower({
+            image : 'images/tower1.png',
+            center : {x : 12000, y : 300},
+            width : 40,
+            height : 40,
+            rotation : 0,
+            moveRate : 200,
+            rotateRate : 3.14159,
+            isSelected : true,
+        });
+        
+        towers.push(createdTower);
+        
+        var createdMouse = input.Mouse();
+        createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
+        // mouse.registerCommand('mousedown', function(e, elapsedTime) {
+            if(createdTower.isSelected === true) {
+                // mouseCapture = false;
+                createdTower.isSelected = false;
+                createdMouse.deregisterCommand('mousedown');
+            }
+            else {
+                // mouseCapture = true;
+                // createdTower.isSelected = true;
+            }
+        });
+        
+        // createdMouse.registerCommand('mousedown', createdMouse.mouseDownEffects(mouseCapture, createdTower));
+        
+        
+        createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
+        // mouse.registerCommand('mousemove', function(e, elapsedTime) {
+            if(createdTower.isSelected) {
+                // for(var i = 0; i < towers.length; i++ ) {
+                //     if(tower.placed === false){
+                //         towers[i].moveTo({x : e.clientX, y : e.clientY });
+                //     }
+                // }
+                createdTower.moveTo({x : e.clientX, y : e.clientY });
+            }
+        });
+        
+        // createdMouse.registerCommand('mousemove', createdMouse.mouseMoveEffects(mouseCapture, createdTower,));
+        
+        mouseArray.push(createdMouse);
+
+        
+        // return createdTower;
+    } // End createLowLevelTower
+    function createLowLevelTower4() {
+        var createdTower = components.Tower({
+            image : 'images/missile1.png',
             center : {x : 12000, y : 300},
             width : 40,
             height : 40,
@@ -140,7 +290,10 @@ towerDefense.model = (function (components, graphics, input) {
         
    return {
        initialize : initialize,
-       createLowLevelTower : createLowLevelTower,
+       createLowLevelTower1 : createLowLevelTower1,
+       createLowLevelTower2 : createLowLevelTower2,
+       createLowLevelTower3 : createLowLevelTower3,
+       createLowLevelTower4 : createLowLevelTower4,
        processInput : processInput,
        update : update,
        render : render

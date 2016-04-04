@@ -20,16 +20,16 @@ towerDefense.components = (function() {
         var that = {
             
             numberofCells : 0,
-            width : GridWidth/4,
-            height : GridHeight/4,
-            layout : new Array(GridWidth),
+            width : GridWidth/20,
+            height : GridHeight/20,
+            layout : new Array(GridWidth/2),
             filledSpots : [],
-            tileSize : 40,
+            tileSize : 20,
             
         };
         
         for(var i = 0; i < that.width; i++) {
-            that.layout[i] = new Array(that.height);
+            that.layout[i] = new Array(that.height/2);
             for(var j = 0; j < that.width; j++ ) {
                 var cell = gridCell(i, j);
                 that.layout[i][j] = cell;
