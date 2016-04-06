@@ -13,6 +13,8 @@ towerDefense.model = (function (components, graphics, input) {
         internalUpdate,
         internalRender;
         towerCount = 0;
+    var count = 0;
+
         
     function initializeGameGrid() {
         gameGrid = components.Grid(graphics.width(), graphics.height());
@@ -31,7 +33,7 @@ towerDefense.model = (function (components, graphics, input) {
         
     } // End initialize
     
-        
+    // Creates the gun tower
     function createLowLevelTower1() {
         towerCount++;
 
@@ -101,6 +103,8 @@ towerDefense.model = (function (components, graphics, input) {
         
         // return createdTower;
     } // End createLowLevelTower
+    
+    // Creates the cannon tower
     function createLowLevelTower2() {
         var createdTower = components.Tower({
             image : 'images/cannon1.png',
@@ -113,6 +117,9 @@ towerDefense.model = (function (components, graphics, input) {
             isSelected : true,
         });
         
+        createdTower.strength = 20;
+        createdTower.attackDistance = createdTower.width * 3;
+        
         towers.push(createdTower);
         
         var createdMouse = input.Mouse();
@@ -167,6 +174,8 @@ towerDefense.model = (function (components, graphics, input) {
         
         // return createdTower;
     } // End createLowLevelTower
+    
+    // Creates tower which is a mixed weapon
     function createLowLevelTower3() {
         var createdTower = components.Tower({
             image : 'images/tower1.png',
@@ -179,6 +188,9 @@ towerDefense.model = (function (components, graphics, input) {
             isSelected : true,
         });
         
+        createdTower.strength = 10;
+        createdTower.attackDistance = createdTower.width * 4;
+        
         towers.push(createdTower);
         
         var createdMouse = input.Mouse();
@@ -233,6 +245,8 @@ towerDefense.model = (function (components, graphics, input) {
         
         // return createdTower;
     } // End createLowLevelTower
+    
+    // Creates air tower
     function createLowLevelTower4() {
         var createdTower = components.Tower({
             image : 'images/missile1.png',
@@ -246,6 +260,9 @@ towerDefense.model = (function (components, graphics, input) {
             towerNum : towerCount,
         });
         
+        createdTower.strength = 10;
+        createdTower.attackDistance = createdTower.width * 5;
+        
         towers.push(createdTower);
         
         var createdMouse = input.Mouse();
@@ -296,13 +313,29 @@ towerDefense.model = (function (components, graphics, input) {
             }
         });
                 
-        mouseArray.push(createdMouse);
-
-        
-        // return createdTower;
+        mouseArray.push(createdMouse);        
     } // End createLowLevelTower
     
+    function createCreep() {
+        var creep = components.Creep({
+            image : 'images/USU-Logo.png',
+            center : {x : 20, y : 240},
+            width : 20,
+            height : 20,
+            rotation : 0,
+            moveRate : 50,
+            
+        });
+        
+        creeps.push(creep);
+    }
+    
     function updatePlaying(elapsedTime) {
+        if( count < 1 && count <=2) {
+            createCreep();
+            count++;
+        }
+        
         
         // Update each tower
         for(var i = 0; i < towers.length; i++) {
@@ -327,7 +360,7 @@ towerDefense.model = (function (components, graphics, input) {
         }
         
         for(var i = 0; i < creeps.length; i++) {
-            // creeps[i].render(graphics);
+            creeps[i].render(graphics);
         }
         
         // render munitions
@@ -352,6 +385,12 @@ towerDefense.model = (function (components, graphics, input) {
         if(towers.length > 0 ) {
             for(var i = 0; i < towers.length; i++) {
                 towers[i].render(graphics);
+            }
+        }
+        
+        if(creeps.length > 0 ) {
+            for(var i = 0; i < creeps.length; i++) {
+                creeps[i].render(graphics);
             }
         }
         

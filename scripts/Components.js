@@ -105,7 +105,7 @@ towerDefense.components = (function() {
       that.y = spec.y;
       that.width = spec.width;
       that.height = spec.height;
-      that.attackDistance = that.width * 3;
+      that.attackDistance = that.width * 2;
       that.isSelected = true;
       that.rangeColor = 'blue';
       that.inScreen = false;
@@ -138,24 +138,85 @@ towerDefense.components = (function() {
     //                    Creep Component Area
     //************************************************************
     function Creep(spec) {
-        var ready = false,
+        var that = {},
+            ready = false,
             image = new Image();
             
-        image.onload = function () {
-            ready = true;
-        }
+       image.onload = function () {
+          ready = true;
+      };
+      
+      image.src = spec.image;
+      
+      that.rotateRight = function(elapsedTime) {
+          spec.rotation += spec.rotateRate * (elapsedTime / 1000);
+      };
+      
+      that.rotateLeft = function(elapsedTime) {
+          spec.rotation -= spec.rotateRate * (elapsedTime / 1000);
+      };
+      
+      that.moveLeft = function(elapsedTime) {
+          spec.center.x -= spec.moveRate * (elapsedTime / 1000);
+      };
+      
+      that.moveRight = function(elapsedTime) {
+          spec.center.x += spec.moveRate * (elapsedTime / 1000);
+      };
+      
+      that.moveUp = function(elapsedTime) {
+          spec.center.y -= spec.moveRate * (elapsedTime / 1000);
+      };
+      
+      that.moveDown = function(elapsedTime) {
+          spec.center.x += spec.moveRate * (elapsedTime / 1000);
+      };
+      
+      that.moveTo = function(center) {
+          var myCanvas = document.getElementById('myCanvas');
+          
+        //   center.x -= myCanvas.offsetLeft;
+        //   center.y -= myCanvas.offsetTop;
+          spec.center = center;
+      };
+      
+      that.strength = 5;
+      that.health = 100;
+      that.gridSolutionPath = new Array();
+    //   that.placed = false;
+      that.x = spec.x;
+      that.y = spec.y;
+      that.width = spec.width;
+      that.height = spec.height;
+      that.attackDistance = that.width * 2;
+      that.isSelected = true;
+      that.rangeColor = 'blue';
+      that.inScreen = false;
+      that.positionColor = 'green';
+  
+      that.render = function(graphics) {
+          if(ready) {
+              graphics.drawCreep({
+                  image : image,
+                  x: spec.center.x,
+                  y: spec.center.y,
+                  width: spec.width,
+                  height: spec.height,
+                  rotation: spec.rotation,
+                  moveRate : spec.moveRate,
+                  rotateRate : spec.roatateRate,
+              });
+          }
+      };
+      
+      that.solveGrid = function(){
+          
+      };
+      
+      that.update = function(elapsedTime) {
+          that.moveRight(elapsedTime);
+      };
         
-        image.src = spec.imge;
-        
-        var that = {
-            x : spec.x,
-            y : spec.y,
-            width: spec.width,
-            height : spec.width,
-            speed : 5,
-            health : 100,
-            
-        };
         
         return that;
     }
@@ -164,5 +225,6 @@ towerDefense.components = (function() {
     return {
         Tower : Tower,
         Grid : Grid,
+        Creep : Creep,
     }
 }());

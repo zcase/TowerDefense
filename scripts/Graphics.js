@@ -43,6 +43,25 @@ towerDefense.graphics = (function() {
         ctx.clear();
     }
     
+    //************************************************************
+    //                    Creep Graphics Area
+    //************************************************************
+    function drawCreep(spec) {
+        ctx.save();
+        
+        ctx.translate(spec.x, spec.y);
+        // ctx.rotate(spec.rotation);
+        ctx.translate(-spec.x, -spec.y);
+        
+        ctx.drawImage (
+            spec.image,
+            spec.x - spec.width/2,
+            spec.y - spec.height/2,
+            spec.width,
+            spec.height);
+        
+        ctx.restore();
+    }
     
     
     //************************************************************
@@ -77,7 +96,6 @@ towerDefense.graphics = (function() {
      * Draws a Tower location
      * 
      */
-    
     function drawTowerLocation(spec){
         ctx.beginPath();
         
@@ -173,6 +191,7 @@ towerDefense.graphics = (function() {
         width : width,
         height : height,
         drawGrid : drawGrid,
+        drawCreep : drawCreep,
     }
     
 }());
