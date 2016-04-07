@@ -21,7 +21,7 @@ towerDefense.components = (function() {
         var that = {
             
             numberofCells : 0,
-            width : GridWidth/20,
+            width : (GridWidth/20) - 1,
             height : GridHeight/20,
             layout : new Array(GridWidth/2),
             filledSpots : [],
@@ -132,8 +132,7 @@ towerDefense.components = (function() {
       
       return that;
     };
-    
-    
+
     //************************************************************
     //                    Creep Component Area
     //************************************************************

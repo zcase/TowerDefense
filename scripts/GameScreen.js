@@ -7,7 +7,6 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
         mouse = input.Mouse();
         lastTime = performance.now();
 
-
     function initialize() {
     
         keyboard.registerCommand(KeyEvent.DOM_VK_ESCAPE, function() {
@@ -34,6 +33,7 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
     // Update the game model
     function update(elapsedTime) {
         gameModel.update(elapsedTime);
+
     }
     
     

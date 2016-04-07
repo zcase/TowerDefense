@@ -330,7 +330,133 @@ towerDefense.model = (function (components, graphics, input) {
         creeps.push(creep);
     }
     
+    function createPersonCreep(){
+        person = AnimatedMoveModel({
+            spriteSheet : 'images/personSprite.png',
+            spriteCount : 7,
+            spriteTime : [200,100, 200, 100],	// milliseconds per sprite animation frame
+			center : { x: 64, y: 64 },
+			rotation : 0,
+			orientation : 0,		// Sprite orientation with respect to "forward"
+			moveRate : 50 / 1000,			// pixels per millisecond
+			rotateRate : 3.141590 / 2 / 1000	
+        });
+        creeps.push(person);
+    }
+    
+    function createNaziCreep(){
+        nazi = AnimatedMoveModel({
+            spriteSheet : 'images/naziSprite.png',
+            spriteCount : 7,
+            spriteTime : [200,100, 200, 100],	// milliseconds per sprite animation frame
+			center : { x: 64, y: 64 },
+			rotation : 0,
+			orientation : 0,		// Sprite orientation with respect to "forward"
+			moveRate : 50 / 1000,			// pixels per millisecond
+			rotateRate : 3.141590 / 2 / 1000	
+        });
+        creeps.push(nazi);
+    }
+    
+    function createDragonCreep() {
+        dragon = AnimatedMoveModel( {
+			spriteSheet : 'images/dragonSprite.png',
+			spriteCount : 4,
+			spriteTime : [200,150, 150, 150],	// milliseconds per sprite animation frame
+			center : { x: 55, y: 55 },
+			rotation : 0,
+			orientation : 0,		// Sprite orientation with respect to "forward"
+			moveRate : 50 / 1000,			// pixels per millisecond
+			rotateRate : 0	// Radians per millisecond
+		});
+        creeps.push(dragon);
+    }
+    
+    function AnimatedModel(spec) {
+		var that = {},
+			sprite = graphics.drawCreep(spec);	// We contain a SpriteSheet, not inherited from, big difference
+			
+		that.update = function(elapsedTime) {
+			sprite.update(elapsedTime);
+		};
+		
+		that.render = function() {
+			sprite.draw();
+		};
+		
+		that.rotateRight = function(elapsedTime) {
+			spec.rotation += spec.rotateRate * (elapsedTime);
+		};
+		
+		that.rotateLeft = function(elapsedTime) {
+			spec.rotation -= spec.rotateRate * (elapsedTime);
+		};
+		that.moveForward = function(elapsedTime) {
+			var vectorX = Math.cos(spec.rotation + spec.orientation),
+				vectorY = Math.sin(spec.rotation + spec.orientation);
+
+			spec.center.x += (vectorX * spec.moveRate * elapsedTime);
+			spec.center.y += (vectorY * spec.moveRate * elapsedTime);
+		};
+        that.moveBackward = function(elapsedTime) {
+			var vectorX = Math.cos(spec.rotation + spec.orientation),
+				vectorY = Math.sin(spec.rotation + spec.orientation);
+                
+			spec.center.x -= (vectorX * spec.moveRate * elapsedTime);
+			spec.center.y -= (vectorY * spec.moveRate * elapsedTime);
+		};
+		
+		return that;
+	}
+    
+    function AnimatedMoveModel(spec) {
+		var that = AnimatedModel(spec),	// Inherit from AnimatedModel
+			base = {
+				moveForward : that.moveForward,
+				moveBackward : that.moveBackward,
+				rotateRight : that.rotateRight,
+				rotateLeft : that.rotateLeft,
+				update : that.update
+			},
+			didMoveForward = false,
+			didMoveBackward = false;
+
+		that.update = function(elapsedTime) {
+			if (didMoveForward === true) {
+				base.update(elapsedTime, true);
+			} else if (didMoveBackward === true) {
+				base.update(elapsedTime, false);
+			}
+			
+			didMoveForward = false;
+			didMoveBackward = false;
+		};
+		
+		that.moveForward = function(elapsedTime) {
+			base.moveForward(elapsedTime);
+			didMoveForward = true;
+		};
+		
+		that.moveBackward = function(elapsedTime) {
+			base.moveBackward(elapsedTime);
+			didMoveBackward = true;
+		};
+		
+		that.rotateRight = function(elapsedTime) {
+			base.rotateRight(elapsedTime);
+			didMoveForward = true;
+		};
+		
+		that.rotateLeft = function(elapsedTime) {
+			base.rotateLeft(elapsedTime);
+			didMoveForward = true;
+		};
+		
+		return that;
+	}
+    
     function updatePlaying(elapsedTime) {
+        createDragonCreep();
         if( count < 1 && count <=2) {
             createCreep();
             count++;
@@ -403,6 +529,9 @@ towerDefense.model = (function (components, graphics, input) {
        createLowLevelTower2 : createLowLevelTower2,
        createLowLevelTower3 : createLowLevelTower3,
        createLowLevelTower4 : createLowLevelTower4,
+       createDragonCreep : createDragonCreep,
+       AnimatedModel : AnimatedModel,
+       AnimatedMoveModel : AnimatedMoveModel,
        processInput : processInput,
        update : update,
        render : render
