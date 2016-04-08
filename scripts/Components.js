@@ -130,6 +130,7 @@ towerDefense.components = (function() {
           }
       }
       
+      console.log("Components: ",spec.width);
       return that;
     };
 

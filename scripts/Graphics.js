@@ -97,6 +97,7 @@ towerDefense.graphics = (function() {
 
                 ctx.restore();
             };
+            console.log("Graphics: ", spec.width);
             //
             // Once the image is loaded, we can compute the height and width based upon
             // what we know of the image and the number of sprites in the sheet.
@@ -262,7 +263,7 @@ towerDefense.graphics = (function() {
                 }
 
                 ctx.fillRect(i * spec.tilesize, j * spec.tilesize, spec.tilesize, spec.tilesize);
-                ctx.strokeRect(i * spec.tilesize * 2, j * spec.tilesize * 2, spec.tilesize * 2, spec.tilesize * 2);
+                // ctx.strokeRect(i * spec.tilesize * 2, j * spec.tilesize * 2, spec.tilesize * 2, spec.tilesize * 2);
             }
         }
     }

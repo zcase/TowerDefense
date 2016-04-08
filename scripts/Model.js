@@ -334,11 +334,13 @@ towerDefense.model = (function (components, graphics, input) {
         person = AnimatedMoveModel({
             spriteSheet : 'images/personSprite.png',
             spriteCount : 7,
-            spriteTime : [200,100, 200, 100],	// milliseconds per sprite animation frame
-			center : { x: 64, y: 64 },
+            spriteTime : [300,300, 300, 300, 300, 300, 300],	// milliseconds per sprite animation frame
+			center : { x: 100, y: 100 },
+            width:20,
+            height:20,
 			rotation : 0,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 50 / 1000,			// pixels per millisecond
+			moveRate : 20/1000,			// pixels per millisecond
 			rotateRate : 3.141590 / 2 / 1000	
         });
         creeps.push(person);
@@ -348,11 +350,13 @@ towerDefense.model = (function (components, graphics, input) {
         nazi = AnimatedMoveModel({
             spriteSheet : 'images/naziSprite.png',
             spriteCount : 7,
-            spriteTime : [200,100, 200, 100],	// milliseconds per sprite animation frame
+            spriteTime : [200, 100, 200, 100,200,100,200],	// milliseconds per sprite animation frame
 			center : { x: 64, y: 64 },
+            width: 30,
+            height:30,
 			rotation : 0,
-			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 50 / 1000,			// pixels per millisecond
+			// orientation : 0,		// Sprite orientation with respect to "forward"
+			moveRate : 30/1000,			// pixels per millisecond
 			rotateRate : 3.141590 / 2 / 1000	
         });
         creeps.push(nazi);
@@ -363,19 +367,22 @@ towerDefense.model = (function (components, graphics, input) {
 			spriteSheet : 'images/dragonSprite.png',
 			spriteCount : 4,
 			spriteTime : [200,150, 150, 150],	// milliseconds per sprite animation frame
-			center : { x: 55, y: 55 },
+			center : { x: -100, y: 300 },
 			rotation : 0,
-			orientation : 0,		// Sprite orientation with respect to "forward"
+            width : 50,
+            height: 50,
+			// orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 50 / 1000,			// pixels per millisecond
 			rotateRate : 0	// Radians per millisecond
 		});
         creeps.push(dragon);
+        
     }
     
     function AnimatedModel(spec) {
 		var that = {},
 			sprite = graphics.drawCreep(spec);	// We contain a SpriteSheet, not inherited from, big difference
-			
+			 console.log("Model: ",sprite.width);
 		that.update = function(elapsedTime) {
 			sprite.update(elapsedTime);
 		};
@@ -456,9 +463,13 @@ towerDefense.model = (function (components, graphics, input) {
 	}
     
     function updatePlaying(elapsedTime) {
-        createDragonCreep();
+        // createDragonCreep();
         if( count < 1 && count <=2) {
-            createCreep();
+            // createCreep();
+            createPersonCreep();
+            // createDragonCreep();
+            // createNaziCreep();
+            
             count++;
         }
         
@@ -470,6 +481,8 @@ towerDefense.model = (function (components, graphics, input) {
         
         // Update each creep
         for(var i = 0; i < creeps.length; i++) {
+            // internalUpdate = createPersonCreep;
+            creeps[i].moveForward(elapsedTime);
             creeps[i].update(elapsedTime); // need to create update fuction to update creep movement, life, sprite postion
         }
         
