@@ -261,9 +261,11 @@ towerDefense.graphics = (function() {
                     }
 
                 }
-
-                ctx.fillRect(i * spec.tilesize, j * spec.tilesize, spec.tilesize, spec.tilesize);
-                // ctx.strokeRect(i * spec.tilesize * 2, j * spec.tilesize * 2, spec.tilesize * 2, spec.tilesize * 2);
+                
+                // ctx.fillStyle = 'red';
+                // ctx.fillRect(i*tile.row, j*tile.col, spec.tilesize, spec.tilesize);
+                ctx.fillRect(i*spec.tilesize, j*spec.tilesize, spec.tilesize, spec.tilesize);
+                ctx.strokeRect(i* spec.tilesize*2, j * spec.tilesize*2, spec.tilesize*2, spec.tilesize*2);
             }
         }
     }
