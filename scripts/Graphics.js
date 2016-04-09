@@ -66,12 +66,14 @@ towerDefense.graphics = (function() {
     function drawCreep(spec) {
         var that = {},
             image = new Image();
+            console.log("Width: ", spec.width, " Height: ", spec.height);
 
         //
         // Initialize the animation of the spritesheet
         spec.sprite = 0;		// Which sprite to start with
         spec.elapsedTime = 0;	// How much time has occured in the animation
-
+        // spec.percent_of_size = 1;
+        
         //
         // Load the image, set the ready flag once it is loaded so that
         // rendering can begin.
@@ -103,6 +105,7 @@ towerDefense.graphics = (function() {
             // what we know of the image and the number of sprites in the sheet.
             spec.height = image.height;
             spec.width = image.width / spec.spriteCount;
+            console.log("checking size: ",image.width);
         };
         image.src = spec.spriteSheet;
 

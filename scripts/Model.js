@@ -388,11 +388,12 @@ towerDefense.model = (function (components, graphics, input) {
         person = AnimatedMoveModel({
             spriteSheet : 'images/personSprite.png',
             spriteCount : 7,
-            spriteTime : [300,300, 300, 300, 300, 300, 300],	// milliseconds per sprite animation frame
+            spriteTime : [200,100, 200, 100, 200, 100, 200],	// milliseconds per sprite animation frame
 			center : { x: 100, y: 100 },
             width:20,
             height:20,
 			rotation : 0,
+            // percent_of_size: 100/150,
 			orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 20/1000,			// pixels per millisecond
 			rotateRate : 3.141590 / 2 / 1000	
@@ -404,12 +405,13 @@ towerDefense.model = (function (components, graphics, input) {
         nazi = AnimatedMoveModel({
             spriteSheet : 'images/naziSprite.png',
             spriteCount : 7,
-            spriteTime : [200, 100, 200, 100,200,100,200],	// milliseconds per sprite animation frame
+            spriteTime : [100, 75, 75, 100, 75, 75,100],	// milliseconds per sprite animation frame
 			center : { x: 64, y: 64 },
             width: 30,
             height:30,
+            percent_of_size: 20/150,
 			rotation : 0,
-			// orientation : 0,		// Sprite orientation with respect to "forward"
+			orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 30/1000,			// pixels per millisecond
 			rotateRate : 3.141590 / 2 / 1000	
         });
@@ -423,9 +425,9 @@ towerDefense.model = (function (components, graphics, input) {
 			spriteTime : [200,150, 150, 150],	// milliseconds per sprite animation frame
 			center : { x: -100, y: 300 },
 			rotation : 0,
-            width : 50,
-            height: 50,
-			// orientation : 0,		// Sprite orientation with respect to "forward"
+            width : 150,
+            height: 150,
+			orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 50 / 1000,			// pixels per millisecond
 			rotateRate : 0	// Radians per millisecond
 		});
@@ -521,8 +523,8 @@ towerDefense.model = (function (components, graphics, input) {
         if( count < 1 && count <=2) {
             // createCreep();
             createPersonCreep();
-            // createDragonCreep();
-            // createNaziCreep();
+            createDragonCreep();
+            createNaziCreep();
             
             count++;
         }
