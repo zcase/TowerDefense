@@ -46,23 +46,26 @@ towerDefense.graphics = (function() {
     //************************************************************
     //                    Creep Graphics Area
     //************************************************************
-    // function drawCreep(spec) {
-    //     ctx.save();
+    function drawCreepBasic(spec) {
+        ctx.save();
 
-    //     ctx.translate(spec.x, spec.y);
-    //     // ctx.rotate(spec.rotation);
-    //     ctx.translate(-spec.x, -spec.y);
+        ctx.translate(spec.x, spec.y);
+        // ctx.rotate(spec.rotation);
+        ctx.translate(-spec.x, -spec.y);
 
-    //     ctx.drawImage (
-    //         spec.image,
-    //         spec.width * spec.sprite,
-    //         spec.x - spec.width/2,
-    //         spec.y - spec.height/2,
-    //         spec.width,
-    //         spec.height);
+        ctx.drawImage (
+            spec.image,
+            // spec.width * spec.sprite,
+            spec.x - spec.width/2,
+            spec.y - spec.height/2,
+            // spec.y - 10,
+            spec.width,
+            spec.height);
 
-    //     ctx.restore();
-    // }
+        ctx.restore();
+    }
+    
+    // Draws the moving creeps
     function drawCreep(spec) {
         var that = {},
             image = new Image();
@@ -173,8 +176,6 @@ towerDefense.graphics = (function() {
             ctx.fillStyle = 'rgba(0, 0, 255, 0.3)'; // Red, Green, Blue, Alpha
         }
 
-
-
         ctx.arc(spec.x, spec.y, spec.attackDistance, 0, 2 * Math.PI);
         ctx.fill();
         ctx.stroke();
@@ -208,15 +209,13 @@ towerDefense.graphics = (function() {
      * Draws a Tower
      * 
      */
-
     function drawTower(spec) {
 
         if (spec.isSelected === true) {
             drawTowerRange(spec);
             drawTowerLocation(spec);
         }
-
-
+        
         ctx.save();
 
         ctx.translate(spec.x, spec.y);
@@ -285,6 +284,7 @@ towerDefense.graphics = (function() {
         height: height,
         drawGrid: drawGrid,
         drawCreep: drawCreep,
+        drawCreepBasic : drawCreepBasic
     }
 
 } ());

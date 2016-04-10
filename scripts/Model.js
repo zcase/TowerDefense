@@ -11,8 +11,9 @@ towerDefense.model = (function (components, graphics, input) {
         mouse = input.Keyboard(),
         mouseCapture = true,
         internalUpdate,
-        internalRender;
-        towerCount = 0;
+        internalRender,
+        towerCount = 0,
+        creepStartingPostitions = [{x : 0, y : 310}, {x: 0, y : 330}, {x: 0 , y: 270}];
     var count = 0;
 
         
@@ -290,8 +291,8 @@ towerDefense.model = (function (components, graphics, input) {
         var createdTower = components.Tower({
             image : 'images/missile1.png',
             center : {x : 12000, y : 300},
-            width : 60,
-            height : 60,
+            width : 20,
+            height : 20,
             rotation : 0,
             moveRate : 200,
             rotateRate : 3.14159,
@@ -309,8 +310,8 @@ towerDefense.model = (function (components, graphics, input) {
         createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
             if(createdTower.isSelected === true) {
                                 
-                var x =  (Math.floor(e.clientX) / 60) - 3; // This gives the x grid position
-                var y =  (Math.floor(e.clientY) / 60) - 3; // This gives the y grid position
+                var x =  (Math.floor(e.clientX) / 20) - 3; // This gives the x grid position
+                var y =  (Math.floor(e.clientY) / 20) - 3; // This gives the y grid position
                 var xPos = Math.floor(x);
                 var yPos = Math.floor(y);
                 var actX = Math.floor(e.clientX);
@@ -339,17 +340,17 @@ towerDefense.model = (function (components, graphics, input) {
         createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
            
             if(createdTower.isSelected) {
-                var x = (e.clientX / 60) - 3;
-                var y = (e.clientY / 60) - 3;
+                var x = (e.clientX / 20) - 3;
+                var y = (e.clientY / 20) - 3;
                 var xPos = Math.floor(x);
                 var yPos = Math.floor(y);
                 
-                console.log("MovingMouseX = " + xPos);
-                console.log("MovingMouseY = " + yPos);
-                console.log('\n');
+                // console.log("MovingMouseX = " + xPos);
+                // console.log("MovingMouseY = " + yPos);
+                // console.log('\n');
                 
                 if(e.clientX >=0 && e.clientX <= 850 && e.clientY >= 0 && e.clientY <= 650) {
-                    createdTower.moveTo({x : xPos*60 + 30, y : yPos*60 + 30   });
+                    createdTower.moveTo({x : xPos*20 + 10, y : yPos*20 + 10   });
                     createdTower.inCanvas = true;
                 }else {
                     createdTower.inCanvas = false;
@@ -370,14 +371,17 @@ towerDefense.model = (function (components, graphics, input) {
     } // End createLowLevelTower
     
     function createCreep() {
+        
+        var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
+        
         var creep = components.Creep({
             image : 'images/USU-Logo.png',
-            center : {x : 10, y : 310},
+            center : randomStart,
             width : 20,
             height : 20,
             rotation : 0,
-            // moveRate : 50,
-            moveRate : 100,
+            moveRate : 20,
+            // moveRate : 100,
             
         });
         
@@ -385,11 +389,15 @@ towerDefense.model = (function (components, graphics, input) {
     }
     
     function createPersonCreep(){
-        person = AnimatedMoveModel({
+        
+        var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
+        
+        person = components.AnimatedMoveModel({
             spriteSheet : 'images/personSprite.png',
             spriteCount : 7,
             spriteTime : [200,100, 200, 100, 200, 100, 200],	// milliseconds per sprite animation frame
-			center : { x: 100, y: 100 },
+			// center : { x: 10, y: 310 },
+            center : randomStart,
             width:20,
             height:20,
 			rotation : 0,
@@ -397,16 +405,19 @@ towerDefense.model = (function (components, graphics, input) {
 			orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 20/1000,			// pixels per millisecond
 			rotateRate : 3.141590 / 2 / 1000	
-        });
+        }, graphics);
         creeps.push(person);
     }
     
     function createNaziCreep(){
-        nazi = AnimatedMoveModel({
+        var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
+        
+        nazi = components.AnimatedMoveModel({
             spriteSheet : 'images/naziSprite.png',
             spriteCount : 7,
             spriteTime : [100, 75, 75, 100, 75, 75,100],	// milliseconds per sprite animation frame
-			center : { x: 64, y: 64 },
+			// center : { x: 10, y: 290 },
+            center : randomStart,
             width: 30,
             height:30,
             percent_of_size: 20/150,
@@ -414,112 +425,33 @@ towerDefense.model = (function (components, graphics, input) {
 			orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 30/1000,			// pixels per millisecond
 			rotateRate : 3.141590 / 2 / 1000	
-        });
+        }, graphics);
         creeps.push(nazi);
     }
     
     function createDragonCreep() {
-        dragon = AnimatedMoveModel( {
+        
+        var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
+        
+        dragon = components.AnimatedMoveModel( {
 			spriteSheet : 'images/dragonSprite.png',
 			spriteCount : 4,
 			spriteTime : [200,150, 150, 150],	// milliseconds per sprite animation frame
-			center : { x: -100, y: 300 },
+			// center : { x: 10, y: 330 },
+            center : randomStart,
 			rotation : 0,
             width : 150,
             height: 150,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 50 / 1000,			// pixels per millisecond
+			moveRate : 40 / 1000,			// pixels per millisecond
 			rotateRate : 0	// Radians per millisecond
-		});
+		}, graphics);
         creeps.push(dragon);
         
     }
-    
-    function AnimatedModel(spec) {
-		var that = {},
-			sprite = graphics.drawCreep(spec);	// We contain a SpriteSheet, not inherited from, big difference
-			 console.log("Model: ",sprite.width);
-		that.update = function(elapsedTime) {
-			sprite.update(elapsedTime);
-		};
-		
-		that.render = function() {
-			sprite.draw();
-		};
-		
-		that.rotateRight = function(elapsedTime) {
-			spec.rotation += spec.rotateRate * (elapsedTime);
-		};
-		
-		that.rotateLeft = function(elapsedTime) {
-			spec.rotation -= spec.rotateRate * (elapsedTime);
-		};
-		that.moveForward = function(elapsedTime) {
-			var vectorX = Math.cos(spec.rotation + spec.orientation),
-				vectorY = Math.sin(spec.rotation + spec.orientation);
 
-			spec.center.x += (vectorX * spec.moveRate * elapsedTime);
-			spec.center.y += (vectorY * spec.moveRate * elapsedTime);
-		};
-        that.moveBackward = function(elapsedTime) {
-			var vectorX = Math.cos(spec.rotation + spec.orientation),
-				vectorY = Math.sin(spec.rotation + spec.orientation);
-                
-			spec.center.x -= (vectorX * spec.moveRate * elapsedTime);
-			spec.center.y -= (vectorY * spec.moveRate * elapsedTime);
-		};
-		
-		return that;
-	}
-    
-    function AnimatedMoveModel(spec) {
-		var that = AnimatedModel(spec),	// Inherit from AnimatedModel
-			base = {
-				moveForward : that.moveForward,
-				moveBackward : that.moveBackward,
-				rotateRight : that.rotateRight,
-				rotateLeft : that.rotateLeft,
-				update : that.update
-			},
-			didMoveForward = false,
-			didMoveBackward = false;
-
-		that.update = function(elapsedTime) {
-			if (didMoveForward === true) {
-				base.update(elapsedTime, true);
-			} else if (didMoveBackward === true) {
-				base.update(elapsedTime, false);
-			}
-			
-			didMoveForward = false;
-			didMoveBackward = false;
-		};
-		
-		that.moveForward = function(elapsedTime) {
-			base.moveForward(elapsedTime);
-			didMoveForward = true;
-		};
-		
-		that.moveBackward = function(elapsedTime) {
-			base.moveBackward(elapsedTime);
-			didMoveBackward = true;
-		};
-		
-		that.rotateRight = function(elapsedTime) {
-			base.rotateRight(elapsedTime);
-			didMoveForward = true;
-		};
-		
-		that.rotateLeft = function(elapsedTime) {
-			base.rotateLeft(elapsedTime);
-			didMoveForward = true;
-		};
-		
-		return that;
-	}
     
     function updatePlaying(elapsedTime) {
-        // createDragonCreep();
         if( count < 1 && count <=2) {
             // createCreep();
             createPersonCreep();
@@ -538,7 +470,7 @@ towerDefense.model = (function (components, graphics, input) {
         // Update each creep
         for(var i = 0; i < creeps.length; i++) {
             // internalUpdate = createPersonCreep;
-            creeps[i].moveForward(elapsedTime);
+            // creeps[i].moveForward(elapsedTime);
             creeps[i].update(elapsedTime, gameGrid); // need to create update fuction to update creep movement, life, sprite postion
 
         }
@@ -600,8 +532,8 @@ towerDefense.model = (function (components, graphics, input) {
        createLowLevelTower3 : createLowLevelTower3,
        createLowLevelTower4 : createLowLevelTower4,
        createDragonCreep : createDragonCreep,
-       AnimatedModel : AnimatedModel,
-       AnimatedMoveModel : AnimatedMoveModel,
+    //    AnimatedModel : AnimatedModel,
+    //    AnimatedMoveModel : AnimatedMoveModel,
        processInput : processInput,
        update : update,
        render : render
