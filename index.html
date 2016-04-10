@@ -33,22 +33,37 @@
         <!-- The screen where the game is played -->
         <div id="gameScreen" class="screen">
             <div id="canvasCenter">
+                
                 <canvas id="myCanvas" width="800" height="600"></canvas>
+                
+                
                 <div class="right">
+                    <div id="money">
+                        <p id="moneyLabel">Money = $</p>
+                    </div>
+                    
                     <div id="tower1">
-                        <div class="button" id="createTower1" onclick="towerDefense.model.createLowLevelTower1()"><p class="name_button">gun</p></div>
+                        <div class="button" id="createTower1" onclick="towerDefense.model.createLowLevelTower1()">
+                            <p class="name_button">gun</p>
+                        </div>
                         
                     </div>
                     <div id="tower2">
-                        <div class="button" id="createTower2" onclick="towerDefense.model.createLowLevelTower2()"><p class="name_button">cannon</p></div>
+                        <div class="button" id="createTower2" onclick="towerDefense.model.createLowLevelTower2()">
+                            <p class="name_button">cannon</p>
+                        </div>
                         
                     </div>
                     <div id="tower3">
-                        <div class="button" id="createTower3" onclick="towerDefense.model.createLowLevelTower3()"><p class="name_button">tower</p></div>
+                        <div class="button" id="createTower3" onclick="towerDefense.model.createLowLevelTower3()">
+                            <p class="name_button">tower</p>
+                        </div>
                         
                     </div>
                     <div id="tower4">
-                        <div class="button" id="createTower4" onclick="towerDefense.model.createLowLevelTower4()"><p class="name_button">missile</p></div>
+                        <div class="button" id="createTower4" onclick="towerDefense.model.createLowLevelTower4()">
+                            <p class="name_button">missile</p>
+                        </div>
                         
                     </div>
                 </div>

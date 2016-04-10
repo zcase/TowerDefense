@@ -231,18 +231,43 @@ towerDefense.components = (function() {
           spec.center = center;
       };
       
-      that.strength = 5;
+      that.strength = spec.strength;
       that.placed = false;
       that.x = spec.x;
       that.y = spec.y;
       that.width = spec.width;
       that.height = spec.height;
-      that.attackDistance = that.width * 2;
+      that.attackDistance = spec.attackDistance;
       that.isSelected = true;
       that.rangeColor = 'blue';
       that.inScreen = false;
       that.positionColor = 'green';
+      that.cost = spec.cost;
+      that.level = spec.level;
+      that.inCanvas = spec.inCanvas;
+      that.blocking = true;
       
+      that.update = function(elapsedTime, gameGridObj, creeps) {
+          var blocking;
+          
+          var xPos = Math.floor(that.x);
+          var yPos = Math.floor(that.y);
+          
+          var tempGridPosition = {x : xPos, y : yPos};
+         
+         if(that.inCanvas === true && xPos >=0 && yPos >= 0 && xPos <= gameGridObj.width && yPos <= gameGridObj.height) { 
+            for(var i = 0; i < creeps.length; i++) {
+                blocking = creeps[i].checkBlockingPath(gameGridObj, tempGridPosition);
+            }
+                
+            if(blocking === false) {
+                // that.positionColor = 'red';
+                that.blocking = true;
+            } else {
+                that.blocking = false;
+            }
+         }
+      }
   
       that.render = function(graphics) {
           if(ready) {
@@ -361,6 +386,21 @@ towerDefense.components = (function() {
     
         return neighbors;
       };
+      
+      that.checkBlockingPath = function(gameGridObj, towerPosition) {
+          var xGrid = Math.floor(spec.center.x/ 20);
+         
+         var yGrid = Math.floor(spec.center.y / 20); 
+         
+         var tempGameObj = reset(gameGridObj);
+         
+         var isTakenInitial = tempGameObj.layout[towerPosition.x][towerPosition.y].taken
+         
+         tempGameObj.layout[towerPosition.x][towerPosition.y].taken = true;
+         var checkBlock = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
+         tempGameObj.layout[towerPosition.x][towerPosition.y].taken = isTakenInitial;
+         return checkBlock;
+      }
             
       that.update = function(elapsedTime, gameGridObj) {
           
@@ -372,9 +412,9 @@ towerDefense.components = (function() {
 
          var moveStack = [];
          
-         console.log("CREEP X: " + xGrid);
-         console.log("CREEP Y: " + yGrid);
-         console.log("\n");
+        //  console.log("CREEP X: " + xGrid);
+        //  console.log("CREEP Y: " + yGrid);
+        //  console.log("\n");
          
    
          if(that.reachedGoal !== true) {
@@ -385,22 +425,22 @@ towerDefense.components = (function() {
             
             if(moveStack !== false){
                 var nextMove = moveStack.pop();
-                if(nextMove === 'North') {
-                    that.moveUp(elapsedTime);
-                    // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
-                } else if(nextMove === 'East') {
-                    that.moveRight(elapsedTime);
-                    // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
-                } else if(nextMove === 'South') {
-                    that.moveDown(elapsedTime);
-                    // that.moveTo({ x: ((xGrid)*20), y : ((yGrid+1)*20)});
-                } else if(nextMove === 'West') {
-                    that.moveLeft(elapsedTime);
-                    // that.moveTo({ x: ((xGrid-1)*20), y : ((yGrid)*20)});
-                } 
+                // if(nextMove === 'North') {
+                //     that.moveUp(elapsedTime);
+                //     // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
+                // } else if(nextMove === 'East') {
+                //     that.moveRight(elapsedTime);
+                //     // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
+                // } else if(nextMove === 'South') {
+                //     that.moveDown(elapsedTime);
+                //     // that.moveTo({ x: ((xGrid)*20), y : ((yGrid+1)*20)});
+                // } else if(nextMove === 'West') {
+                //     that.moveLeft(elapsedTime);
+                //     // that.moveTo({ x: ((xGrid-1)*20), y : ((yGrid)*20)});
+                // } 
             }
          }
-            if(moveStack.length === 0 && xGrid < 41) {
+            if(moveStack.length === 0 && xGrid < 41 && moveStack !==false) {
                 that.reachedGoal = true;
                 that.moveRight(elapsedTime);
             }
@@ -479,6 +519,10 @@ towerDefense.components = (function() {
             didRotateRight = false,
 			didMoveForward = false,
 			didMoveBackward = false;
+            
+        that.health = 100;
+        that.armor = spec.armor;
+        
 
 		that.update = function(elapsedTime, gameGridObj) {
             
@@ -490,9 +534,9 @@ towerDefense.components = (function() {
 
             var moveStack = [];
             
-            console.log("CREEP X: " + xGrid);
-            console.log("CREEP Y: " + yGrid);
-            console.log("\n");
+            // console.log("CREEP X: " + xGrid);
+            // console.log("CREEP Y: " + yGrid);
+            // console.log("\n");
    
             if(that.reachedGoal !== true) {
                 that.movementStack = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
@@ -599,5 +643,6 @@ towerDefense.components = (function() {
         Creep : Creep,
         AnimatedMoveModel : AnimatedMoveModel,
         AnimatedModel : AnimatedModel,
+        reset : reset,
     }
 }());
