@@ -434,6 +434,22 @@ towerDefense.model = (function (components, graphics, input) {
         creeps.push(dragon);
         
     }
+    function createBossCreep(){
+        boss = AnimatedMoveModel({
+            spriteSheet : 'images/bossSprite.png',
+            spriteCount : 8,
+            spriteTime : [200, 300, 100, 200, 300,200,300,200],	// milliseconds per sprite animation frame
+			center : { x: 400, y: 400 },
+            width: 30,
+            height:30,
+            percent_of_size: 20/150,
+			rotation : 0,
+			orientation : 0,		// Sprite orientation with respect to "forward"
+			moveRate : 28/1000,			// pixels per millisecond
+			rotateRate : 3.141590 / 2 / 1000	
+        });
+        creeps.push(boss);
+    }
     
     function AnimatedModel(spec) {
 		var that = {},
@@ -525,6 +541,7 @@ towerDefense.model = (function (components, graphics, input) {
             createPersonCreep();
             createDragonCreep();
             createNaziCreep();
+            createBossCreep();
             
             count++;
         }
