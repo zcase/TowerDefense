@@ -442,9 +442,9 @@ towerDefense.components = (function() {
 
          var moveStack = [];
          
-         console.log("CREEP X: " + xGrid);
-         console.log("CREEP Y: " + yGrid);
-         console.log("\n");
+        //  console.log("CREEP X: " + xGrid);
+        //  console.log("CREEP Y: " + yGrid);
+        //  console.log("\n");
          
    
          if(that.reachedGoal !== true) {
@@ -647,15 +647,16 @@ towerDefense.components = (function() {
                         // that.rotateRight(elapsedTime);
                         // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
                     } else if(nextMove === 'East') {
-                        if(didRotateLeft === true) {
-                            that.rotateRight(elapsedTime);
-                            didRotateLeft = false;
+                        // if(didRotateLeft === true) {
+                        //     that.rotateRight(elapsedTime);
+                        //     didRotateLeft = false;
             
                             
-                        } else if (didRotateRight === true) {
-                            that.rotateLeft(elapsedTime);
-                            didRotateRight = false;
-                        }
+                        // } else if (didRotateRight === true) {
+                        //     that.rotateLeft(elapsedTime);
+                        //     didRotateRight = false;
+                        // }
+                        
                         that.moveForward(elapsedTime);
                         // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
                     } else if(nextMove === 'South') {
@@ -667,13 +668,14 @@ towerDefense.components = (function() {
                         // that.rotateLeft(elapsedTime);
                         // that.moveTo({ x: ((xGrid)*20), y : ((yGrid+1)*20)});
                     } else if(nextMove === 'West') {
-                        if(didRotateLeft === true) {
-                            that.rotateRight(elapsedTime);
-                            didRotateLeft = false;
-                        } else if (didRotateRight === true) {
-                            that.rotateLeft(elapsedTime);
-                            didRotateRight = false;
-                        }
+                        // if(didRotateLeft === true) {
+                        //     that.rotateRight(elapsedTime);
+                        //     didRotateLeft = false;
+                        // } else if (didRotateRight === true) {
+                        //     that.rotateLeft(elapsedTime);
+                        //     didRotateRight = false;
+                        // }
+                        
                         that.moveBackward(elapsedTime);
                         // that.moveTo({ x: ((xGrid-1)*20), y : ((yGrid)*20)});
                     } 
