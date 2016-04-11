@@ -117,8 +117,9 @@ div.right{
     height: auto;
 }
 p.name_button{
-    margin: 0 0 0 75px;
+    /*margin: 0 0 0 75px;*/
     font-family:"Lucida Console", Monaco, monospace;
+    font-size: 30px;
 }
 #createTower1{
     text-align: left;
@@ -126,8 +127,8 @@ p.name_button{
     background-color:whitesmoke;
     background-size: 100%;
     background-repeat: no-repeat;
-    width: 50px;
-    height: 50px;
+    width: 20px;
+    height: 20px;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -141,8 +142,8 @@ div.button:hover{
     background-color:whitesmoke;
     background-size: 100%;
     background-repeat: no-repeat;
-    width: 50px;
-    height: 50px;
+    width: 20px;
+    height: 20px;
     padding: 20px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -152,8 +153,8 @@ div.button:hover{
     background-color:whitesmoke;
     background-size: 100%;
     background-repeat: no-repeat;
-    width: 50px;
-    height: 50px;
+    width: 20px;
+    height: 20px;
     padding: 20px;
     margin-bottom:  20px;
     border-radius: 5px;
@@ -163,8 +164,8 @@ div.button:hover{
     background-color:whitesmoke;
     background-size: 100%;
     background-repeat: no-repeat;
-    width: 50px;
-    height: 50px;
+    width: 20px;
+    height: 20px;
     padding: 20px;
     margin-bottom:  20px;
     border-radius: 5px;
@@ -179,4 +180,20 @@ div.button:hover{
 }
 #myCanvas {
     background-image: url(../images/groundb.jpg);
+}
+
+#money {
+    font-size: 24;
+    color: green;
+}
+
+#upgrade {
+    padding-top: 10px;
+}
+#upgradeButton {
+    font-size: 26px;
+    padding: 15px 32px;
+    background-color: green;
+    color: white;
+    visibility: hidden;
 }

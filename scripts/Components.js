@@ -3,6 +3,130 @@ towerDefense.components = (function() {
     var FRONTIER = 1;
     var VISITED = 2;
     
+    function reverse(a) {
+        var temp = [];
+        var count = 0;
+        for(var i = a.length-1; i > -1; i--) {
+            temp[count] = a[i];
+            count++;
+        }
+        
+        return temp;
+    }
+    
+    function reset(a) {
+        for(var i = 0; i < a.width; i++) {
+            for(var j = 0; j < a.height; j++ ) {
+                a.layout[i][j].solvedState = FRONTIER;
+                if(i === 39 && j === 15) {
+                    a.layout[i][j].end = true;
+                    a.layout[i][j].solvedState = "Finished";
+                }
+            }
+        }
+        
+        return a;
+    }
+    
+    function solveGrid(startlocation, gameObj){
+          var distFromTop = startlocation.y;
+          var distFromLeft = startlocation.x;
+          
+          var position = {
+              distTop : distFromTop,
+              distLeft : distFromLeft,
+              path : [],
+              status : 'Start'
+          };
+          
+          var queue = [position];
+          
+          while (queue.length > 0) {
+              var currentLocation = queue.shift();
+              
+              var newLocation = exploreDirection(currentLocation, 'North', gameObj);
+              if(newLocation.status === 'Goal') {
+                  return newLocation.path;
+              }else if (newLocation.status === 'Valid') {
+                  queue.push(newLocation);
+                //   return queue.push(that.solveGrid({y : newLocation.distTop, x : newLocation.distLeft}, gameGridObj));
+              }
+              
+              var newLocation = exploreDirection(currentLocation, 'East', gameObj);
+              if(newLocation.status === 'Goal') {
+                  return newLocation.path;
+              }else if (newLocation.status === 'Valid') {
+                  queue.push(newLocation);
+              }
+              
+              var newLocation = exploreDirection(currentLocation, 'South', gameObj);
+              if(newLocation.status === 'Goal') {
+                  return newLocation.path;
+              }else if (newLocation.status === 'Valid') {
+                  queue.push(newLocation);
+              }
+              
+              var newLocation = exploreDirection(currentLocation, 'West', gameObj);
+              if(newLocation.status === 'Goal') {
+                  return newLocation.path;
+              }else if (newLocation.status === 'Valid') {
+                  queue.push(newLocation);
+              }
+          }
+          
+          return false;
+    }
+    
+    function locationStatus(location, gameObj) {
+          var gridSize = gameObj.layout.length;
+          var diffFromTop = location.distTop;
+          var diffFromLeft = location.distLeft;
+          
+          if(location.distLeft < 0 || location.distLeft >= gridSize || location.distTop < 0 || location.distTop >= gameObj.height ) {
+              return 'Invalid";'
+          } else if(gameObj.layout[diffFromLeft][diffFromTop].end === true) {
+              return 'Goal';
+          }else if(gameObj.layout[diffFromLeft][diffFromTop].taken === true || gameObj.layout[diffFromLeft][diffFromTop].solvedState !== FRONTIER) {
+                return 'Blocked';              
+          }else {
+              return 'Valid';
+          }
+      };
+      
+      function exploreDirection(currentLocation, direction, gameObj) {
+          
+          var newPath = currentLocation.path.slice();
+          newPath.push(direction);
+          
+          var diffFromTop = currentLocation.distTop;
+          var diffFromLeft = currentLocation.distLeft;
+          
+          if(direction === 'North') {
+              diffFromTop -= 1;
+          }else if(direction === 'East') {
+              diffFromLeft +=1;
+          }else if(direction === 'South') {
+              diffFromTop += 1;
+          }else if(direction === 'West') {
+              diffFromLeft -= 1;
+          }
+          
+          var newLocation = {
+              distTop : diffFromTop,
+              distLeft : diffFromLeft,
+              path : newPath,
+              status : '?'
+          }
+          
+          newLocation.status = locationStatus(newLocation, gameObj);
+          
+          if(newLocation.status === 'Valid') {
+              gameObj.layout[newLocation.distLeft][newLocation.distTop].solvedState = 'Visited';
+          }
+          
+          return newLocation;
+      };
+          
     
     function gridCell(row, col) {
         var that = {
@@ -67,6 +191,8 @@ towerDefense.components = (function() {
         var that = {},
             ready = false,
             image = new Image();
+            image2 = new Image();
+            image3 = new Image();
             
             
       image.onload = function () {
@@ -74,6 +200,8 @@ towerDefense.components = (function() {
       };
       
       image.src = spec.image;
+      image2.src = spec.image2;
+      image3.src = spec.image3;
       
       that.rotateRight = function(elapsedTime) {
           spec.rotation += spec.rotateRate * (elapsedTime / 1000);
@@ -107,22 +235,53 @@ towerDefense.components = (function() {
           spec.center = center;
       };
       
-      that.strength = 5;
+      that.image = image,
+      that.image2 = image2,
+      that.image3 = image3,
+      that.strength = spec.strength;
       that.placed = false;
       that.x = spec.x;
       that.y = spec.y;
       that.width = spec.width;
       that.height = spec.height;
-      that.attackDistance = that.width * 2;
+      that.attackDistance = spec.attackDistance;
       that.isSelected = true;
       that.rangeColor = 'blue';
       that.inScreen = false;
       that.positionColor = 'green';
+      that.cost = spec.cost;
+      that.level = spec.level;
+      that.inCanvas = spec.inCanvas;
+      that.blocking = false;
+      that.creepDone = false;
+      that.upgradeCost = spec.upgradeCost;
+      
+      that.update = function(elapsedTime, gameGridObj, creeps) {
+          var blocking;
+          
+          var xPos = Math.floor(that.x);
+          var yPos = Math.floor(that.y);
+          
+          var tempGridPosition = {x : xPos, y : yPos};
+         
+         if(that.inCanvas === true && xPos >=0 && yPos >= 0 && xPos <= gameGridObj.width && yPos <= gameGridObj.height) { 
+            for(var i = 0; i < creeps.length; i++) {
+                blocking = creeps[i].checkBlockingPath(gameGridObj, tempGridPosition);
+            }
+                
+            if(blocking === false && creeps.length > 0) {
+                // that.positionColor = 'red';
+                that.blocking = true;
+            } else {
+                that.blocking = false;
+            }
+         }
+      }
   
       that.render = function(graphics) {
           if(ready) {
               graphics.drawTower({
-                  image : image,
+                  image : that.image,
                   x: spec.center.x,
                   y: spec.center.y,
                   width: spec.width,
@@ -143,7 +302,20 @@ towerDefense.components = (function() {
     };
 
     //************************************************************
-    //                    Creep Component Area
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //                  CREEP  Area
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    //         
     //************************************************************
     function Creep(spec) {
         var that = {},
@@ -166,18 +338,30 @@ towerDefense.components = (function() {
       
       that.moveLeft = function(elapsedTime) {
           spec.center.x -= spec.moveRate * (elapsedTime / 1000);
+        //   spec.center.x -= spec.moveRate;
+        that.x = spec.center.x/20;
+        that.y = spec.center.y/20;
       };
       
       that.moveRight = function(elapsedTime) {
-          spec.center.x += spec.moveRate * (elapsedTime / 1000);
+        spec.center.x += spec.moveRate * (elapsedTime / 1000);
+        //   spec.center.x += spec.moveRate;
+        that.x = spec.center.x/20;
+        that.y = spec.center.y/20;
       };
       
       that.moveUp = function(elapsedTime) {
-          spec.center.y -= spec.moveRate * (elapsedTime / 1000);
+          spec.center.y -= Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
+        // spec.center.y -= spec.moveRate;
+        that.x = spec.center.x/20;
+        that.y = spec.center.y/20;
       };
       
       that.moveDown = function(elapsedTime) {
-          spec.center.x += spec.moveRate * (elapsedTime / 1000);
+          spec.center.y += Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
+        //   spec.center.y += spec.moveRate;
+        that.x = spec.center.x/20;
+        that.y = spec.center.y/20;
       };
       
       that.moveTo = function(center) {
@@ -198,15 +382,11 @@ towerDefense.components = (function() {
       that.y = spec.center.y;
       that.width = spec.width;
       that.height = spec.height;
-      that.attackDistance = that.width * 2;
-      that.isSelected = true;
-      that.rangeColor = 'blue';
-      that.inScreen = false;
-      that.positionColor = 'green';
+      that.reachedGoal = false;
   
       that.render = function(graphics) {
           if(ready) {
-              graphics.drawCreep({
+              graphics.drawCreepBasic({
                   image : image,
                   x: spec.center.x,
                   y: spec.center.y,
@@ -237,143 +417,326 @@ towerDefense.components = (function() {
         return neighbors;
       };
       
-      that.exploreDirection = function (currentLocation, direction, gameGridObj) {
-          
-          var newPath = currentLocation.path.slice();
-          newPath.push(direction);
-          
-          var diffFromTop = currentLocation.distTop;
-          var diffFromLeft = currentLocation.distLeft;
-          
-          if(direction === 'North') {
-              diffFromTop -= 1;
-          }else if(direction === 'East') {
-              diffFromLeft +=1;
-          }else if(direction === 'South') {
-              diffFromTop += 1;
-          }else if(direction === 'West') {
-              diffFromLeft -= 1;
-          }
-          
-          var newLocation = {
-              distTop : diffFromTop,
-              distLeft : diffFromLeft,
-              path : newPath,
-              status : '?'
-          }
-          
-          newLocation.status = that.locationStatus(newLocation, gameGridObj);
-          
-          if(newLocation.status === 'Valid') {
-              gameGridObj.layout[newLocation.distLeft][newLocation.distTop].solvedState = 'Visited';
-          }
-          
-          return newLocation;
-      };
-      
-      // location = {y or col, x or row}
-      that.solveGrid = function(startlocation, gameGridObj){
-          var distFromTop = startlocation.y;
-          var distFromLeft = startlocation.x;
-          
-          var position = {
-              distTop : distFromTop,
-              distLeft : distFromLeft,
-              path : [],
-              status : 'Start'
-          };
-          
-          var queue = [position];
-          
-          while (queue.length > 0) {
-              var currentLocation = queue.shift();
-              
-              var newLocation = that.exploreDirection(currentLocation, 'North', gameGridObj);
-              if(newLocation.status === 'Goal') {
-                  return newLocation.path;
-              }else if (newLocation.status === 'Valid') {
-                  queue.push(newLocation);
-                //   return queue.push(that.solveGrid({y : newLocation.distTop, x : newLocation.distLeft}, gameGridObj));
-              }
-              
-              var newLocation = that.exploreDirection(currentLocation, 'East', gameGridObj);
-              if(newLocation.status === 'Goal') {
-                  return newLocation.path;
-              }else if (newLocation.status === 'Valid') {
-                  queue.push(newLocation);
-              }
-              
-              var newLocation = that.exploreDirection(currentLocation, 'South', gameGridObj);
-              if(newLocation.status === 'Goal') {
-                  return newLocation.path;
-              }else if (newLocation.status === 'Valid') {
-                  queue.push(newLocation);
-              }
-              
-              var newLocation = that.exploreDirection(currentLocation, 'West', gameGridObj);
-              if(newLocation.status === 'Goal') {
-                  return newLocation.path;
-              }else if (newLocation.status === 'Valid') {
-                  queue.push(newLocation);
-              }
-          }
-          
-          return false;
-          
-      }; // End of Solve Grid
-      
-      that.locationStatus = function(location, gameGridObj) {
-          var gridSize = gameGridObj.layout.length;
-          var diffFromTop = location.distTop;
-          var diffFromLeft = location.distLeft;
-          
-          if(location.distLeft < 0 || location.distLeft >= gridSize || location.distTop < 0 || location.distTop >= gameGridObj.height ) {
-              return 'Invalid";'
-          } else if(gameGridObj.layout[diffFromLeft][diffFromTop].end === true) {
-              return 'Goal';
-          }else if(gameGridObj.layout[diffFromLeft][diffFromTop].taken === true || gameGridObj.layout[diffFromLeft][diffFromTop].solvedState !== FRONTIER) {
-                return 'Blocked';              
-          }else {
-              return 'Valid';
-          }
-      };
+      that.checkBlockingPath = function(gameGridObj, towerPosition) {
+          var xGrid = Math.floor(spec.center.x/ 20);
+         
+         var yGrid = Math.floor(spec.center.y / 20); 
+         
+         var tempGameObj = reset(gameGridObj);
+         
+         var isTakenInitial = tempGameObj.layout[towerPosition.x][towerPosition.y].taken
+         
+         tempGameObj.layout[towerPosition.x][towerPosition.y].taken = true;
+         var checkBlock = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
+         tempGameObj.layout[towerPosition.x][towerPosition.y].taken = isTakenInitial;
+         return checkBlock;
+      }
             
       that.update = function(elapsedTime, gameGridObj) {
-        //   that.moveRight(elapsedTime);
-         var x = that.x;
-         var xGrid = Math.floor(that.x/ 20);
+          
+         var xGrid = Math.floor(spec.center.x/ 20);
          
-         var yGrid = Math.floor(that.y / 20); 
-         var y = that.y-20;
+         var yGrid = Math.floor(spec.center.y / 20); 
          
-        //  that.moveTo({x : x, y: y});
-        //  that.x = x + 1;
-        //  that.y = that.y + 1;     
-        
-         that.movementStack = that.solveGrid({x : xGrid, y : yGrid}, gameGridObj);
+         var tempGameObj = reset(gameGridObj);
+
+         var moveStack = [];
          
-         // TODO reverse array and then pop off end value
+        //  console.log("CREEP X: " + xGrid);
+        //  console.log("CREEP Y: " + yGrid);
+        //  console.log("\n");
          
-         var nextMove = that.movementStack[that.movementStack.length-1];
-         if(nextMove === 'North') {
-             spec.moveTo = { x: that.x, y : that.y-1};
-         } else if(nextMove === 'East') {
-             spec.moveTo = { x: that.x+1, y : that.y};
-         } else if(nextMove === 'South') {
-             spec.moveTo = { x: that.x, y : that.y+1};
-         } else if(nextMove === 'West') {
-             spec.moveTo = { x: that.x-1, y : that.y};
+   
+         if(that.reachedGoal !== true) {
+            that.movementStack = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
+         
+            // TODO reverse array and then pop off end value
+            moveStack = reverse(that.movementStack);
+            
+            if(moveStack !== false){
+                var nextMove = moveStack.pop();
+                if(nextMove === 'North') {
+                    that.moveUp(elapsedTime);
+                    // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
+                } else if(nextMove === 'East') {
+                    that.moveRight(elapsedTime);
+                    // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
+                } else if(nextMove === 'South') {
+                    that.moveDown(elapsedTime);
+                    // that.moveTo({ x: ((xGrid)*20), y : ((yGrid+1)*20)});
+                } else if(nextMove === 'West') {
+                    that.moveLeft(elapsedTime);
+                    // that.moveTo({ x: ((xGrid-1)*20), y : ((yGrid)*20)});
+                } 
+            }
          }
+            if(moveStack.length === 0 && xGrid < 41 && moveStack !==false) {
+                that.reachedGoal = true;
+                that.moveRight(elapsedTime);
+            }
+         
+        
       };
         
         
         return that;
-    }
+    };
+    
+    
+    //************************************************************
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //                  AnimatedModel Area
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    //         
+    //************************************************************
+    function AnimatedModel(spec, graphics) {
+		var that = {},
+			sprite = graphics.drawCreep(spec);	// We contain a SpriteSheet, not inherited from, big difference
+			 console.log("Model: ",sprite.width);
+             
+        that.x = spec.center.x;
+        that.y = spec.center.y;
+             
+		that.update = function(elapsedTime) {
+			sprite.update(elapsedTime);
+ 
+		};
+		
+		that.render = function() {
+			sprite.draw();
+		};
+		
+		that.rotateRight = function(elapsedTime) {
+			spec.rotation += spec.rotateRate * (elapsedTime);
+		};
+		
+		that.rotateLeft = function(elapsedTime) {
+			spec.rotation -= spec.rotateRate * (elapsedTime);
+		};
+		that.moveForward = function(elapsedTime) {
+			var vectorX = Math.cos(spec.rotation + spec.orientation),
+				vectorY = Math.sin(spec.rotation + spec.orientation);
+
+			spec.center.x += (vectorX * spec.moveRate * elapsedTime);
+			spec.center.y += (vectorY * spec.moveRate * elapsedTime);
+            
+            that.x = spec.center.x/20;
+            that.y = spec.center.y/20;
+		};
+        that.moveBackward = function(elapsedTime) {
+			var vectorX = Math.cos(spec.rotation + spec.orientation),
+				vectorY = Math.sin(spec.rotation + spec.orientation);
+                
+			spec.center.x -= (vectorX * spec.moveRate * elapsedTime);
+			spec.center.y -= (vectorY * spec.moveRate * elapsedTime);
+            
+            that.x = spec.center.x/20;
+            that.y = spec.center.y/20;
+		};
+        
+        that.moveUp = function(elapsedTime) {
+            spec.center.y -= Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
+            // that.rotateLeft(elapsedTime);
+            // that.moveForward(elapsedTime);
+            // that.rotateRight(elapsedTime);
+        };
+      
+        that.moveDown = function(elapsedTime) {
+            spec.center.y += Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
+            //   spec.center.y += spec.moveRate;
+        };
+        
+        that.checkBlockingPath = function(gameGridObj, towerPosition) {
+          var xGrid = Math.floor(spec.center.x/ 20);
+         
+         var yGrid = Math.floor(spec.center.y / 20); 
+         
+         var tempGameObj = reset(gameGridObj);
+         
+         var isTakenInitial = tempGameObj.layout[towerPosition.x][towerPosition.y].taken
+         
+         tempGameObj.layout[towerPosition.x][towerPosition.y].taken = true;
+         var checkBlock = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
+         tempGameObj.layout[towerPosition.x][towerPosition.y].taken = isTakenInitial;
+         return checkBlock;
+      };
+		
+		return that;
+	}
+    
+    
+    
+    
+    
+    
+    //************************************************************
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //                  Animated Move Model Area
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    //         
+    //************************************************************
+    function AnimatedMoveModel(spec, graphics) {
+		var that = AnimatedModel(spec, graphics),	// Inherit from AnimatedModel
+			base = {
+				moveForward : that.moveForward,
+				moveBackward : that.moveBackward,
+				rotateRight : that.rotateRight,
+				rotateLeft : that.rotateLeft,
+				update : that.update,
+                moveUp : that.moveUp,
+                moveDown : that.moveDown,
+                checkBlockingPath : that.checkBlockingPath,
+			},
+            didRotateLeft = false,
+            didRotateRight = false,
+			didMoveForward = false,
+			didMoveBackward = false;
+            
+        that.health = 100;
+        that.armor = spec.armor;
+        
+
+		that.update = function(elapsedTime, gameGridObj) {
+            
+            var xGrid = Math.floor(spec.center.x/ 20);
+         
+            var yGrid = Math.floor(spec.center.y / 20); 
+         
+            var tempGameObj = reset(gameGridObj);
+
+            var moveStack = [];
+            
+            // console.log("CREEP X: " + xGrid);
+            // console.log("CREEP Y: " + yGrid);
+            // console.log("\n");
+   
+            if(that.reachedGoal !== true) {
+                that.movementStack = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
+            
+                moveStack = reverse(that.movementStack);
+                
+                if(moveStack !== false){
+                    var nextMove = moveStack.pop();
+                    if(nextMove === 'North') {
+                        // that.rotateLeft(elapsedTime);
+                        // didRotateLeft = true;
+                        // that.moveForward(elapsedTime);
+                        that.moveUp(elapsedTime);
+                        // that.moveForward(elapsedTime);
+                        // that.rotateRight(elapsedTime);
+                        // that.rotateRight(elapsedTime);
+                        // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
+                    } else if(nextMove === 'East') {
+                        // if(didRotateLeft === true) {
+                        //     that.rotateRight(elapsedTime);
+                        //     didRotateLeft = false;
+            
+                            
+                        // } else if (didRotateRight === true) {
+                        //     that.rotateLeft(elapsedTime);
+                        //     didRotateRight = false;
+                        // }
+                        
+                        that.moveForward(elapsedTime);
+                        // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
+                    } else if(nextMove === 'South') {
+                        // that.rotateRight(elapsedTime);
+                        // didRotateRight = true;
+                        // that.moveForward(elapsedTime);
+                        that.moveDown(elapsedTime);
+                        // that.movseForward(elapsedTime);
+                        // that.rotateLeft(elapsedTime);
+                        // that.moveTo({ x: ((xGrid)*20), y : ((yGrid+1)*20)});
+                    } else if(nextMove === 'West') {
+                        // if(didRotateLeft === true) {
+                        //     that.rotateRight(elapsedTime);
+                        //     didRotateLeft = false;
+                        // } else if (didRotateRight === true) {
+                        //     that.rotateLeft(elapsedTime);
+                        //     didRotateRight = false;
+                        // }
+                        
+                        that.moveBackward(elapsedTime);
+                        // that.moveTo({ x: ((xGrid-1)*20), y : ((yGrid)*20)});
+                    } 
+                }
+            }
+            if(moveStack.length === 0 && xGrid <= 41) {
+                that.reachedGoal = true;
+                that.moveForward(elapsedTime);
+            }
+
+            
+			if (didMoveForward === true) {
+				base.update(elapsedTime, true);
+			} else if (didMoveBackward === true) {
+				base.update(elapsedTime, false);
+			}
+
+			
+            
+			didMoveForward = false;
+			didMoveBackward = false;
+		};
+		
+		that.moveForward = function(elapsedTime) {
+			base.moveForward(elapsedTime);
+			didMoveForward = true;
+		};
+		
+		that.moveBackward = function(elapsedTime) {
+			base.moveBackward(elapsedTime);
+			didMoveBackward = true;
+		};
+		
+		that.rotateRight = function(elapsedTime) {
+			base.rotateRight(elapsedTime);
+			didMoveForward = true;
+		};
+		
+		that.rotateLeft = function(elapsedTime) {
+			base.rotateLeft(elapsedTime);
+			didMoveForward = true;
+		};
+        
+        that.moveUp = function(elapsedTime) {
+            base.moveUp(elapsedTime);
+        };
+        
+        that.moveDown = function(elapsedTime) {
+            base.moveDown(elapsedTime);
+        }
+		
+		return that;
+	}
     
     
     return {
         Tower : Tower,
         Grid : Grid,
         Creep : Creep,
+        AnimatedMoveModel : AnimatedMoveModel,
+        AnimatedModel : AnimatedModel,
+        reset : reset,
     }
 }());
