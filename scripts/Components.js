@@ -191,6 +191,8 @@ towerDefense.components = (function() {
         var that = {},
             ready = false,
             image = new Image();
+            image2 = new Image();
+            image3 = new Image();
             
             
       image.onload = function () {
@@ -198,6 +200,8 @@ towerDefense.components = (function() {
       };
       
       image.src = spec.image;
+      image2.src = spec.image2;
+      image3.src = spec.image3;
       
       that.rotateRight = function(elapsedTime) {
           spec.rotation += spec.rotateRate * (elapsedTime / 1000);
@@ -231,6 +235,9 @@ towerDefense.components = (function() {
           spec.center = center;
       };
       
+      that.image = image,
+      that.image2 = image2,
+      that.image3 = image3,
       that.strength = spec.strength;
       that.placed = false;
       that.x = spec.x;
@@ -245,7 +252,9 @@ towerDefense.components = (function() {
       that.cost = spec.cost;
       that.level = spec.level;
       that.inCanvas = spec.inCanvas;
-      that.blocking = true;
+      that.blocking = false;
+      that.creepDone = false;
+      that.upgradeCost = spec.upgradeCost;
       
       that.update = function(elapsedTime, gameGridObj, creeps) {
           var blocking;
@@ -260,7 +269,7 @@ towerDefense.components = (function() {
                 blocking = creeps[i].checkBlockingPath(gameGridObj, tempGridPosition);
             }
                 
-            if(blocking === false) {
+            if(blocking === false && creeps.length > 0) {
                 // that.positionColor = 'red';
                 that.blocking = true;
             } else {
@@ -272,7 +281,7 @@ towerDefense.components = (function() {
       that.render = function(graphics) {
           if(ready) {
               graphics.drawTower({
-                  image : image,
+                  image : that.image,
                   x: spec.center.x,
                   y: spec.center.y,
                   width: spec.width,
@@ -293,7 +302,20 @@ towerDefense.components = (function() {
     };
 
     //************************************************************
-    //                    Creep Component Area
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //                  CREEP  Area
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    //         
     //************************************************************
     function Creep(spec) {
         var that = {},
@@ -317,21 +339,29 @@ towerDefense.components = (function() {
       that.moveLeft = function(elapsedTime) {
           spec.center.x -= spec.moveRate * (elapsedTime / 1000);
         //   spec.center.x -= spec.moveRate;
+        that.x = spec.center.x/20;
+        that.y = spec.center.y/20;
       };
       
       that.moveRight = function(elapsedTime) {
-          spec.center.x += spec.moveRate * (elapsedTime / 1000);
+        spec.center.x += spec.moveRate * (elapsedTime / 1000);
         //   spec.center.x += spec.moveRate;
+        that.x = spec.center.x/20;
+        that.y = spec.center.y/20;
       };
       
       that.moveUp = function(elapsedTime) {
           spec.center.y -= Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
         // spec.center.y -= spec.moveRate;
+        that.x = spec.center.x/20;
+        that.y = spec.center.y/20;
       };
       
       that.moveDown = function(elapsedTime) {
           spec.center.y += Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
         //   spec.center.y += spec.moveRate;
+        that.x = spec.center.x/20;
+        that.y = spec.center.y/20;
       };
       
       that.moveTo = function(center) {
@@ -412,9 +442,9 @@ towerDefense.components = (function() {
 
          var moveStack = [];
          
-        //  console.log("CREEP X: " + xGrid);
-        //  console.log("CREEP Y: " + yGrid);
-        //  console.log("\n");
+         console.log("CREEP X: " + xGrid);
+         console.log("CREEP Y: " + yGrid);
+         console.log("\n");
          
    
          if(that.reachedGoal !== true) {
@@ -425,19 +455,19 @@ towerDefense.components = (function() {
             
             if(moveStack !== false){
                 var nextMove = moveStack.pop();
-                // if(nextMove === 'North') {
-                //     that.moveUp(elapsedTime);
-                //     // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
-                // } else if(nextMove === 'East') {
-                //     that.moveRight(elapsedTime);
-                //     // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
-                // } else if(nextMove === 'South') {
-                //     that.moveDown(elapsedTime);
-                //     // that.moveTo({ x: ((xGrid)*20), y : ((yGrid+1)*20)});
-                // } else if(nextMove === 'West') {
-                //     that.moveLeft(elapsedTime);
-                //     // that.moveTo({ x: ((xGrid-1)*20), y : ((yGrid)*20)});
-                // } 
+                if(nextMove === 'North') {
+                    that.moveUp(elapsedTime);
+                    // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
+                } else if(nextMove === 'East') {
+                    that.moveRight(elapsedTime);
+                    // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
+                } else if(nextMove === 'South') {
+                    that.moveDown(elapsedTime);
+                    // that.moveTo({ x: ((xGrid)*20), y : ((yGrid+1)*20)});
+                } else if(nextMove === 'West') {
+                    that.moveLeft(elapsedTime);
+                    // that.moveTo({ x: ((xGrid-1)*20), y : ((yGrid)*20)});
+                } 
             }
          }
             if(moveStack.length === 0 && xGrid < 41 && moveStack !==false) {
@@ -453,10 +483,29 @@ towerDefense.components = (function() {
     };
     
     
+    //************************************************************
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //                  AnimatedModel Area
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    //         
+    //************************************************************
     function AnimatedModel(spec, graphics) {
 		var that = {},
 			sprite = graphics.drawCreep(spec);	// We contain a SpriteSheet, not inherited from, big difference
 			 console.log("Model: ",sprite.width);
+             
+        that.x = spec.center.x;
+        that.y = spec.center.y;
              
 		that.update = function(elapsedTime) {
 			sprite.update(elapsedTime);
@@ -480,6 +529,9 @@ towerDefense.components = (function() {
 
 			spec.center.x += (vectorX * spec.moveRate * elapsedTime);
 			spec.center.y += (vectorY * spec.moveRate * elapsedTime);
+            
+            that.x = spec.center.x/20;
+            that.y = spec.center.y/20;
 		};
         that.moveBackward = function(elapsedTime) {
 			var vectorX = Math.cos(spec.rotation + spec.orientation),
@@ -487,6 +539,9 @@ towerDefense.components = (function() {
                 
 			spec.center.x -= (vectorX * spec.moveRate * elapsedTime);
 			spec.center.y -= (vectorY * spec.moveRate * elapsedTime);
+            
+            that.x = spec.center.x/20;
+            that.y = spec.center.y/20;
 		};
         
         that.moveUp = function(elapsedTime) {
@@ -500,10 +555,46 @@ towerDefense.components = (function() {
             spec.center.y += Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
             //   spec.center.y += spec.moveRate;
         };
+        
+        that.checkBlockingPath = function(gameGridObj, towerPosition) {
+          var xGrid = Math.floor(spec.center.x/ 20);
+         
+         var yGrid = Math.floor(spec.center.y / 20); 
+         
+         var tempGameObj = reset(gameGridObj);
+         
+         var isTakenInitial = tempGameObj.layout[towerPosition.x][towerPosition.y].taken
+         
+         tempGameObj.layout[towerPosition.x][towerPosition.y].taken = true;
+         var checkBlock = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
+         tempGameObj.layout[towerPosition.x][towerPosition.y].taken = isTakenInitial;
+         return checkBlock;
+      };
 		
 		return that;
 	}
     
+    
+    
+    
+    
+    
+    //************************************************************
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //                  Animated Move Model Area
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    //         
+    //************************************************************
     function AnimatedMoveModel(spec, graphics) {
 		var that = AnimatedModel(spec, graphics),	// Inherit from AnimatedModel
 			base = {
@@ -514,6 +605,7 @@ towerDefense.components = (function() {
 				update : that.update,
                 moveUp : that.moveUp,
                 moveDown : that.moveDown,
+                checkBlockingPath : that.checkBlockingPath,
 			},
             didRotateLeft = false,
             didRotateRight = false,
@@ -587,7 +679,7 @@ towerDefense.components = (function() {
                     } 
                 }
             }
-            if(moveStack.length === 0 && xGrid < 41) {
+            if(moveStack.length === 0 && xGrid <= 41) {
                 that.reachedGoal = true;
                 that.moveForward(elapsedTime);
             }

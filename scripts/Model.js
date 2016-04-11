@@ -17,7 +17,33 @@ towerDefense.model = (function (components, graphics, input) {
         creepStartingPostitions = [{x : 0, y : 310}, {x: 0, y : 330}, {x: 0 , y: 270}];
     var count = 0;
 
-        
+    
+    function upgrade() {
+        for(var i = 0; i < towers.length; i++) {
+            if(towers[i].isSelected === true && (money - towers[i].upgradeCost) >=0) {
+                towers[i].level++;
+                var image;
+                if(towers[i].level === 2) {
+                    towers[i].image = towers[i].image2;
+                    towers[i].cost += 4;
+                    towers[i].strength += 3;
+                    towers[i].attackDistance += 20;
+                    towers[i].upgradeCost += 4;
+                    money -= towers[i].upgradeCost;
+                    
+                } else if(towers[i].level === 3) {
+                    towers[i].image = towers[i].image3;
+                    towers[i].cost += 5;
+                    towers[i].strength += 4;
+                    towers[i].attackDistance += 20;
+                    towers[i].upgradeCost += 5;
+                    money -= towers[i].upgradeCost;
+                    
+                }
+            }
+        }
+    }
+    
     function initializeGameGrid() {
         gameGrid = components.Grid(graphics.width(), graphics.height());
     } // End initializeGameGrid
@@ -34,6 +60,42 @@ towerDefense.model = (function (components, graphics, input) {
         internalUpdate = updatePlaying;
         internalRender = renderPlaying;
         
+        var GeneralMouse = input.Mouse();
+        GeneralMouse.registerCommand('mousedown', function(e, elapsedTime) {
+            var x =  (Math.floor(e.clientX) / 20) - 3; // This gives the x grid position
+            var y =  (Math.floor(e.clientY) / 20) - 3; // This gives the y grid position
+            var xPos = Math.floor(x);
+            var yPos = Math.floor(y);
+            
+            console.log("General X: " + xPos);
+            console.log("General Y: " + yPos);
+            
+            
+            for(var i = 0; i < towers.length; i++) {
+                // if(towers[i].x === xPos && towers[i].y === yPos) {
+                if(xPos >= towers[i].x -.5 && xPos <= towers[i].x + 0.5 && yPos >= towers[i].y - 0.5 && yPos <= towers[i].y + 0.5) {
+                    towers[i].isSelected = true;
+                    document.getElementById('upgradeButton').style.visibility = "visible";
+                } else {
+                    towers[i].isSelected = false;
+                    document.getElementById('upgradeButton').style.visibility = "hidden";
+                }
+            }
+            
+        });
+        
+        GeneralMouse.registerCommand('mousemove', function(e, elapsedTime) {
+            var x =  (Math.floor(e.clientX) / 20) - 3; // This gives the x grid position
+            var y =  (Math.floor(e.clientY) / 20) - 3; // This gives the y grid position
+            var xPos = Math.floor(x);
+            var yPos = Math.floor(y);
+            
+            console.log("General X: " + xPos);
+            console.log("General Y: " + yPos);
+        });
+        
+        mouseArray.push(GeneralMouse);
+        
     } // End initialize
     
     // Creates the gun tower
@@ -43,6 +105,8 @@ towerDefense.model = (function (components, graphics, input) {
 
             var createdTower = components.Tower({
                 image : 'images/gun1.png',
+                image2 : 'images/gun2.png',
+                image3 : 'images/gun3.png',
                 center : {x : 12000, y : 300},
                 width : 20,
                 height : 20,
@@ -55,6 +119,7 @@ towerDefense.model = (function (components, graphics, input) {
                 cost : 5,
                 strength : 5,
                 attackDistance : 20 * 2,
+                upgradeCost : 8,
             });
             
             money -= createdTower.cost;
@@ -82,7 +147,8 @@ towerDefense.model = (function (components, graphics, input) {
                         gameGrid.layout[xPos][yPos].taken = true;
                         createdTower.render(graphics);
                         createdMouse.deregisterCommand('mousedown');
-                        createdTower.isSelected = false;   
+                        createdTower.isSelected = false;
+                        document.getElementById('upgradeButton').style.visibility = "hidden";
                     }
                     
                 }
@@ -104,7 +170,7 @@ towerDefense.model = (function (components, graphics, input) {
                     console.log('\n');
                     
                     if(e.clientX >=0 && e.clientX <= 850 && e.clientY >= 0 && e.clientY <= 650) {
-                        createdTower.moveTo({x : xPos*20 + 10, y : yPos*20 + 10   });
+                        createdTower.moveTo({x : xPos*20 -10, y : yPos*20 + 10   });
                         createdTower.inCanvas = true;
                         console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
                         console.log("Blocking = "+ createdTower.blocking);
@@ -137,6 +203,8 @@ towerDefense.model = (function (components, graphics, input) {
         if(money - 8 >= 0) {
             var createdTower = components.Tower({
                 image : 'images/cannon1.png',
+                image2 : 'images/cannon2.png',
+                image3 : 'images/cannon3.png',
                 center : {x : 12000, y : 300},
                 width : 20,
                 height : 20,
@@ -149,6 +217,7 @@ towerDefense.model = (function (components, graphics, input) {
                 cost : 8,
                 strength : 20,
                 attackDistance : 20 * 3,
+                upgradeCost : 11,
             });
             
             money -= createdTower.cost;
@@ -177,7 +246,8 @@ towerDefense.model = (function (components, graphics, input) {
                         gameGrid.layout[xPos][yPos].taken = true;
                         createdTower.render(graphics);
                         createdMouse.deregisterCommand('mousedown');
-                        createdTower.isSelected = false;   
+                        createdTower.isSelected = false;
+                        document.getElementById('upgradeButton').style.visibility = "hidden";  
                     }
                     
                 }
@@ -199,7 +269,7 @@ towerDefense.model = (function (components, graphics, input) {
                     console.log('\n');
                     
                     if(e.clientX >=0 && e.clientX <= 850 && e.clientY >= 0 && e.clientY <= 650) {
-                        createdTower.moveTo({x : xPos*20 + 10, y : yPos*20 + 10   });
+                        createdTower.moveTo({x : xPos*20 -10, y : yPos*20 + 10   });
                         createdTower.inCanvas = true;
                         console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
                         console.log("Blocking = "+ createdTower.blocking);
@@ -213,7 +283,7 @@ towerDefense.model = (function (components, graphics, input) {
                     // createdTower.moveTo({x : e.clientX- 70, y : e.clientY - 50 });
                     // createdTower.moveTo({x : e.clientX, y : e.clientY });
 
-               
+                 
                     if((createdTower.inCanvas === true && gameGrid.layout[xPos][yPos].taken === true) ||(createdTower.inCanvas === true && createdTower.blocking === true)){
                         createdTower.positionColor = 'red'
                     } else {
@@ -231,6 +301,8 @@ towerDefense.model = (function (components, graphics, input) {
         if(money - 12 >= 0) {
             var createdTower = components.Tower({
                 image : 'images/tower1.png',
+                image2 : 'images/tower2.png',
+                image3 : 'images/tower3.png',
                 center : {x : 12000, y : 300},
                 width : 20,
                 height : 20,
@@ -244,6 +316,7 @@ towerDefense.model = (function (components, graphics, input) {
                 cost : 12,
                 strength : 10,
                 attackDistance : 20 * 4,
+                upgradeCost : 15,
                 
             });
             
@@ -273,7 +346,8 @@ towerDefense.model = (function (components, graphics, input) {
                         gameGrid.layout[xPos][yPos].taken = true;
                         createdTower.render(graphics);
                         createdMouse.deregisterCommand('mousedown');
-                        createdTower.isSelected = false;   
+                        createdTower.isSelected = false;
+                        document.getElementById('upgradeButton').style.visibility = "hidden";  
                     }
                     
                 }
@@ -295,7 +369,7 @@ towerDefense.model = (function (components, graphics, input) {
                     console.log('\n');
                     
                     if(e.clientX >=0 && e.clientX <= 850 && e.clientY >= 0 && e.clientY <= 650) {
-                        createdTower.moveTo({x : xPos*20 + 10, y : yPos*20 + 10   });
+                        createdTower.moveTo({x : xPos*20 -10, y : yPos*20 + 10   });
                         createdTower.inCanvas = true;
                         console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
                         console.log("Blocking = "+ createdTower.blocking);
@@ -309,7 +383,7 @@ towerDefense.model = (function (components, graphics, input) {
                     // createdTower.moveTo({x : e.clientX- 70, y : e.clientY - 50 });
                     // createdTower.moveTo({x : e.clientX, y : e.clientY });
 
-                
+                 
                     if((createdTower.inCanvas === true && gameGrid.layout[xPos][yPos].taken === true) ||(createdTower.inCanvas === true && createdTower.blocking === true)){
                         createdTower.positionColor = 'red'
                     } else {
@@ -327,6 +401,8 @@ towerDefense.model = (function (components, graphics, input) {
         if(money - 12 >= 0) {
             var createdTower = components.Tower({
                 image : 'images/missile1.png',
+                image2 : 'images/missile2.png',
+                image3 : 'images/missile3.png',
                 center : {x : 12000, y : 300},
                 width : 20,
                 height : 20,
@@ -340,6 +416,7 @@ towerDefense.model = (function (components, graphics, input) {
                 attackDistance : 20 * 5,
                 level : 1,
                 cost : 12,
+                upgradeCost : 15,
                 
             });
             
@@ -370,7 +447,8 @@ towerDefense.model = (function (components, graphics, input) {
                         gameGrid.layout[xPos][yPos].taken = true;
                         createdTower.render(graphics);
                         createdMouse.deregisterCommand('mousedown');
-                        createdTower.isSelected = false;   
+                        createdTower.isSelected = false;
+                        document.getElementById('upgradeButton').style.visibility = "hidden";   
                     }
                     
                 }
@@ -392,7 +470,7 @@ towerDefense.model = (function (components, graphics, input) {
                     console.log('\n');
                     
                     if(e.clientX >=0 && e.clientX <= 850 && e.clientY >= 0 && e.clientY <= 650) {
-                        createdTower.moveTo({x : xPos*20 + 10, y : yPos*20 + 10   });
+                        createdTower.moveTo({x : xPos*20 -10, y : yPos*20 + 10   });
                         createdTower.inCanvas = true;
                         console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
                         console.log("Blocking = "+ createdTower.blocking);
@@ -406,8 +484,7 @@ towerDefense.model = (function (components, graphics, input) {
                     // createdTower.moveTo({x : e.clientX- 70, y : e.clientY - 50 });
                     // createdTower.moveTo({x : e.clientX, y : e.clientY });
 
-                    
-
+                 
                     if((createdTower.inCanvas === true && gameGrid.layout[xPos][yPos].taken === true) ||(createdTower.inCanvas === true && createdTower.blocking === true)){
                         createdTower.positionColor = 'red'
                     } else {
@@ -430,8 +507,8 @@ towerDefense.model = (function (components, graphics, input) {
             width : 20,
             height : 20,
             rotation : 0,
-            moveRate : 20,
-            // moveRate : 100,
+            // moveRate : 20,
+            moveRate : 100,
             
         });
         
@@ -507,9 +584,9 @@ towerDefense.model = (function (components, graphics, input) {
     function updatePlaying(elapsedTime) {
         if( count < 1 && count <=2) {
             createCreep();
-            // createPersonCreep();
-            // createDragonCreep();
-            // createNaziCreep();
+            createPersonCreep();
+            createDragonCreep();
+            createNaziCreep();
             
             count++;
         }
@@ -525,7 +602,10 @@ towerDefense.model = (function (components, graphics, input) {
             // internalUpdate = createPersonCreep;
             // creeps[i].moveForward(elapsedTime);
             creeps[i].update(elapsedTime, gameGrid); // need to create update fuction to update creep movement, life, sprite postion
-
+            if(creeps[i].x >= 41) {
+                var index = creeps.indexOf(creeps[i]);
+                creeps.splice(index, 1);
+            }
         }
         
         //update munitions
@@ -591,7 +671,8 @@ towerDefense.model = (function (components, graphics, input) {
     //    AnimatedMoveModel : AnimatedMoveModel,
        processInput : processInput,
        update : update,
-       render : render
+       render : render,
+       upgrade : upgrade,
    }
     
 }(towerDefense.components, towerDefense.graphics, towerDefense.input));

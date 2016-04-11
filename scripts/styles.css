@@ -186,3 +186,14 @@ div.button:hover{
     font-size: 24;
     color: green;
 }
+
+#upgrade {
+    padding-top: 10px;
+}
+#upgradeButton {
+    font-size: 26px;
+    padding: 15px 32px;
+    background-color: green;
+    color: white;
+    visibility: hidden;
+}
