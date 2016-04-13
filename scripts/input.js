@@ -8,7 +8,11 @@ towerDefense.input = (function() {
             mouseMove : [],
             handlersDown : [],
             handlersUp : [],
-            handlersMove : [] 
+            handlersMove : [] ,
+            mouseEnter : [],
+            mouseLeave : [],
+            handlersEnter : [],
+            handlersLeave : [],
         };
         
         function mouseDown(e) {
@@ -21,6 +25,14 @@ towerDefense.input = (function() {
         
         function mouseMove(e) {
             that.mouseMove.push(e);
+        }
+        
+        function mouseEnter(e) {
+            that.mouseEnter.push(e);
+        }
+        
+        function mouseLeave(e) {
+            that.mouseLeave.push(e);
         }
         
         that.mouseDownEffects = function(mouseCapture, tower) {
@@ -63,9 +75,24 @@ towerDefense.input = (function() {
                 }
             }
             
+            for(event = 0; event < that.mouseEnter.length; event++) {
+                for(handler = 0; handler < that.handlersEnter.length; handler++) {
+                    that.handlersEnter[handler](that.mouseEnter[event], elapsedTime);
+                }
+            }
+            
+            for(event = 0; event < that.mouseLeave.length; event++) {
+                for(handler = 0; handler < that.handlersLeave.length; handler++) {
+                    that.handlersLeave[handler](that.mouseLeave[event], elapsedTime);
+                }
+            }
+            
+            
             that.mouseDown.length = 0;
             that.mouseUp.length = 0;
             that.mouseMove.length = 0;
+            that.mouseEnter.length = 0;
+            that.mouseLeave.length = 0;
         };
         
         that.registerCommand = function(type, handler) {
@@ -77,6 +104,12 @@ towerDefense.input = (function() {
             }
             else if(type === 'mousemove') {
                 that.handlersMove.push(handler);
+            }
+            else if(type === 'mouseenter') {
+                that.handlersEnter.push(handler);
+            }
+            else if(type === 'mouseleave') {
+                that.handlersLeave.push(handler);
             }
         };
         
@@ -92,6 +125,12 @@ towerDefense.input = (function() {
             else if(type === 'mousemove') {
                 myCanvas.removeEventListener('mousemove', mouseMove.unbind(that));
             }
+            else if(type === 'mouseenter') {
+                myCanvas.removeEventListener('mouseenter', mouseEnter.unbind(that));
+            }
+            else if(type === 'mouseleave') {
+                myCanvas.removeEventListener('mouseleave', mouseLeave.unbind(that));
+            }
         }
             
         var myCanvas = document.getElementById('myCanvas');
@@ -99,6 +138,8 @@ towerDefense.input = (function() {
         myCanvas.addEventListener('mousedown', mouseDown.bind(that));
         // myCanvas.addEventListener('mouseup', mouseUp.bind(that));
         myCanvas.addEventListener('mousemove', mouseMove.bind(that));
+        myCanvas.addEventListener('mouseenter', mouseEnter.bind(that));
+        myCanvas.addEventListener('mouseleave', mouseLeave.bind(that));
         
         
         return that;

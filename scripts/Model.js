@@ -15,9 +15,11 @@ towerDefense.model = (function (components, graphics, input) {
         towerCount = 0,
         startGameValue = false,
         money,
+        moveX = 0,
+        moveY,
+        aim = false,
         creepStartingPostitions = [{x : 0, y : 310}, {x: 0, y : 330}, {x: 0 , y: 270}];
     var count = 0;
-
     
     function upgrade() {
         for(var i = 0; i < towers.length; i++) {
@@ -99,6 +101,9 @@ towerDefense.model = (function (components, graphics, input) {
             var y =  (Math.floor(e.clientY) / 20) - 3; // This gives the y grid position
             var xPos = Math.floor(x);
             var yPos = Math.floor(y);
+            
+            moveX = e.clientX;
+            moveY = e.clientY;
             
             // console.log("General Moving X: " + xPos);
             // console.log("General Moving Y: " + yPos);
@@ -308,6 +313,7 @@ towerDefense.model = (function (components, graphics, input) {
     
     // Creates tower which is a mixed weapon
     function createLowLevelTower3() {
+        
         if(money - 12 >= 0) {
             var createdTower = components.Tower({
                 image : 'images/tower1.png',
@@ -418,7 +424,7 @@ towerDefense.model = (function (components, graphics, input) {
                 height : 20,
                 rotation : 0,
                 moveRate : 200,
-                rotateRate : 3.14159,
+                rotateRate : Math.PI,
                 isSelected : true,
                 towerNum : towerCount,
                 inCanvas : false,
@@ -427,6 +433,8 @@ towerDefense.model = (function (components, graphics, input) {
                 level : 1,
                 cost : 12,
                 upgradeCost : 15,
+                mx : moveX,
+                my : moveY,
                 
             });
             
@@ -468,7 +476,7 @@ towerDefense.model = (function (components, graphics, input) {
             });
             
             createdMouse.registerCommand('mousemove', function(e, elapsedTime) {
-            
+                
                 if(createdTower.isSelected) {
                     var x = (e.clientX / 20) - 3;
                     var y = (e.clientY / 20) - 3;
@@ -501,12 +509,36 @@ towerDefense.model = (function (components, graphics, input) {
                         createdTower.positionColor = 'green';
                     } 
                 }
+                else if (!aim){
+                    moveX = e.clientX;
+                    moveY = e.clientY;
+                    output.textContent = moveX;
+                }
+
+                console.log("moveX: " + e.clientX);
+               
             });
-                    
+            
+            createdMouse.registerCommand('mouseenter', function(e, elaspedtime){
+                if (!aim){
+                    aim = true;
+                    console.log("true");
+                    moveX = e.clientX;
+                    moveY = e.clientY;
+                    console.log("enter X: " + moveX);
+                }
+            });
+            
+            createdMouse.registerCommand('mouseleave', function(e, elaspedtime){
+                aim = false;
+                console.log('false');
+            });      
             mouseArray.push(createdMouse);
+            
+            
         }      
     } // End createLowLevelTower
-    
+
     function createCreep() {
         
         var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
@@ -590,7 +622,7 @@ towerDefense.model = (function (components, graphics, input) {
         creeps.push(dragon);
         
     }
-<<<<<<< HEAD
+
     function createBossCreep(){
         boss = AnimatedMoveModel({
             spriteSheet : 'images/bossSprite.png',
@@ -604,7 +636,7 @@ towerDefense.model = (function (components, graphics, input) {
 			orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 28/1000,			// pixels per millisecond
 			rotateRate : 3.141590 / 2 / 1000	
-        });
+        }, graphics);
         creeps.push(boss);
     }
     
@@ -630,8 +662,8 @@ towerDefense.model = (function (components, graphics, input) {
 		that.moveForward = function(elapsedTime) {
 			var vectorX = Math.cos(spec.rotation + spec.orientation),
 				vectorY = Math.sin(spec.rotation + spec.orientation);
-        }
-
+        };
+    }
     
     function updatePlaying(elapsedTime) {
         if( count < 1 && count <=2) {
@@ -646,7 +678,7 @@ towerDefense.model = (function (components, graphics, input) {
         
         // Update each tower
         for(var i = 0; i < towers.length; i++) {
-            towers[i].update(elapsedTime, gameGrid, creeps); // need to create up date function to change rotation of tower pic based on creeps
+            towers[i].update(elapsedTime, gameGrid, creeps, {px: moveX, py:moveY }); // need to create up date function to change rotation of tower pic based on creeps
         }
         
         // Update each creep
