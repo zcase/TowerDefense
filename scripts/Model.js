@@ -82,13 +82,24 @@ towerDefense.model = (function (components, graphics, input) {
             
             
             for(var i = 0; i < towers.length; i++) {
+                // var options = document.getElementById('options');
+                var upgradeButton = document.getElementById('upgradeButton');
+                var sell = document.getElementById('sellButton');
                 // if(towers[i].x === xPos && towers[i].y === yPos) {
-                if(xPos >= towers[i].x -.5 && xPos <= towers[i].x + 0.5 && yPos >= towers[i].y - 0.5 && yPos <= towers[i].y + 0.5) {
+                if(xPos >= (towers[i].x +1) -.9 && xPos <= (towers[i].x +1)  + 0.9 && yPos >= towers[i].y - 0.9 && yPos <= towers[i].y + 0.9) {
                     towers[i].isSelected = true;
-                    document.getElementById('upgradeButton').style.visibility = "visible";
+                    // upgrade.style.display = "block";
+                    // sell.style.display = "block";
+                    // options.style.visibility = 'visible';
+                    upgradeButton.style.visibility = 'visible';
+                    sell.style.visibility = 'visible';
                 } else {
                     towers[i].isSelected = false;
-                    document.getElementById('upgradeButton').style.visibility = "hidden";
+                    // upgrade.style.display = "none";
+                    // sell.style.display = "none";
+                    // options.style.visibility = 'hidden';
+                    upgradeButton.style.visibility = 'hidden';
+                    sell.style.visibility = 'hidden';
                 }
             }
             
@@ -97,7 +108,7 @@ towerDefense.model = (function (components, graphics, input) {
         GeneralMouse.registerCommand('mousemove', function(e, elapsedTime) {
             var x =  (Math.floor(e.clientX) / 20) - 3; // This gives the x grid position
             var y =  (Math.floor(e.clientY) / 20) - 3; // This gives the y grid position
-            var xPos = Math.floor(x);
+            var xPos = Math.floor(x)+1;
             var yPos = Math.floor(y);
             
             // console.log("General Moving X: " + xPos);
@@ -586,6 +597,7 @@ towerDefense.model = (function (components, graphics, input) {
 			moveRate : 40 / 1000,			// pixels per millisecond
 			rotateRate : 0,	// Radians per millisecond
             armor: 10,
+            flying : true,
 		}, graphics);
         creeps.push(dragon);
         
@@ -596,7 +608,7 @@ towerDefense.model = (function (components, graphics, input) {
         if( count < 1 && count <=2) {
             createCreep();
             // createPersonCreep();
-            // createDragonCreep();
+            createDragonCreep();
             // createNaziCreep();
             
             count++;

@@ -328,36 +328,36 @@ towerDefense.components = (function() {
       
       image.src = spec.image;
       
-      that.rotateRight = function(elapsedTime) {
+      that.rotateRight = function(elapsedTime, gameGridObj) {
           spec.rotation += spec.rotateRate * (elapsedTime / 1000);
       };
       
-      that.rotateLeft = function(elapsedTime) {
+      that.rotateLeft = function(elapsedTime, gameGridObj) {
           spec.rotation -= spec.rotateRate * (elapsedTime / 1000);
       };
       
-      that.moveLeft = function(elapsedTime) {
+      that.moveLeft = function(elapsedTime, gameGridObj) {
           spec.center.x -= spec.moveRate * (elapsedTime / 1000);
         //   spec.center.x -= spec.moveRate;
         that.x = spec.center.x/20;
         that.y = spec.center.y/20;
       };
       
-      that.moveRight = function(elapsedTime) {
+      that.moveRight = function(elapsedTime, gameGridObj) {
         spec.center.x += spec.moveRate * (elapsedTime / 1000);
         //   spec.center.x += spec.moveRate;
         that.x = spec.center.x/20;
         that.y = spec.center.y/20;
       };
       
-      that.moveUp = function(elapsedTime) {
+      that.moveUp = function(elapsedTime, gameGridObj) {
           spec.center.y -= Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
         // spec.center.y -= spec.moveRate;
         that.x = spec.center.x/20;
         that.y = spec.center.y/20;
       };
       
-      that.moveDown = function(elapsedTime) {
+      that.moveDown = function(elapsedTime, gameGridObj) {
           spec.center.y += Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
         //   spec.center.y += spec.moveRate;
         that.x = spec.center.x/20;
@@ -447,33 +447,41 @@ towerDefense.components = (function() {
         //  console.log("\n");
          
    
-         if(that.reachedGoal !== true) {
+         if(that.reachedGoal !== true && that.flying !== true) {
             that.movementStack = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
          
             // TODO reverse array and then pop off end value
             moveStack = reverse(that.movementStack);
             
+            
+            
             if(moveStack !== false){
                 var nextMove = moveStack.pop();
                 if(nextMove === 'North') {
-                    that.moveUp(elapsedTime);
+                    that.moveUp(elapsedTime, tempGameObj);
                     // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
                 } else if(nextMove === 'East') {
-                    that.moveRight(elapsedTime);
+                    that.moveRight(elapsedTime, tempGameObj);
                     // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
                 } else if(nextMove === 'South') {
-                    that.moveDown(elapsedTime);
+                    that.moveDown(elapsedTime, tempGameObj);
                     // that.moveTo({ x: ((xGrid)*20), y : ((yGrid+1)*20)});
                 } else if(nextMove === 'West') {
-                    that.moveLeft(elapsedTime);
+                    that.moveLeft(elapsedTime, tempGameObj);
                     // that.moveTo({ x: ((xGrid-1)*20), y : ((yGrid)*20)});
                 } 
             }
          }
-            if(moveStack.length === 0 && xGrid < 41 && moveStack !==false) {
-                that.reachedGoal = true;
-                that.moveRight(elapsedTime);
-            }
+         
+         if(that.flying === true) {
+             that.moveRight(elapsedTime);
+         }
+         
+         
+         if(moveStack.length === 0 && xGrid < 41 && moveStack !==false) {
+             that.reachedGoal = true;
+             that.moveRight(elapsedTime);
+         }
          
         
       };
@@ -614,7 +622,7 @@ towerDefense.components = (function() {
             
         that.health = 100;
         that.armor = spec.armor;
-        
+        that.flying = spec.flying;
 
 		that.update = function(elapsedTime, gameGridObj) {
             
@@ -630,7 +638,7 @@ towerDefense.components = (function() {
             // console.log("CREEP Y: " + yGrid);
             // console.log("\n");
    
-            if(that.reachedGoal !== true) {
+            if(that.reachedGoal !== true && that.flying !== true) {
                 that.movementStack = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
             
                 moveStack = reverse(that.movementStack);
@@ -681,6 +689,12 @@ towerDefense.components = (function() {
                     } 
                 }
             }
+            
+            if(that.flying === true) {
+                that.moveForward(elapsedTime);
+            }
+            
+            
             if(moveStack.length === 0 && xGrid <= 41) {
                 that.reachedGoal = true;
                 that.moveForward(elapsedTime);

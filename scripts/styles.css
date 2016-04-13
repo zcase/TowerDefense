@@ -187,13 +187,22 @@ div.button:hover{
     color: green;
 }
 
-#upgrade {
-    padding-top: 10px;
+#options button {
+    margin-top: 10px;
+    visibility: hidden;
 }
 #upgradeButton {
     font-size: 26px;
     padding: 15px 32px;
     background-color: green;
     color: white;
-    visibility: hidden;
+}
+
+
+#sellButton {
+    float: left;
+    font-size: 26px;
+    padding: 15px 32px;
+    background-color: green;
+    color: white;
 }
