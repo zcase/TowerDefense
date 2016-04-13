@@ -42,6 +42,84 @@ towerDefense.graphics = (function() {
     function clear() {
         ctx.clear();
     }
+    
+    //------------------------------------------------------------------
+	//
+	// Simple sprite, one image in the texture.
+	//
+	//------------------------------------------------------------------
+	function TowerSprite(spec) {
+		var that = {},
+			image = new Image();
+
+		//
+		// Load the image, set the ready flag once it is loaded so that
+		// rendering can begin.
+		image.onload = function() {
+			//
+			// Our clever trick, replace the draw function once the image is loaded...no if statements!
+			that.draw = function(updateSpec) {
+                spec = updateSpec;
+                var divisor = 8;
+				ctx.save();
+
+				ctx.translate(spec.center.x, spec.center.y);
+				ctx.rotate(spec.rotation);
+				ctx.translate(-spec.center.x, -spec.center.y);
+
+				//
+				// Pick the selected sprite from the sprite sheet to render
+				ctx.drawImage(
+					image,
+					spec.center.x - (image.width/divisor) / 2,
+					spec.center.y - (image.height/divisor) / 2,
+					image.width/divisor, image.height/divisor);
+
+				ctx.restore();
+			};
+			//
+			// Once the image is loaded, we can compute the height and width based upon
+			// what we know of the image and the number of sprites in the sheet.
+			spec.height = image.height;
+			spec.width = image.width / spec.spriteCount;
+		};
+		image.src = spec.sprite;
+
+		that.rotateRight = function(angle) {
+			spec.rotation += angle;
+		};
+
+		that.rotateLeft = function(angle) {
+			spec.rotation -= angle;
+		}
+
+		//------------------------------------------------------------------
+		//
+		// Render the correct sprint from the sprite sheet
+		//
+		//------------------------------------------------------------------
+		that.draw = function(updateSpec) {
+            
+            spec = updateSpec;
+			//
+			// Starts out empty, but gets replaced once the image is loaded!
+		};
+
+		//
+		// The other side of that hack job
+		that.drawArc = function(angle) {
+			ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+			ctx.beginPath();
+			ctx.moveTo(spec.center.x, spec.center.y);
+			ctx.arc(spec.center.x, spec.center.y, 100, spec.rotation - angle / 2, spec.rotation + angle / 2);
+			ctx.lineTo(spec.center.x, spec.center.y);
+			ctx.fill();
+		}
+
+		return that;
+	}
+    
+    
 
     //************************************************************
     //                    Creep Graphics Area
@@ -210,6 +288,7 @@ towerDefense.graphics = (function() {
      * 
      */
     function drawTower(spec) {
+        var scalar = 2;
 
         if (spec.isSelected === true) {
             drawTowerRange(spec);
@@ -224,13 +303,23 @@ towerDefense.graphics = (function() {
 
         ctx.drawImage(
             spec.image,
-            spec.x - spec.width / 2,
-            spec.y - spec.height / 2,
-            spec.width,
-            spec.height);
+            spec.x - (spec.width*scalar) / 2 +2,
+            spec.y - ((spec.height*scalar) / 2) -2,
+            spec.width*scalar,
+            spec.height*scalar);
 
         ctx.restore();
     }
+    
+    function drawArc(spec, angle) {
+			ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+			ctx.beginPath();
+			ctx.moveTo(spec.center.x, spec.center.y);
+			ctx.arc(spec.center.x, spec.center.y, 100, spec.rotation - angle / 2, spec.rotation + angle / 2);
+			ctx.lineTo(spec.center.x, spec.center.y);
+			ctx.fill();
+		}
+
 
 
 
@@ -284,7 +373,9 @@ towerDefense.graphics = (function() {
         height: height,
         drawGrid: drawGrid,
         drawCreep: drawCreep,
-        drawCreepBasic : drawCreepBasic
+        drawCreepBasic : drawCreepBasic,
+        TowerSprite : TowerSprite,
+        drawArc : drawArc,
     }
 
 } ());

@@ -1,8 +1,27 @@
-towerDefense.components = (function() {
+towerDefense.components = (function(graphics) {
     var IN = 0;
     var FRONTIER = 1;
     var VISITED = 2;
     
+    //************************************************************
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //                  HELPER Function  Area
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    //         
+    //************************************************************
+    
+    // This function reverses an array that isn't a number.
+    // If trying to reverse a number just use .reverse() on array (built in function)
     function reverse(a) {
         var temp = [];
         var count = 0;
@@ -14,6 +33,8 @@ towerDefense.components = (function() {
         return temp;
     }
     
+    // This function is used to reset the sloved state back to the origial 
+    // of when the grid was set up.
     function reset(a) {
         for(var i = 0; i < a.width; i++) {
             for(var j = 0; j < a.height; j++ ) {
@@ -28,6 +49,79 @@ towerDefense.components = (function() {
         return a;
     }
     
+    //------------------------------------------------------------------
+	//
+	// Returns the magnitude of the 2D cross product.  The sign of the
+	// magnitude tells you which direction to rotate to close the angle
+	// between the two vectors.
+    //
+    // Borrowed from C5410 instructor Dr. Dean Mathias
+	//
+	//------------------------------------------------------------------
+	function crossProduct2d(v1, v2) {
+		return (v1.x * v2.y) - (v1.y * v2.x);
+	}
+    
+    //------------------------------------------------------------------
+	//
+	// Computes the angle, and direction (cross product) between two vectors.
+    //
+	// Borrowed from C5410 instructor Dr. Dean Mathias
+	//------------------------------------------------------------------
+	function computeAngle(rotation, ptCenter, ptTarget) {
+		var v1 = {
+				x : Math.cos(rotation),
+				y : Math.sin(rotation)
+			},
+            
+			v2 = {
+				x : ptTarget.x - ptCenter.x,
+				y : ptTarget.y - ptCenter.y
+			},
+			dp,
+			angle;
+
+		v2.len = Math.sqrt(v2.x * v2.x + v2.y * v2.y);
+		v2.x /= v2.len;
+		v2.y /= v2.len;
+
+		dp = v1.x * v2.x + v1.y * v2.y;
+		angle = Math.acos(dp);
+
+		// Get the cross product of the two vectors so we can know
+		// which direction to rotate.
+		cp = crossProduct2d(v1, v2);
+
+		return {
+			angle : angle,
+			crossProduct : cp
+		};
+	}
+    
+    //------------------------------------------------------------------
+	//
+	// Simple helper function to help testing a value with some level of tolerance.
+	//
+    // Borrowed from C5410 instructor Dr. Dean Mathias
+	//------------------------------------------------------------------
+	function testTolerance(value, test, tolerance) {
+		if (Math.abs(value - test) < tolerance) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+    
+    
+    //************************************************************
+    //                  PATH FINDER Area
+    // Used information found at http://gregtrowbridge.com/a-basic-pathfinding-algorithm/
+    // to help implenet this algo. The code is similar and used the pieces 
+    // that where missing from the maze path finding algorithm from the fist
+    // assignment.
+    //************************************************************
+    
+    // This is the main function that is used for the Breath First Search Algo
     function solveGrid(startlocation, gameObj){
           var distFromTop = startlocation.y;
           var distFromLeft = startlocation.x;
@@ -49,7 +143,6 @@ towerDefense.components = (function() {
                   return newLocation.path;
               }else if (newLocation.status === 'Valid') {
                   queue.push(newLocation);
-                //   return queue.push(that.solveGrid({y : newLocation.distTop, x : newLocation.distLeft}, gameGridObj));
               }
               
               var newLocation = exploreDirection(currentLocation, 'East', gameObj);
@@ -77,6 +170,9 @@ towerDefense.components = (function() {
           return false;
     }
     
+    // This function is used in the BFS algo to determine the status
+    // of the loctiaon. Whether it be a valid, Blocked, Invalid, or 
+    // the end goal.
     function locationStatus(location, gameObj) {
           var gridSize = gameObj.layout.length;
           var diffFromTop = location.distTop;
@@ -93,6 +189,9 @@ towerDefense.components = (function() {
           }
       };
       
+      // This function is used in the BFS algo to eplore a direction that is
+      // passed into the function. returns a locaton and all of the information
+      // regarding the location like its status.
       function exploreDirection(currentLocation, direction, gameObj) {
           
           var newPath = currentLocation.path.slice();
@@ -128,6 +227,22 @@ towerDefense.components = (function() {
       };
           
     
+        //************************************************************
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //                  GRID  Area
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    //         
+    //************************************************************
     function gridCell(row, col) {
         var that = {
             col: col, // y value
@@ -185,10 +300,26 @@ towerDefense.components = (function() {
     
     
     //************************************************************
-    //                    Tower Component Area
+    //
+    // 
+    // 
+    // 
+    // 
+    // 
+    //                  TOWER COMPONENT  Area
+    // 
+    // 
+    // 
+    // 
+    // 
+    // 
+    //         
     //************************************************************
     function Tower(spec) {
-        var that = {},
+        var that = {
+            center : spec.center
+        },
+        
             ready = false,
             image = new Image();
             image2 = new Image();
@@ -203,12 +334,20 @@ towerDefense.components = (function() {
       image2.src = spec.image2;
       image3.src = spec.image3;
       
-      that.rotateRight = function(elapsedTime) {
-          spec.rotation += spec.rotateRate * (elapsedTime / 1000);
+    //   that.rotateRight = function(elapsedTime) {
+    //       spec.rotation += spec.rotateRate * (elapsedTime / 1000);
+    //   };
+      
+    //   that.rotateLeft = function(elapsedTime) {
+    //       spec.rotation -= spec.rotateRate * (elapsedTime / 1000);
+    //   };
+    
+      that.rotateRight = function(angle) {
+          spec.rotation += angle;
       };
       
-      that.rotateLeft = function(elapsedTime) {
-          spec.rotation -= spec.rotateRate * (elapsedTime / 1000);
+      that.rotateLeft = function(angle) {
+          spec.rotation -= angle;
       };
       
     //   that.moveLeft = function(elapsedTime) {
@@ -235,30 +374,35 @@ towerDefense.components = (function() {
           spec.center = center;
       };
       
-      that.image = image,
-      that.image2 = image2,
-      that.image3 = image3,
-      that.strength = spec.strength;
-      that.placed = false;
-      that.x = spec.x;
-      that.y = spec.y;
-      that.width = spec.width;
-      that.height = spec.height;
-      that.attackDistance = spec.attackDistance;
-      that.isSelected = true;
-      that.rangeColor = 'blue';
-      that.inScreen = false;
-      that.positionColor = 'green';
-      that.cost = spec.cost;
-      that.level = spec.level;
-      that.inCanvas = spec.inCanvas;
-      that.blocking = false;
-      that.creepDone = false;
-      that.upgradeCost = spec.upgradeCost;
-      that.shotX = spec.mx;
+      spec.rotation = 89.8;
+      that.center = spec.center;
+      spec.placed = false;
+      that.target = spec.target;
+      that.image = image,                   // The main image when at Level 1
+      that.image2 = image2,                 // The image for Level 2 of tower.
+      that.image3 = image3,                 // The image for level 3 of tower.
+      that.strength = spec.strength;        // The Weapon stregth (damage inflicted to creep)
+    //   that.placed = false;                  // Bool for telling if placed or not  (May need to look over to see if needed);
+      that.x = spec.center.x;                      // The x value of the tower
+      that.y = spec.center.y;                      // The y value of the tower
+      that.width = spec.width;              // The width value of tower
+      that.height = spec.height;            // The height value of tower
+      that.attackDistance = spec.attackDistance; // Sets the attack radius of tower. (how close a creep has to come to get fired upon)
+      that.isSelected = true;               // Bool to tell if the tower is selected or not.
+      that.rangeColor = 'blue';             // The color to be displayed of the tower attack range
+      that.inScreen = false;                // Bool to tell if the tower is in the canvas screen or not. (MAY NEED TO REMOVE)
+      that.positionColor = 'green';         // The position color of the tower. (Red for invalid position, green for valid position).
+      that.cost = spec.cost;                // The cost to buy and place tower.
+      that.level = spec.level;              // The level the tower is at.
+      that.inCanvas = spec.inCanvas;        // Same as inScreen (REMOVE ONE OR THE OTHER)
+      that.blocking = false;                // Tells if the tower is blocking a path from creep entrance to creep exit.
+      that.creepDone = false;               // MAY NEED TO REMVOE CHECK OTHER CODE FIRST
+      that.upgradeCost = spec.upgradeCost;  // The cost to upgrade the tower.
+      that.shotX = spec.mx;                 
       that.shotY = spec.my;
       
-      that.update = function(elapsedTime, gameGridObj, creeps, spec) {
+      // Updates the tower object.
+      that.update = function(elapsedTime, gameGridObj, creeps) {
           var blocking;
           
           var xPos = Math.floor(that.x);
@@ -272,20 +416,67 @@ towerDefense.components = (function() {
             }
                 
             if(blocking === false && creeps.length > 0) {
-                // that.positionColor = 'red';
                 that.blocking = true;
             } else {
                 that.blocking = false;
             }
+            
+            if(that.placed === true) {
+                var inFrontTowerX,
+                    behindTowerX,
+                    aboveTowerY,
+                    belowTowerY;
+                for(var i = 0; i < creeps.length; i++) {
+                    inFrontTowerX = (that.x - that.attackDistance/40);
+                    behindTowerX = (that.x + that.attackDistance/40);
+                    
+                    aboveTowerY = (that.y - that.attackDistance/40);
+                    belowTowerY = (that.x + that.attackDistance/40);
+                    
+                    if((creeps[i].x >= inFrontTowerX && creeps[i].x <= behindTowerX) || (creeps[i].y >= aboveTowerY && creeps[i].y <= belowTowerY) ){
+                        that.setTarget(creeps[i].x*20, creeps[i].y*20);
+                    } else {
+                        that. setTarget(0, 300);
+                    }
+                }
+                
+                
+                
+                
+                
+                var result = computeAngle(spec.rotation, that.center, that.target);
+                if(testTolerance(result.angle, 180 , .01) == false) {
+                    if(result.crossProduct > 0) {
+                        // weaponSprite.rotateRight(spec.rotateRate);
+                        that.rotateRight(spec.rotateRate);
+                        spec.rotation += spec.rotateRate;
+                    } else {
+                        // weaponSprite.rotateLeft(spec.rotateRate);
+                        that.rotateLeft(spec.rotateRate);
+                        spec.rotation -= spec.rotateRate;
+                    }
+                }
+            }
+            
+            
          }
          
          
-         var radian = Math.atan2(that.shotX, that.shotY);
+        //  var radian = Math.atan2(that.shotX, that.shotY);
          
-         spec.rotateLeft = that.shotX - 20 * Math.cos(radian); 
-         spec.rotateLeft = that.shotY - 20 * Math.cos(radian);
-      }
+        //  spec.rotateLeft = that.shotX - 20 * Math.cos(radian); 
+        //  spec.rotateLeft = that.shotY - 20 * Math.cos(radian);
+      }; // END TOWER UPDATE FUNCTION
+      
+      that.setTarget = function(x, y) {
+          that.target = {
+              x : x,
+              y : y
+          };
+      };
+      
   
+      // Renders the Tower object
       that.render = function(graphics) {
           if(ready) {
               graphics.drawTower({
@@ -303,11 +494,22 @@ towerDefense.components = (function() {
                   positionColor : that.positionColor,
               });
           }
-      }
+        
+        // weaponSprite.draw({
+        //     image : spec.weaponSprite,
+        //     center : spec.center,
+        //     width : spec.width,
+        //     height : spec.height,
+        //     rotation : spec.rotation,
+            
+        // });
+            // graphics.drawArc(spec, .4);
+        
+      }; //END OF TOWER RENDERING
       
       console.log("Components: ",spec.width);
       return that;
-    };
+    }; // END OF TOWER COMPONENT
 
     //************************************************************
     //
@@ -323,7 +525,7 @@ towerDefense.components = (function() {
     // 
     // 
     // 
-    //         
+    //
     //************************************************************
     function Creep(spec) {
         var that = {},
@@ -761,4 +963,4 @@ towerDefense.components = (function() {
         AnimatedModel : AnimatedModel,
         reset : reset,
     }
-}());
+}(towerDefense.graphics));

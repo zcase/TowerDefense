@@ -72,55 +72,59 @@ towerDefense.model = (function (components, graphics, input) {
         
         // GeneralKeyboard.registerCommand(KeyEvent.DOM_VK_S, startGame());
         
-        var GeneralMouse = input.Mouse();
-        GeneralMouse.registerCommand('mousedown', function(e, elapsedTime) {
-            var x =  (Math.floor(e.clientX) / 20) - 3; // This gives the x grid position
-            var y =  (Math.floor(e.clientY) / 20) - 3; // This gives the y grid position
-            var xPos = Math.floor(x);
-            var yPos = Math.floor(y);
+        // var GeneralMouse = input.Mouse();
+        // GeneralMouse.registerCommand('mousedown', function(e, elapsedTime) {
+        //     var x =  (Math.floor(e.clientX) / 20) - 3; // This gives the x grid position
+        //     var y =  (Math.floor(e.clientY) / 20) - 3; // This gives the y grid position
+        //     var xPos = Math.floor(x);
+        //     var yPos = Math.floor(y);
             
-            console.log("General X: " + xPos);
-            console.log("General Y: " + yPos);
+        //     console.log("General X: " + xPos);
+        //     console.log("General Y: " + yPos);
             
             
-            for(var i = 0; i < towers.length; i++) {
-                // var options = document.getElementById('options');
-                var upgradeButton = document.getElementById('upgradeButton');
-                var sell = document.getElementById('sellButton');
-                // if(towers[i].x === xPos && towers[i].y === yPos) {
-                if(xPos >= (towers[i].x +1) -.9 && xPos <= (towers[i].x +1)  + 0.9 && yPos >= towers[i].y - 0.9 && yPos <= towers[i].y + 0.9) {
-                    towers[i].isSelected = true;
-                    // upgrade.style.display = "block";
-                    // sell.style.display = "block";
-                    // options.style.visibility = 'visible';
-                    upgradeButton.style.visibility = 'visible';
-                    sell.style.visibility = 'visible';
-                } else {
-                    towers[i].isSelected = false;
-                    // upgrade.style.display = "none";
-                    // sell.style.display = "none";
-                    // options.style.visibility = 'hidden';
-                    upgradeButton.style.visibility = 'hidden';
-                    sell.style.visibility = 'hidden';
-                }
-            }
+        //     for(var i = 0; i < towers.length; i++) {
+        //         // var options = document.getElementById('options');
+        //         var upgradeButton = document.getElementById('upgradeButton');
+        //         var sell = document.getElementById('sellButton');
+        //         // if(towers[i].x === xPos && towers[i].y === yPos) {
+        //         if(xPos >= (towers[i].x +1) -.9 && xPos <= (towers[i].x +1)  + 0.9 && yPos >= towers[i].y - 0.9 && yPos <= towers[i].y + 0.9) {
+        //             towers[i].isSelected = true;
+        //             // upgrade.style.display = "block";
+        //             // sell.style.display = "block";
+        //             // options.style.visibility = 'visible';
+        //             upgradeButton.style.visibility = 'visible';
+        //             sell.style.visibility = 'visible';
+        //         } else {
+        //             towers[i].isSelected = false;
+        //             // upgrade.style.display = "none";
+        //             // sell.style.display = "none";
+        //             // options.style.visibility = 'hidden';
+        //             upgradeButton.style.visibility = 'hidden';
+        //             sell.style.visibility = 'hidden';
+        //         }
+        //     }
             
-        });
+        // });
         
-        GeneralMouse.registerCommand('mousemove', function(e, elapsedTime) {
-            var x =  (Math.floor(e.clientX) / 20) - 3; // This gives the x grid position
-            var y =  (Math.floor(e.clientY) / 20) - 3; // This gives the y grid position
-            var xPos = Math.floor(x)+1;
-            var yPos = Math.floor(y);
+        // GeneralMouse.registerCommand('mousemove', function(e, elapsedTime) {
+        //     var x =  (Math.floor(e.clientX) / 20) - 3; // This gives the x grid position
+        //     var y =  (Math.floor(e.clientY) / 20) - 3; // This gives the y grid position
+        //     var xPos = Math.floor(x)+1;
+        //     var yPos = Math.floor(y);
             
-            moveX = e.clientX;
-            moveY = e.clientY;
+        //     // moveX = e.clientX;
+        //     // moveY = e.clientY;
             
-            // console.log("General Moving X: " + xPos);
-            // console.log("General Moving Y: " + yPos);
-        });
+        //     // for(var i = 0; i < towers.length; i++) {
+        //     //     towers[i].setTarget(e.clientX-120, e.clientY+120);
+        //     // }
+            
+        //     // console.log("General Moving X: " + xPos);
+        //     // console.log("General Moving Y: " + yPos);
+        // });
         
-        mouseArray.push(GeneralMouse);
+        // mouseArray.push(GeneralMouse);
         
     } // End initialize
     
@@ -134,10 +138,11 @@ towerDefense.model = (function (components, graphics, input) {
                 image2 : 'images/gun2.png',
                 image3 : 'images/gun3.png',
                 center : {x : 12000, y : 300},
+                target : {x : 100, y : 0},
                 width : 20,
                 height : 20,
                 moveRate : 200,
-                rotateRate : 3.14159,
+                rotateRate : 10* 3.14159 / 1000,
                 isSelected : true,
                 towerNum : towerCount,
                 inCanvas : false,
@@ -174,7 +179,8 @@ towerDefense.model = (function (components, graphics, input) {
                         createdTower.render(graphics);
                         createdMouse.deregisterCommand('mousedown');
                         createdTower.isSelected = false;
-                        document.getElementById('upgradeButton').style.visibility = "hidden";
+                        createdTower.placed = true;
+                        // document.getElementById('upgradeButton').style.visibility = "hidden";
                     }
                     
                 }
@@ -232,6 +238,7 @@ towerDefense.model = (function (components, graphics, input) {
                 image2 : 'images/cannon2.png',
                 image3 : 'images/cannon3.png',
                 center : {x : 12000, y : 300},
+                target : {x : 100, y : 0},
                 width : 20,
                 height : 20,
                 moveRate : 200,
@@ -331,6 +338,7 @@ towerDefense.model = (function (components, graphics, input) {
                 image2 : 'images/tower2.png',
                 image3 : 'images/tower3.png',
                 center : {x : 12000, y : 300},
+                target : {x : 100, y : 0},
                 width : 20,
                 height : 20,
                 rotation : 0,
@@ -431,6 +439,7 @@ towerDefense.model = (function (components, graphics, input) {
                 image2 : 'images/missile2.png',
                 image3 : 'images/missile3.png',
                 center : {x : 12000, y : 300},
+                target : {x : 100, y : 0},
                 width : 20,
                 height : 20,
                 rotation : 0,
@@ -446,7 +455,6 @@ towerDefense.model = (function (components, graphics, input) {
                 upgradeCost : 15,
                 mx : moveX,
                 my : moveY,
-                
             });
             
             money -= createdTower.cost;
@@ -477,6 +485,7 @@ towerDefense.model = (function (components, graphics, input) {
                         createdTower.render(graphics);
                         createdMouse.deregisterCommand('mousedown');
                         createdTower.isSelected = false;
+                        createdTower.placed = true;
                         document.getElementById('upgradeButton').style.visibility = "hidden";   
                     }
                     
@@ -562,6 +571,7 @@ towerDefense.model = (function (components, graphics, input) {
             height : 20,
             rotation : 0,
             moveRate : 10,
+            flying : false,
             // moveRate : 100,
             
         });
@@ -586,7 +596,8 @@ towerDefense.model = (function (components, graphics, input) {
 			orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 25/1000,			// pixels per millisecond
 			rotateRate : 3.141590 / 2 / 1000,
-            armor : 0,	
+            armor : 0,
+            flying : false,
         }, graphics);
         creeps.push(person);
     }
@@ -607,7 +618,8 @@ towerDefense.model = (function (components, graphics, input) {
 			orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 30/1000,			// pixels per millisecond
 			rotateRate : 3.141590 / 2 / 1000,
-            armor : 30,	
+            armor : 30,
+            flying : false,
         }, graphics);
         creeps.push(nazi);
     }
@@ -647,7 +659,8 @@ towerDefense.model = (function (components, graphics, input) {
 			rotation : 0,
 			orientation : 0,		// Sprite orientation with respect to "forward"
 			moveRate : 28/1000,			// pixels per millisecond
-			rotateRate : 3.141590 / 2 / 1000	
+			rotateRate : 3.141590 / 2 / 1000,
+            flying : false,
         }, graphics);
         creeps.push(boss);
     }
@@ -690,7 +703,7 @@ towerDefense.model = (function (components, graphics, input) {
         
         // Update each tower
         for(var i = 0; i < towers.length; i++) {
-            towers[i].update(elapsedTime, gameGrid, creeps, {px: moveX, py:moveY }); // need to create up date function to change rotation of tower pic based on creeps
+            towers[i].update(elapsedTime, gameGrid, creeps); // need to create up date function to change rotation of tower pic based on creeps
         }
         
         // Update each creep
