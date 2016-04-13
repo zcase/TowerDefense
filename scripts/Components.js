@@ -211,21 +211,21 @@ towerDefense.components = (function() {
           spec.rotation -= spec.rotateRate * (elapsedTime / 1000);
       };
       
-      that.moveLeft = function(elapsedTime) {
-          spec.center.x -= spec.moveRate * (elapsedTime / 1000);
-      };
+    //   that.moveLeft = function(elapsedTime) {
+    //       spec.center.x -= spec.moveRate * (elapsedTime / 1000);
+    //   };
       
-      that.moveRight = function(elapsedTime) {
-          spec.center.x += spec.moveRate * (elapsedTime / 1000);
-      };
+    //   that.moveRight = function(elapsedTime) {
+    //       spec.center.x += spec.moveRate * (elapsedTime / 1000);
+    //   };
       
-      that.moveUp = function(elapsedTime) {
-          spec.center.y -= spec.moveRate * (elapsedTime / 1000);
-      };
+    //   that.moveUp = function(elapsedTime) {
+    //       spec.center.y -= spec.moveRate * (elapsedTime / 1000);
+    //   };
       
-      that.moveDown = function(elapsedTime) {
-          spec.center.x += spec.moveRate * (elapsedTime / 1000);
-      };
+    //   that.moveDown = function(elapsedTime) {
+    //       spec.center.x += spec.moveRate * (elapsedTime / 1000);
+    //   };
       
       that.moveTo = function(center) {
           var myCanvas = document.getElementById('myCanvas');
@@ -255,8 +255,10 @@ towerDefense.components = (function() {
       that.blocking = false;
       that.creepDone = false;
       that.upgradeCost = spec.upgradeCost;
+      that.shotX = spec.mx;
+      that.shotY = spec.my;
       
-      that.update = function(elapsedTime, gameGridObj, creeps) {
+      that.update = function(elapsedTime, gameGridObj, creeps, spec) {
           var blocking;
           
           var xPos = Math.floor(that.x);
@@ -276,6 +278,12 @@ towerDefense.components = (function() {
                 that.blocking = false;
             }
          }
+         
+         
+         var radian = Math.atan2(that.shotX, that.shotY);
+         
+         spec.rotateLeft = that.shotX - 20 * Math.cos(radian); 
+         spec.rotateLeft = that.shotY - 20 * Math.cos(radian);
       }
   
       that.render = function(graphics) {
