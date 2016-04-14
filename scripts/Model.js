@@ -154,10 +154,10 @@ towerDefense.model = (function (components, graphics, input) {
                 upgradeCost : 8,
             });
             
-            var createdBase = components.Base({
+            var createdBase = components.Tower({
                 image : 'images/base1.png',
                 image2 : 'images/base2.png',
-                image3 : 'images/base3.png',
+                // image3 : 'images/base3.png',
                 center : { x : 12000, y : 300},
                 width : 20,
                 height : 20,
@@ -168,7 +168,8 @@ towerDefense.model = (function (components, graphics, input) {
             
             money -= createdTower.cost;
             towers.push(createdTower);
-            bases.push(createdBase);
+            towers.push(createdBase);
+            // bases.push(createdBase);
             
             var createdMouse = input.Mouse();
             createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
@@ -608,11 +609,29 @@ towerDefense.model = (function (components, graphics, input) {
             rotation : 0,
             moveRate : 10,
             flying : false,
-            // moveRate : 100,
+            life : 50,
+            healthColor : 'green',
             
         });
         
         creeps.push(creep);
+        
+        var health = 40;
+         
+         if (health >= creep.life * 0.667){
+             creep.healthColor = "green";
+             creep.healthBar = 50 * 0.7;
+             creep.render(graphics);
+         }
+         else if(health < creep.life * 0.667 && health >= creep.life * 0.33){
+             creep.healthColor = 'yellow';
+         }
+         else if(health < creep.life * 0.333 && health >= 1){
+             creep.healthColor = 'red';
+         }
+         else{
+             creeps.pop();
+         }
     }
     
     function createPersonCreep(){
@@ -763,7 +782,7 @@ towerDefense.model = (function (components, graphics, input) {
         
         for(var i = 0; i < towers.length; i++) {
             towers[i].render(graphics);
-            bases[i].render(graphics);
+            // bases[i].render(graphics);
         }
         
         for(var i = 0; i < creeps.length; i++) {
@@ -792,7 +811,7 @@ towerDefense.model = (function (components, graphics, input) {
         if(towers.length > 0 ) {
             for(var i = 0; i < towers.length; i++) {
                 towers[i].render(graphics);
-                bases[i].render(graphics);
+                // bases[i].render(graphics);
             }
         }
         

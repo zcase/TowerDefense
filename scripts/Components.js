@@ -478,23 +478,27 @@ towerDefense.components = (function(graphics) {
   
       // Renders the Tower object
       that.render = function(graphics) {
-          if(ready) {
+          if (ready) {
               graphics.drawTower({
-                  image : that.image,
+                  image: that.image,
                   x: spec.center.x,
                   y: spec.center.y,
                   width: spec.width,
                   height: spec.height,
                   rotation: spec.rotation,
-                  moveRate : spec.moveRate,
-                  rotateRate : spec.roatateRate,
-                  isSelected : that.isSelected,
-                  attackDistance : that.attackDistance,
-                  rangeColor : that.rangeColor,
-                  positionColor : that.positionColor,
+                  moveRate: spec.moveRate,
+                  rotateRate: spec.roatateRate,
+                  isSelected: that.isSelected,
+                  attackDistance: that.attackDistance,
+                  rangeColor: that.rangeColor,
+                  positionColor: that.positionColor,
               });
           }
-        
+
+          that.image = image;                 // The main image when at Level 1
+          that.image2 = image2;                 // The image for Level 2 of tower.
+          that.image3 = image3;
+          
         // weaponSprite.draw({
         //     image : spec.weaponSprite,
         //     center : spec.center,
@@ -518,8 +522,8 @@ towerDefense.components = (function(graphics) {
 
             ready = false,
             image = new Image(),
-            image2 = new Image(),
-            image3 = new Image();
+            image2 = new Image();
+            // image3 = new Image();
 
 
         image.onload = function() {
@@ -612,7 +616,7 @@ towerDefense.components = (function(graphics) {
       };
       
       that.strength = 5;
-      that.health = 100;
+      that.life = spec.life;
       that.gridSolutionPath = new Array();
       that.gridVisited = new Array();
       that.movementStack = [];
@@ -634,6 +638,12 @@ towerDefense.components = (function(graphics) {
                   rotation: spec.rotation,
                   moveRate : spec.moveRate,
                   rotateRate : spec.roatateRate,
+              });
+              graphics.drawHealthBar({
+                  x: spec.center.x-10,
+                  y: spec.center.y-10,
+                  healthColor : spec.healthColor,
+                  healthBar : spec.healthBar,
               });
           }
       };
@@ -715,7 +725,6 @@ towerDefense.components = (function(graphics) {
          if(that.flying === true) {
              that.moveRight(elapsedTime);
          }
-         
          
          if(moveStack.length === 0 && xGrid < 41 && moveStack !==false) {
              that.reachedGoal = true;

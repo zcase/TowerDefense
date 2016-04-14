@@ -234,7 +234,23 @@ towerDefense.graphics = (function() {
 
         return that;
     }
-
+    
+    function drawHealthBar(spec){
+        ctx.beginPath();
+        if (spec.healthColor === 'green'){
+            ctx.fillStyle = 'rgba(0, 255, 0, 1)';
+        }
+        else if (spec.healthColor === 'yellow'){
+            ctx.fillStyle = 'rgba(255,255,0,1)'
+        }
+        else if (spec.healthColor === 'red'){
+            ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+        }
+        
+        ctx.fillRect(spec.x, spec.y, spec.healthBar, 10);
+        ctx.strokeRect(spec.x, spec.y, 80, 10);
+        ctx.closePath();
+    }
 
     //************************************************************
     //                    Tower Graphics Area
@@ -374,6 +390,7 @@ towerDefense.graphics = (function() {
         drawGrid: drawGrid,
         drawCreep: drawCreep,
         drawCreepBasic : drawCreepBasic,
+        drawHealthBar : drawHealthBar,
         TowerSprite : TowerSprite,
         drawArc : drawArc,
     }
