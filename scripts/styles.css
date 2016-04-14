@@ -138,7 +138,7 @@ div.button:hover{
     cursor: pointer;
 }
 #createTower2{
-    background-image: url(../images/cannon1.png);
+    background-image: url(../images/cannon1or2.png);
     background-color:whitesmoke;
     background-size: 100%;
     background-repeat: no-repeat;

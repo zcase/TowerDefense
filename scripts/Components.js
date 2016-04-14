@@ -510,6 +510,35 @@ towerDefense.components = (function(graphics) {
       console.log("Components: ",spec.width);
       return that;
     }; // END OF TOWER COMPONENT
+    
+    function Base(spec){
+        var that = {
+            center: spec.center
+        },
+
+            ready = false,
+            image = new Image(),
+            image2 = new Image(),
+            image3 = new Image();
+
+
+        image.onload = function() {
+            ready = true;
+        };
+
+        that.render = function(graphics) {
+            if (ready) {
+                graphics.drawTower({
+                    image: that.image,
+                    x: spec.center.x,
+                    y: spec.center.y,
+                    width: spec.width,
+                    height: spec.height,
+                });
+            }
+        }
+        return that;
+    }
 
     //************************************************************
     //
@@ -957,6 +986,7 @@ towerDefense.components = (function(graphics) {
     
     return {
         Tower : Tower,
+        Base : Base,
         Grid : Grid,
         Creep : Creep,
         AnimatedMoveModel : AnimatedMoveModel,
