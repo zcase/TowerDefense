@@ -328,6 +328,7 @@ towerDefense.components = (function(graphics) {
             
       image.onload = function () {
           ready = true;
+          console.log('checking for tower...');
       };
       
       image.src = spec.image;
@@ -492,7 +493,18 @@ towerDefense.components = (function(graphics) {
                   attackDistance: that.attackDistance,
                   rangeColor: that.rangeColor,
                   positionColor: that.positionColor,
+                  scalar : spec.scalar,
               });
+            //   graphics.drawTower({
+            //       image : that.image,
+            //       x: spec.center.x,
+            //       y: spec.center.y,
+            //       width: spec.width,
+            //       height: spec.height,
+            //       rotation: spec.rotation,
+            //       moveRate: spec.moveRate,
+            //   });
+            console.log('its ready for tower');
           }
 
           that.image = image;                 // The main image when at Level 1
@@ -522,13 +534,36 @@ towerDefense.components = (function(graphics) {
 
             ready = false,
             image = new Image(),
-            image2 = new Image();
-            // image3 = new Image();
+            image2 = new Image(),
+            image3 = new Image();
 
 
         image.onload = function() {
             ready = true;
+            console.log('checking for base...');
         };
+
+        that.update = function(elapsedTime, gameGridObj, creeps) {
+            var blocking;
+
+            var xPos = Math.floor(that.x);
+            var yPos = Math.floor(that.y);
+
+            var tempGridPosition = { x: xPos, y: yPos };
+
+            if (that.inCanvas === true && xPos >= 0 && yPos >= 0 && xPos <= gameGridObj.width && yPos <= gameGridObj.height) {
+                for (var i = 0; i < creeps.length; i++) {
+                    blocking = creeps[i].checkBlockingPath(gameGridObj, tempGridPosition);
+                }
+
+                if (blocking === false && creeps.length > 0) {
+                    that.blocking = true;
+                } else {
+                    that.blocking = false;
+                }
+
+            }
+        }
 
         that.render = function(graphics) {
             if (ready) {
@@ -539,8 +574,12 @@ towerDefense.components = (function(graphics) {
                     width: spec.width,
                     height: spec.height,
                 });
+                console.log('its ready for base');
             }
         }
+        that.image = image;
+        that.image2 = image2;
+
         return that;
     }
 
@@ -640,8 +679,8 @@ towerDefense.components = (function(graphics) {
                   rotateRate : spec.roatateRate,
               });
               graphics.drawHealthBar({
-                  x: spec.center.x-10,
-                  y: spec.center.y-10,
+                  x: spec.center.x- 25,
+                  y: spec.center.y - 25,
                   healthColor : spec.healthColor,
                   healthBar : spec.healthBar,
               });
@@ -697,19 +736,41 @@ towerDefense.components = (function(graphics) {
          
    
          if(that.reachedGoal !== true && that.flying !== true) {
-            that.movementStack = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
-         
-            // TODO reverse array and then pop off end value
-            moveStack = reverse(that.movementStack);
-            
-            
-            
-            if(moveStack !== false){
-                var nextMove = moveStack.pop();
-                if(nextMove === 'North') {
-                    that.moveUp(elapsedTime, tempGameObj);
-                    // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
-                } else if(nextMove === 'East') {
+             that.movementStack = solveGrid({ x: xGrid, y: yGrid }, tempGameObj);
+
+             // TODO reverse array and then pop off end value
+             moveStack = reverse(that.movementStack);
+
+             // move healthbar stuff in here
+             that.health = spec.life;
+             
+             if (that.health == spec.life){
+                 spec.healthColor = "visiable";
+             }
+             else if (that.health < spec.life && that.health >= spec.life * 0.75) {
+                 spec.healthColor = "green";
+                 spec.healthBar = 50;
+                 //  creep.render(graphics);
+                //  console.log("green");
+             }
+             else if (that.health < spec.life * 0.667 && that.health >= spec.life * 0.33) {
+                 spec.healthColor = 'yellow';
+                //  console.log("yellow");
+             }
+             else if (that.health < spec.life * 0.333 && that.health >= 1) {
+                 spec.healthColor = 'red';
+                //  console.log('red');
+             }
+             else {
+                 creeps.pop(); // change to that = undefined when moved to computent creep.update section
+             }
+
+             if (moveStack !== false) {
+                 var nextMove = moveStack.pop();
+                 if (nextMove === 'North') {
+                     that.moveUp(elapsedTime, tempGameObj);
+                     // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
+                 } else if (nextMove === 'East') {
                     that.moveRight(elapsedTime, tempGameObj);
                     // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
                 } else if(nextMove === 'South') {
@@ -757,7 +818,8 @@ towerDefense.components = (function(graphics) {
     //************************************************************
     function AnimatedModel(spec, graphics) {
 		var that = {},
-			sprite = graphics.drawCreep(spec);	// We contain a SpriteSheet, not inherited from, big difference
+			sprite = graphics.drawCreep(spec);
+            lifeBar = graphics.drawHealthBar(spec);	// We contain a SpriteSheet, not inherited from, big difference
 			 console.log("Model: ",sprite.width);
              
         that.x = spec.center.x;
@@ -770,6 +832,12 @@ towerDefense.components = (function(graphics) {
 		
 		that.render = function() {
 			sprite.draw();
+            graphics.drawHealthBar({
+                  x: spec.center.x- spec.rightBar,
+                  y: spec.center.y - spec.topBar,
+                  healthColor : spec.healthColor,
+                  healthBar : spec.healthBar,
+              });
 		};
 		
 		that.rotateRight = function(elapsedTime) {
@@ -826,7 +894,7 @@ towerDefense.components = (function(graphics) {
          tempGameObj.layout[towerPosition.x][towerPosition.y].taken = isTakenInitial;
          return checkBlock;
       };
-		
+      
 		return that;
 	}
     
@@ -868,7 +936,8 @@ towerDefense.components = (function(graphics) {
 			didMoveForward = false,
 			didMoveBackward = false;
             
-        that.health = 100;
+        that.health = spec.life;
+        // that.health = spec.life - 20;
         that.armor = spec.armor;
         that.flying = spec.flying;
 
@@ -886,14 +955,37 @@ towerDefense.components = (function(graphics) {
             // console.log("CREEP Y: " + yGrid);
             // console.log("\n");
    
-            if(that.reachedGoal !== true && that.flying !== true) {
-                that.movementStack = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
-            
+            if (that.reachedGoal !== true && that.flying !== true) {
+                that.movementStack = solveGrid({ x: xGrid, y: yGrid }, tempGameObj);
+
                 moveStack = reverse(that.movementStack);
-                
-                if(moveStack !== false){
+
+                // console.log("life: ", spec.life);
+                if (that.health == spec.life){
+                 spec.healthColor = "visiable";
+                }
+                else if (that.health < spec.life && that.health >= spec.life * 0.7) {
+                    spec.healthColor = "green";
+                    spec.healthBar = (that.health / spec.life) * 50;
+                    //  console.log("green");
+                }
+                else if (that.health < spec.life * 0.7 && that.health >= spec.life * 0.45) {
+                    spec.healthColor = 'yellow';
+                    spec.healthBar = (that.health / spec.life) * 50;
+                    //  console.log("yellow");
+                }
+                else if (that.health < spec.life * 0.45 && that.health >= 1) {
+                    spec.healthColor = 'red';
+                    spec.healthBar = (that.health / spec.life) * 50;
+                    //  console.log('red');
+                }
+                else {
+                    //  creeps.pop(); // change to that = undefined when moved to computent creep.update section
+                }
+
+                if (moveStack !== false) {
                     var nextMove = moveStack.pop();
-                    if(nextMove === 'North') {
+                    if (nextMove === 'North') {
                         // that.rotateLeft(elapsedTime);
                         // didRotateLeft = true;
                         // that.moveForward(elapsedTime);
@@ -902,20 +994,20 @@ towerDefense.components = (function(graphics) {
                         // that.rotateRight(elapsedTime);
                         // that.rotateRight(elapsedTime);
                         // that.moveTo({ x: ((xGrid)*20), y : ((yGrid-1)*20)});
-                    } else if(nextMove === 'East') {
+                    } else if (nextMove === 'East') {
                         // if(didRotateLeft === true) {
                         //     that.rotateRight(elapsedTime);
                         //     didRotateLeft = false;
-            
-                            
+
+
                         // } else if (didRotateRight === true) {
                         //     that.rotateLeft(elapsedTime);
                         //     didRotateRight = false;
                         // }
-                        
+
                         that.moveForward(elapsedTime);
                         // that.moveTo({ x: ((xGrid+1)*20), y : ((yGrid)*20)});
-                    } else if(nextMove === 'South') {
+                    } else if (nextMove === 'South') {
                         // that.rotateRight(elapsedTime);
                         // didRotateRight = true;
                         // that.moveForward(elapsedTime);
@@ -923,7 +1015,7 @@ towerDefense.components = (function(graphics) {
                         // that.movseForward(elapsedTime);
                         // that.rotateLeft(elapsedTime);
                         // that.moveTo({ x: ((xGrid)*20), y : ((yGrid+1)*20)});
-                    } else if(nextMove === 'West') {
+                    } else if (nextMove === 'West') {
                         // if(didRotateLeft === true) {
                         //     that.rotateRight(elapsedTime);
                         //     didRotateLeft = false;
@@ -931,19 +1023,41 @@ towerDefense.components = (function(graphics) {
                         //     that.rotateLeft(elapsedTime);
                         //     didRotateRight = false;
                         // }
-                        
+
                         that.moveBackward(elapsedTime);
                         // that.moveTo({ x: ((xGrid-1)*20), y : ((yGrid)*20)});
-                    } 
+                    }
                 }
             }
-            
-            if(that.flying === true) {
+
+            if (that.flying === true) {
                 that.moveForward(elapsedTime);
+                
+                if (that.health == spec.life){
+                    spec.healthColor = "visiable";
+                }
+                else if (that.health < spec.life && that.health >= spec.life * 0.7) {
+                    spec.healthColor = "green";
+                    spec.healthBar = (that.health / spec.life) * 50;
+                    //  console.log("green");
+                }
+                else if (that.health < spec.life * 0.7 && that.health >= spec.life * 0.45) {
+                    spec.healthColor = 'yellow';
+                    spec.healthBar = (that.health / spec.life) * 50;
+                    //  console.log("yellow");
+                }
+                else if (that.health < spec.life * 0.45 && that.health >= 1) {
+                    spec.healthColor = 'red';
+                    spec.healthBar = (that.health / spec.life) * 50;
+                    //  console.log('red');
+                }
+                else {
+                    //  creeps.pop(); // change to that = undefined when moved to computent creep.update section
+                }
             }
-            
-            
-            if(moveStack.length === 0 && xGrid <= 41) {
+
+
+            if (moveStack.length === 0 && xGrid <= 41) {
                 that.reachedGoal = true;
                 that.moveForward(elapsedTime);
             }

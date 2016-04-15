@@ -123,7 +123,7 @@ p.name_button{
 }
 #createTower1{
     text-align: left;
-    background-image: url(../images/gun1.png);
+    background-image: url(../images/gun.png);
     background-color:whitesmoke;
     background-size: 100%;
     background-repeat: no-repeat;
@@ -138,7 +138,7 @@ div.button:hover{
     cursor: pointer;
 }
 #createTower2{
-    background-image: url(../images/cannon1or2.png);
+    background-image: url(../images/cannon.png);
     background-color:whitesmoke;
     background-size: 100%;
     background-repeat: no-repeat;
@@ -149,7 +149,7 @@ div.button:hover{
     border-radius: 5px;
 }
 #createTower3{
-    background-image: url(../images/tower1.png);
+    background-image: url(../images/tower.png);
     background-color:whitesmoke;
     background-size: 100%;
     background-repeat: no-repeat;
