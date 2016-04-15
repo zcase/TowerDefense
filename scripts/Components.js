@@ -112,6 +112,22 @@ towerDefense.components = (function(graphics) {
 		}
 	}
     
+    // Helps to see if the creep will be within attacking distance.
+    function distanceCheck(object1, object2) {
+        
+        var x = object2.x - object1.x,
+            y = object2.y - object1.y,
+            distance  = Math.sqrt(x*x +y*y);
+            collision = false;
+            
+       
+        if( distance < object1.attackDistance/20 + object2.attackDistance/20) {
+            collision = true;
+        }
+        
+        return collision;
+    }
+    
     
     //************************************************************
     //                  PATH FINDER Area
@@ -400,9 +416,11 @@ towerDefense.components = (function(graphics) {
       that.upgradeCost = spec.upgradeCost;  // The cost to upgrade the tower.
       that.shotX = spec.mx;                 
       that.shotY = spec.my;
+      that.fireRate = 2000;
+      that.timeSinceLastFire = 0;
       
       // Updates the tower object.
-      that.update = function(elapsedTime, gameGridObj, creeps) {
+      that.update = function(elapsedTime, gameGridObj, creeps, bullets) {
           var blocking;
           
           var xPos = Math.floor(that.x);
@@ -421,30 +439,23 @@ towerDefense.components = (function(graphics) {
                 that.blocking = false;
             }
             
+            var fire;
             if(that.placed === true) {
-                var inFrontTowerX,
-                    behindTowerX,
-                    aboveTowerY,
-                    belowTowerY;
+                fire = false;
+                // Checks to see is a creep is with in the attack distance of the Tower
                 for(var i = 0; i < creeps.length; i++) {
-                    inFrontTowerX = (that.x - that.attackDistance/40);
-                    behindTowerX = (that.x + that.attackDistance/40);
-                    
-                    aboveTowerY = (that.y - that.attackDistance/40);
-                    belowTowerY = (that.x + that.attackDistance/40);
-                    
-                    if((creeps[i].x >= inFrontTowerX && creeps[i].x <= behindTowerX) || (creeps[i].y >= aboveTowerY && creeps[i].y <= belowTowerY) ){
+                    if(distanceCheck(that, creeps[i])) {
                         that.setTarget(creeps[i].x*20, creeps[i].y*20);
+                        fire = true;
                     } else {
                         that. setTarget(0, 300);
+                        fire = false;
                     }
                 }
                 
-                
-                
-                
-                
-                var result = computeAngle(spec.rotation, that.center, that.target);
+
+                // This rotates the tower towards the position of the creep witin distance
+                var result = computeAngle(spec.rotation, spec.center, that.target);
                 if(testTolerance(result.angle, 180 , .01) == false) {
                     if(result.crossProduct > 0) {
                         // weaponSprite.rotateRight(spec.rotateRate);
@@ -456,18 +467,39 @@ towerDefense.components = (function(graphics) {
                         spec.rotation -= spec.rotateRate;
                     }
                 }
+                
+                
+                that.timeSinceLastFire += elapsedTime;
+                if(fire === true && that.timeSinceLastFire >= that.fireRate){
+                  that.fire(bullets);
+                  that.timeSinceLastFire = 0;
+                }
             }
             
             
          }
-         
-         
-        //  var radian = Math.atan2(that.shotX, that.shotY);
-         
-        //  spec.rotateLeft = that.shotX - 20 * Math.cos(radian); 
-        //  spec.rotateLeft = that.shotY - 20 * Math.cos(radian);
+
       }; // END TOWER UPDATE FUNCTION
       
+      
+      that.fire = function(bullets) {
+          var newBullet = Bullet({
+              x : that.x*20 + 10,
+              y : that.y*20 + 10,
+              speed : 10,
+              radius : 3,
+              color : 'black',
+              targetX : that.target.x+10,
+              targetY : that.target.y,
+              rotation : that.rotation,
+          });
+          
+        //   newBullet.update(that.target.x*20, that.target.y*20);
+        //   newBullet.update();
+          bullets.push(newBullet);
+      }
+      
+      // Function to set the were the target is located
       that.setTarget = function(x, y) {
           that.target = {
               x : x,
@@ -494,22 +526,67 @@ towerDefense.components = (function(graphics) {
                   positionColor : that.positionColor,
               });
           }
-        
-        // weaponSprite.draw({
-        //     image : spec.weaponSprite,
-        //     center : spec.center,
-        //     width : spec.width,
-        //     height : spec.height,
-        //     rotation : spec.rotation,
-            
-        // });
-            // graphics.drawArc(spec, .4);
-        
       }; //END OF TOWER RENDERING
       
-      console.log("Components: ",spec.width);
       return that;
     }; // END OF TOWER COMPONENT
+    
+    
+    
+    
+    function Bullet(spec) {
+        var that = {
+            x : spec.x,
+            y : spec.y,
+            speed : spec.speed,
+            radius : spec.radius,
+            color : spec.color,
+            targetX : spec.targetX,
+            targetY : spec.targetY,
+            
+            velocityX : 0,
+            velocityY : 0,
+            hitCreep : false,
+        }
+        
+        that.update = function () {
+            
+            var targetX = that.targetX,
+                targetY = that.targetY;
+                
+            var diffX = targetX - that.x,
+                diffY = targetY - that.y,
+                distance = Math.sqrt(targetX*targetX + targetY*targetY);
+                
+                
+            that.velocityX = (diffX / distance) * that.speed;
+            that.velocityY = (diffY / distance) * that.speed;
+            
+            if(distance > that.radius/2) {
+                that.x += that.velocityX;
+                that.y += that.velocityY;
+            }
+            
+            if(Math.round(targetX) === Math.round(that.x) && Math.round(targetY) === Math.round(that.y)) {
+                that.hitCreep = true;
+            }
+        };
+        
+        that.render = function() {
+            if(that.hitCreep !== true) {
+                graphics.drawCircleBullet({
+                    x : that.x,
+                    y : that.y,
+                    radius : that.radius,
+                    color : that.color
+                });
+            
+            }
+        }
+        
+        return that;
+    }
+   
 
     //************************************************************
     //
@@ -593,6 +670,7 @@ towerDefense.components = (function(graphics) {
       that.width = spec.width;
       that.height = spec.height;
       that.reachedGoal = false;
+      that.attackDistance = 10;
   
       that.render = function(graphics) {
           if(ready) {
@@ -962,5 +1040,6 @@ towerDefense.components = (function(graphics) {
         AnimatedMoveModel : AnimatedMoveModel,
         AnimatedModel : AnimatedModel,
         reset : reset,
+        Bullet : Bullet,
     }
 }(towerDefense.graphics));

@@ -321,6 +321,15 @@ towerDefense.graphics = (function() {
 		}
 
 
+    function drawCircleBullet(spec) {
+        ctx.clearRect(spec.x-spec.radius/2, spec.y-spec.radius/2, spec.radius, spec.radius)
+        ctx.fillStyle = spec.color;
+        ctx.beginPath();
+        ctx.arc(spec.x-spec.radius/2, spec.y-spec.radius/2, spec.radius, 0, Math.PI*2);
+        ctx.closePath();
+        ctx.fill();
+    }
+
 
 
     //************************************************************
@@ -376,6 +385,7 @@ towerDefense.graphics = (function() {
         drawCreepBasic : drawCreepBasic,
         TowerSprite : TowerSprite,
         drawArc : drawArc,
+        drawCircleBullet : drawCircleBullet,
     }
 
 } ());

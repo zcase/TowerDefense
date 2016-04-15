@@ -15,9 +15,10 @@ towerDefense.model = (function (components, graphics, input) {
         towerCount = 0,
         startGameValue = false,
         money,
-        moveX = 0,
-        moveY,
-        aim = false,
+        bullets = [],
+        // moveX = 0,
+        // moveY,
+        // aim = false,
         creepStartingPostitions = [{x : 0, y : 310}, {x: 0, y : 330}, {x: 0 , y: 270}];
     var count = 0;
     
@@ -149,7 +150,7 @@ towerDefense.model = (function (components, graphics, input) {
                 level : 1,
                 cost : 5,
                 strength : 5,
-                attackDistance : 20 * 2,
+                attackDistance : 20 * 3,
                 upgradeCost : 8,
             });
             
@@ -703,7 +704,16 @@ towerDefense.model = (function (components, graphics, input) {
         
         // Update each tower
         for(var i = 0; i < towers.length; i++) {
-            towers[i].update(elapsedTime, gameGrid, creeps); // need to create up date function to change rotation of tower pic based on creeps
+            towers[i].update(elapsedTime, gameGrid, creeps, bullets); // need to create up date function to change rotation of tower pic based on creeps
+        }
+        
+        for(var i = 0; i < bullets.length; i++) {
+            if(bullets[i].hitCreep !== true){
+                bullets[i].update();
+            }else{
+              var index = bullets.indexOf(bullets[i]);
+              bullets.splice(index, 1);
+            }
         }
         
         // Update each creep
@@ -755,6 +765,12 @@ towerDefense.model = (function (components, graphics, input) {
         if(towers.length > 0 ) {
             for(var i = 0; i < towers.length; i++) {
                 towers[i].render(graphics);
+            }
+        }
+        
+        if(bullets.length > 0) {
+            for(var i = 0; i < bullets.length; i++) {
+                bullets[i].render();
             }
         }
         
