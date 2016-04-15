@@ -488,7 +488,7 @@ towerDefense.components = (function(graphics) {
           var newBullet = Bullet({
               x : that.x*20 + 10,
               y : that.y*20 + 10,
-              speed : 10,
+              speed : 30,
               radius : 3,
               color : 'black',
               targetX : that.target.x+10,
@@ -569,7 +569,7 @@ towerDefense.components = (function(graphics) {
             that.velocityX = (diffX / distance) * that.speed;
             that.velocityY = (diffY / distance) * that.speed;
             
-            if(distance > that.radius/2) {
+            if(distance > that.radius) {
                 that.x += that.velocityX;
                 that.y += that.velocityY;
             }
@@ -923,6 +923,7 @@ towerDefense.components = (function(graphics) {
                   y: spec.center.y - spec.topBar,
                   healthColor : spec.healthColor,
                   healthBar : spec.healthBar,
+                  percent : that.percent,
               });
 		};
 		
@@ -1026,6 +1027,15 @@ towerDefense.components = (function(graphics) {
         // that.health = spec.life - 20;
         that.armor = spec.armor;
         that.flying = spec.flying;
+        that.health = spec.life;
+        that.dead = false;
+        that.percent = that.health / that.life;
+        that.x = spec.center.x;
+        that.y = spec.center.y;
+        that.life = spec.life;
+        that.width = spec.width;
+        that.reachedGoal = false;
+        that.attackDistance = 10;
 
 		that.update = function(elapsedTime, gameGridObj) {
             
@@ -1045,28 +1055,30 @@ towerDefense.components = (function(graphics) {
                 that.movementStack = solveGrid({ x: xGrid, y: yGrid }, tempGameObj);
 
                 moveStack = reverse(that.movementStack);
+                
+                that.percent = that.health / that.life;
 
                 // console.log("life: ", spec.life);
-                if (that.health == spec.life){
+                if (that.health === spec.life){
                  spec.healthColor = "visiable";
                 }
                 else if (that.health < spec.life && that.health >= spec.life * 0.7) {
                     spec.healthColor = "green";
-                    spec.healthBar = (that.health / spec.life) * 50;
+                    // spec.healthBar = (that.health / spec.life) * 50;
                     //  console.log("green");
                 }
                 else if (that.health < spec.life * 0.7 && that.health >= spec.life * 0.45) {
                     spec.healthColor = 'yellow';
-                    spec.healthBar = (that.health / spec.life) * 50;
+                    // spec.healthBar = (that.health / spec.life) * 50;
                     //  console.log("yellow");
                 }
                 else if (that.health < spec.life * 0.45 && that.health >= 1) {
                     spec.healthColor = 'red';
-                    spec.healthBar = (that.health / spec.life) * 50;
+                    // spec.healthBar = (that.health / spec.life) * 50;
                     //  console.log('red');
                 }
                 else {
-                    //  creeps.pop(); // change to that = undefined when moved to computent creep.update section
+                    that.dead = true; // change to that = undefined when moved to computent creep.update section
                 }
 
                 if (moveStack !== false) {
@@ -1138,7 +1150,7 @@ towerDefense.components = (function(graphics) {
                     //  console.log('red');
                 }
                 else {
-                    //  creeps.pop(); // change to that = undefined when moved to computent creep.update section
+                    that.dead = true; // change to that = undefined when moved to computent creep.update section
                 }
             }
 

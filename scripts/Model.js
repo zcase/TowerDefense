@@ -281,7 +281,7 @@ towerDefense.model = (function (components, graphics, input) {
                 base : true,
                 tower : false,
                 nonBase : false,
-                scalar : 1.5,
+                scalar : 3,
             });
             
             var createdBase = components.Tower({
@@ -673,7 +673,7 @@ towerDefense.model = (function (components, graphics, input) {
 			rotation : 0,
             // percent_of_size: 100/150,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 25/1000,			// pixels per millisecond
+			moveRate : 15/1000,			// pixels per millisecond
 			rotateRate : Math.PI / 2 / 1000,
             armor : 0,
             flying : false,
@@ -698,7 +698,7 @@ towerDefense.model = (function (components, graphics, input) {
             percent_of_size: 20/150,
 			rotation : 0,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 30/1000,			// pixels per millisecond
+			moveRate : 15/1000,			// pixels per millisecond
 			rotateRate : Math.PI / 2 / 1000,
             armor : 30,
             flying : false,
@@ -723,7 +723,7 @@ towerDefense.model = (function (components, graphics, input) {
             width : 150,
             height: 150,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 40 / 1000,			// pixels per millisecond
+			moveRate : 20 / 1000,			// pixels per millisecond
 			rotateRate : 0,	// Radians per millisecond
             armor: 10,
             flying : true,
@@ -749,7 +749,7 @@ towerDefense.model = (function (components, graphics, input) {
             percent_of_size: 20/150,
 			rotation : 0,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 28/1000,			// pixels per millisecond
+			moveRate : 20/1000,			// pixels per millisecond
 			rotateRate : Math.PI / 2 / 1000,
             flying : false,
             life : 120,
@@ -762,10 +762,10 @@ towerDefense.model = (function (components, graphics, input) {
     function updatePlaying(elapsedTime) {
         if( count < 1 && count <=2) {
             createCreep();
-            // createPersonCreep();
+            createPersonCreep();
             createDragonCreep();
-            // createNaziCreep();
-            // createBossCreep();
+            createNaziCreep();
+            createBossCreep();
             
             count++;
         }
