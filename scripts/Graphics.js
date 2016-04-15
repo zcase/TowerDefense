@@ -234,7 +234,44 @@ towerDefense.graphics = (function() {
 
         return that;
     }
-
+    
+    function drawHealthBar(spec){
+        ctx.beginPath();
+        
+        
+        if (spec.healthColor === 'green'){
+            ctx.fillStyle = 'rgba(80,80,80,0.4)';
+            ctx.fillRect(spec.x, spec.y, 50, 8);
+            ctx.fillStyle = 'rgba(0, 255, 0, 1)';
+            ctx.fillRect(spec.x, spec.y, 50*spec.percent, 8);
+            ctx.strokeStyle = 'rgba(80,80,80,1)';
+        }
+        else if (spec.healthColor === 'yellow'){
+            ctx.fillStyle = 'rgba(80,80,80,0.4)';
+            ctx.fillRect(spec.x, spec.y, 50, 8);
+            ctx.fillStyle = 'rgba(255,255,0,1)';
+            ctx.fillRect(spec.x, spec.y, 50*spec.percent, 8);
+            ctx.strokeStyle = 'rgba(80,80,80,1)';
+        }
+        else if (spec.healthColor === 'red'){
+            ctx.fillStyle = 'rgba(80,80,80,0.4)';
+            ctx.fillRect(spec.x, spec.y, 50, 8);
+            ctx.fillStyle = 'rgba(255, 0, 0, 1)';
+            ctx.fillRect(spec.x, spec.y, 50*spec.percent, 8);
+            ctx.strokeStyle = 'rgba(80,80,80,1)';
+        }
+        else if (spec.healthColor === 'visiable'){
+            ctx.fillStyle = 'rgba(80,80,80,0)';
+            ctx.fillRect(spec.x, spec.y, 50, 8);
+            ctx.fillStyle = 'rgba(0,0,0,0)';
+            ctx.fillRect(spec.x, spec.y, 50*spec.percent, 8);
+            ctx.strokeStyle = 'rgba(80,80,80,0)';
+        }
+  
+        ctx.fillRect(spec.x, spec.y, spec.healthBar, 8);
+        ctx.strokeRect(spec.x, spec.y, 50, 8);
+        ctx.closePath();
+    }
 
     //************************************************************
     //                    Tower Graphics Area
@@ -288,7 +325,6 @@ towerDefense.graphics = (function() {
      * 
      */
     function drawTower(spec) {
-        var scalar = 2;
 
         if (spec.isSelected === true) {
             drawTowerRange(spec);
@@ -303,10 +339,28 @@ towerDefense.graphics = (function() {
 
         ctx.drawImage(
             spec.image,
-            spec.x - (spec.width*scalar) / 2 +2,
-            spec.y - ((spec.height*scalar) / 2) -2,
-            spec.width*scalar,
-            spec.height*scalar);
+            spec.x - (spec.width * spec.scalar) / 2 + 1,
+            spec.y - ((spec.height * spec.scalar) / 2) - 1,
+            spec.width * spec.scalar,
+            spec.height * spec.scalar);
+
+        ctx.restore();
+    }
+
+    function drawBase(spec) {
+        
+        ctx.save();
+
+        ctx.translate(spec.x, spec.y);
+        ctx.rotate(spec.rotation);
+        ctx.translate(-spec.x, -spec.y);
+
+        ctx.drawImage(
+            image,
+            spec.x - (spec.width * spec.scalar) / 2 + 1,
+            spec.y - ((spec.height * spec.scalar) / 2) - 1,
+            spec.width * spec.scalar,
+            spec.height * spec.scalar);
 
         ctx.restore();
     }
@@ -365,7 +419,7 @@ towerDefense.graphics = (function() {
                 // ctx.fillStyle = 'red';
                 // ctx.fillRect(i*tile.row, j*tile.col, spec.tilesize, spec.tilesize);
                 ctx.fillRect(i*spec.tilesize, j*spec.tilesize, spec.tilesize, spec.tilesize);
-                ctx.strokeRect(i* spec.tilesize*2, j * spec.tilesize*2, spec.tilesize*2, spec.tilesize*2);
+                // ctx.strokeRect(i* spec.tilesize*2, j * spec.tilesize*2, spec.tilesize*2, spec.tilesize*2);
             }
         }
     }
@@ -383,7 +437,9 @@ towerDefense.graphics = (function() {
         drawGrid: drawGrid,
         drawCreep: drawCreep,
         drawCreepBasic : drawCreepBasic,
+        drawHealthBar : drawHealthBar,
         TowerSprite : TowerSprite,
+        drawBase : drawBase,
         drawArc : drawArc,
         drawCircleBullet : drawCircleBullet,
     }
