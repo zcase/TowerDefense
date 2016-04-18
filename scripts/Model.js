@@ -1,4 +1,4 @@
-towerDefense.model = (function (components, graphics, input) {
+towerDefense.model = (function (components, graphics, input, sound) {
     var gameGrid,
         tower,
         towers = [],
@@ -11,15 +11,20 @@ towerDefense.model = (function (components, graphics, input) {
         livesRemaining = 10,
         keyboard = input.Keyboard(),
         mouseArray = [],
-        mouse = input.Keyboard(),
+        // mouse = input.Keyboard(),
         mouseCapture = true,
         internalUpdate,
         internalRender,
         towerCount = 0,
         startGameValue = false,
         money,
-        towerCount = 0;
-        creepStartingPostitions = [{x : 0, y : 310}, {x: 0, y : 330}, {x: 0 , y: 270}];
+        towerCount = 0,
+        towerPlacementSound = sound.sound('sounds/towerPlacement.mp3'),
+        creepStartingPostitionsLevel1 = [{x : -20, y : 310}, {x: -20, y : 330}, {x: -20 , y: 270}], // Left to right
+        creepStartingPostitionsLevel2 = [{x : 19, y : 0}, {x: 19, y : 0}, {x: 19 , y: 0}], // Top to bottom,
+        creepStartingPostitionsLevel3 = [{x : -20, y : 310}, {x: -20, y : 330}, {x: -20 , y: 270}, {x : 19, y : 0}, {x: 19, y : 0}, {x: 19 , y: 0}], //Left to Right, Top to Bottom
+        
+        delayStartTimes = [0, 0.50, 1, 1.50, 2, 2.50, 3, 3.50, 4, 4.50, 5, 5.50, 6, 6.50, 7, 7.50, 8, 8.50, 9];
     
     var count = 0;
     
@@ -30,10 +35,11 @@ towerDefense.model = (function (components, graphics, input) {
                 var image;
                 if(towers[i].level === 2) {
                     towers[i].image = towers[i].image2;
-                    towers[i].cost += 4;
-                    towers[i].strength += 3;
-                    towers[i].attackDistance += 20;
-                    towers[i].upgradeCost += 4;
+                    towers[i].cost += 4;             // Change to a percentage of current tower.
+                    towers[i].strength += 3;         // Change to a percentage of current tower.
+                    towers[i].attackDistance += 20;  
+                    towers[i].upgradeCost += 4;      // Change to a percentage of current tower.
+                    // Change fire rate by percentage
                     money -= towers[i].upgradeCost;
                     
                 } else if(towers[i].level === 3) {
@@ -70,7 +76,7 @@ towerDefense.model = (function (components, graphics, input) {
         internalRender = renderPlaying;
         
         
-        var GeneralKeyboard = input.Keyboard();
+        // var GeneralKeyboard = input.Keyboard();
         
         // GeneralKeyboard.registerCommand(KeyEvent.DOM_VK_S, startGame());
         
@@ -150,11 +156,13 @@ towerDefense.model = (function (components, graphics, input) {
                 level : 1,
                 cost : 5,
                 strength : 5,
-                attackDistance : 20 * 3,
+                attackDistance : 20 * 4,
                 upgradeCost : 8,
                 base : true,
                 tower : false,
                 nonBase : false,
+                type : 'ground',
+                sound : 'sounds/gun1Shot.mp3',
                 scalar : 2.5,
             });
             
@@ -187,11 +195,11 @@ towerDefense.model = (function (components, graphics, input) {
                     var yPos = Math.floor(y);
                     var actX = Math.floor(e.clientX);
                     var actY = Math.floor(e.clientY);
-                    console.log("Grid X: " + xPos);
-                    console.log("Grid Y: " + yPos);
-                    console.log("Mouse X: " + actX);
-                    console.log("Mouse Y: " + actY);
-                    console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
+                    // console.log("Grid X: " + xPos);
+                    // console.log("Grid Y: " + yPos);
+                    // console.log("Mouse X: " + actX);
+                    // console.log("Mouse Y: " + actY);
+                    // console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
                     
                     // This snaps the object to the nearest square to the left
                     if(gameGrid.layout[xPos][yPos].taken === false && createdTower.blocking === false){
@@ -202,6 +210,7 @@ towerDefense.model = (function (components, graphics, input) {
                         createdMouse.deregisterCommand('mousedown');
                         createdTower.isSelected = false;
                         createdTower.placed = true;
+                        towerPlacementSound.play();
                         // document.getElementById('upgradeButton').style.visibility = "hidden";
                     }
                     
@@ -219,16 +228,16 @@ towerDefense.model = (function (components, graphics, input) {
                     var xPos = Math.floor(x);
                     var yPos = Math.floor(y);
                     
-                    console.log("MovingMouseX = " + xPos);
-                    console.log("MovingMouseY = " + yPos);
-                    console.log('\n');
+                    // console.log("MovingMouseX = " + xPos);
+                    // console.log("MovingMouseY = " + yPos);
+                    // console.log('\n');
                     
                     if(e.clientX >=0 && e.clientX <= 850 && e.clientY >= 0 && e.clientY <= 650) {
                         createdTower.moveTo({x : xPos*20 +10, y : yPos*20 + 10   });
                         createdBase.moveTo({x : xPos*20 +10, y : yPos*20 + 10   });
                         createdTower.inCanvas = true;
-                        console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
-                        console.log("Blocking = "+ createdTower.blocking);
+                        // console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
+                        // console.log("Blocking = "+ createdTower.blocking);
                     }else {
                         createdTower.inCanvas = false;
                     }
@@ -242,7 +251,7 @@ towerDefense.model = (function (components, graphics, input) {
                     // createdTower.moveTo({x : e.clientX, y : e.clientY });
 
                  
-                    if((createdTower.inCanvas === true && gameGrid.layout[xPos][yPos].taken === true) ||(createdTower.inCanvas === true && createdTower.blocking === true)){
+                    if((createdTower.inCanvas === true && gameGrid.layout[xPos][yPos].taken === true) || (createdTower.inCanvas === true && createdTower.blocking === true)){
                         createdTower.positionColor = 'red'
                     } else {
                         createdTower.positionColor = 'green';
@@ -276,11 +285,13 @@ towerDefense.model = (function (components, graphics, input) {
                 level : 1,
                 cost : 8,
                 strength : 20,
-                attackDistance : 20 * 3,
+                attackDistance : 20 * 5,
                 upgradeCost : 11,
                 base : true,
                 tower : false,
                 nonBase : false,
+                type : 'ground',
+                sound : 'sounds/cannonShot.mp3',
                 scalar : 3,
             });
             
@@ -314,11 +325,11 @@ towerDefense.model = (function (components, graphics, input) {
                     var yPos = Math.floor(y);
                     var actX = Math.floor(e.clientX);
                     var actY = Math.floor(e.clientY);
-                    console.log("Grid X: " + xPos);
-                    console.log("Grid Y: " + yPos);
-                    console.log("Mouse X: " + actX);
-                    console.log("Mouse Y: " + actY);
-                    console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
+                    // console.log("Grid X: " + xPos);
+                    // console.log("Grid Y: " + yPos);
+                    // console.log("Mouse X: " + actX);
+                    // console.log("Mouse Y: " + actY);
+                    // console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
                     
                     // This snaps the object to the nearest square to the left
                     if(gameGrid.layout[xPos][yPos].taken === false && createdTower.blocking === false){
@@ -329,6 +340,7 @@ towerDefense.model = (function (components, graphics, input) {
                         createdMouse.deregisterCommand('mousedown');
                         createdTower.isSelected = false;
                         createdTower.placed = true;
+                        towerPlacementSound.play();
                         // document.getElementById('upgradeButton').style.visibility = "hidden";  
                     }
                     
@@ -346,16 +358,16 @@ towerDefense.model = (function (components, graphics, input) {
                     var xPos = Math.floor(x);
                     var yPos = Math.floor(y);
                     
-                    console.log("MovingMouseX = " + xPos);
-                    console.log("MovingMouseY = " + yPos);
-                    console.log('\n');
+                    // console.log("MovingMouseX = " + xPos);
+                    // console.log("MovingMouseY = " + yPos);
+                    // console.log('\n');
                     
                     if(e.clientX >=0 && e.clientX <= 850 && e.clientY >= 0 && e.clientY <= 650) {
                         createdTower.moveTo({x : xPos*20 +10, y : yPos*20 + 10   });
                         createdBase.moveTo({x : xPos*20 +10, y : yPos*20 + 10   });
                         createdTower.inCanvas = true;
-                        console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
-                        console.log("Blocking = "+ createdTower.blocking);
+                        // console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
+                        // console.log("Blocking = "+ createdTower.blocking);
                     }else {
                         createdTower.inCanvas = false;
                     }
@@ -402,11 +414,13 @@ towerDefense.model = (function (components, graphics, input) {
                 level: 1,
                 cost: 12,
                 strength: 10,
-                attackDistance: 20 * 4,
+                attackDistance: 20 * 6,
                 upgradeCost: 15,
                 base : false,
                 tower : true,
                 nonBase : false,
+                type : 'both',
+                sound : 'sounds/cannonShot.mp3',
                 scalar: 2.5,
             }),
                 createdRoof = components.Tower({
@@ -439,11 +453,11 @@ towerDefense.model = (function (components, graphics, input) {
                     var yPos = Math.floor(y);
                     var actX = Math.floor(e.clientX);
                     var actY = Math.floor(e.clientY);
-                    console.log("Grid X: " + xPos);
-                    console.log("Grid Y: " + yPos);
-                    console.log("Mouse X: " + actX);
-                    console.log("Mouse Y: " + actY);
-                    console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
+                    // console.log("Grid X: " + xPos);
+                    // console.log("Grid Y: " + yPos);
+                    // console.log("Mouse X: " + actX);
+                    // console.log("Mouse Y: " + actY);
+                    // console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
                     
                     // This snaps the object to the nearest square to the left
                     if(gameGrid.layout[xPos][yPos].taken === false && createdTower.blocking === false){
@@ -454,6 +468,7 @@ towerDefense.model = (function (components, graphics, input) {
                         createdMouse.deregisterCommand('mousedown');
                         createdTower.isSelected = false;
                         createdTower.placed = true;
+                        towerPlacementSound.play();
                         // document.getElementById('upgradeButton').style.visibility = "hidden";  
                     }
                     
@@ -471,16 +486,16 @@ towerDefense.model = (function (components, graphics, input) {
                     var xPos = Math.floor(x);
                     var yPos = Math.floor(y);
                     
-                    console.log("MovingMouseX = " + xPos);
-                    console.log("MovingMouseY = " + yPos);
-                    console.log('\n');
+                    // console.log("MovingMouseX = " + xPos);
+                    // console.log("MovingMouseY = " + yPos);
+                    // console.log('\n');
                     
                     if(e.clientX >=0 && e.clientX <= 850 && e.clientY >= 0 && e.clientY <= 650) {
                         createdTower.moveTo({x : xPos*20 +10, y : yPos*20 + 10   });
                         createdRoof.moveTo({x : xPos*20 +10, y : yPos*20 + 10   });
                         createdTower.inCanvas = true;
-                        console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
-                        console.log("Blocking = "+ createdTower.blocking);
+                        // console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
+                        // console.log("Blocking = "+ createdTower.blocking);
                     }else {
                         createdTower.inCanvas = false;
                     }
@@ -525,13 +540,15 @@ towerDefense.model = (function (components, graphics, input) {
                 towerNum : towerCount,
                 inCanvas : false,
                 strength : 20,
-                attackDistance : 20 * 5,
+                attackDistance : 20 * 7,
                 level : 1,
                 cost : 12,
                 upgradeCost : 15,
                 base : false,
                 tower : false,
                 nonBase : true,
+                type : 'flying',
+                sound : 'sounds/anitAir.mp3',
                 scalar : 2.5,
             });
             
@@ -552,11 +569,11 @@ towerDefense.model = (function (components, graphics, input) {
                     var yPos = Math.floor(y);
                     var actX = Math.floor(e.clientX);
                     var actY = Math.floor(e.clientY);
-                    console.log("Grid X: " + xPos);
-                    console.log("Grid Y: " + yPos);
-                    console.log("Mouse X: " + actX);
-                    console.log("Mouse Y: " + actY);
-                    console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
+                    // console.log("Grid X: " + xPos);
+                    // console.log("Grid Y: " + yPos);
+                    // console.log("Mouse X: " + actX);
+                    // console.log("Mouse Y: " + actY);
+                    // console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
                     
                     // This snaps the object to the nearest square to the left
                     if(gameGrid.layout[xPos][yPos].taken === false && createdTower.blocking === false){
@@ -566,6 +583,7 @@ towerDefense.model = (function (components, graphics, input) {
                         createdMouse.deregisterCommand('mousedown');
                         createdTower.isSelected = false;
                         createdTower.placed = true;
+                        towerPlacementSound.play();
                         // document.getElementById('upgradeButton').style.visibility = "hidden";   
                     }
                     
@@ -583,15 +601,15 @@ towerDefense.model = (function (components, graphics, input) {
                     var xPos = Math.floor(x);
                     var yPos = Math.floor(y);
                     
-                    console.log("MovingMouseX = " + xPos);
-                    console.log("MovingMouseY = " + yPos);
-                    console.log('\n');
+                    // console.log("MovingMouseX = " + xPos);
+                    // console.log("MovingMouseY = " + yPos);
+                    // console.log('\n');
                     
                     if(e.clientX >=0 && e.clientX <= 850 && e.clientY >= 0 && e.clientY <= 650) {
                         createdTower.moveTo({x : xPos*20 +10, y : yPos*20 + 10   });
                         createdTower.inCanvas = true;
-                        console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
-                        console.log("Blocking = "+ createdTower.blocking);
+                        // console.log("Gamegrid[mousex][mousey].taken = " + gameGrid.layout[xPos][yPos].row + ", "+ gameGrid.layout[xPos][yPos].col + ", "+gameGrid.layout[xPos][yPos].taken);
+                        // console.log("Blocking = "+ createdTower.blocking);
                     }else {
                         createdTower.inCanvas = false;
                     }
@@ -616,52 +634,35 @@ towerDefense.model = (function (components, graphics, input) {
         }      
     } // End createLowLevelTower
 
-    function createCreep() {
-        
-        var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
+    function createCreep(delayTimes, startPositions) {
+        var randomStart = startPositions[Math.floor(Math.random()*startPositions.length)];
+        var randomStartTime = delayTimes[Math.floor(Math.random() *delayTimes.length)];
+
         
         var creep = components.Creep({
             image : 'images/USU-Logo.png',
-            center : { x: 10, y: 290 },
-            // center : randomStart,
+            // center : { x: 10, y: 290 },
+            center : randomStart,
             width : 20,
             height : 20,
             rotation : 0,
-            moveRate : 10,
-            flying : false,
-            
+            moveRate : 20,
+            type : 'ground',
+            delayTime : randomStartTime,
+            // delayTime : randomStartTime,
             life : 100,
             // healthColor : 'green',
             
         });
-        
-        // var health = 50;
-        
-        // if (health >= creep.life * 0.667){
-        //      creep.healthColor = "green";
-        //      creep.healthBar = 50 * 0.7;
-        //     //  creep.render(graphics);
-        //      console.log("green");
-        //  }
-        //  else if(health < creep.life * 0.667 && health >= creep.life * 0.33){
-        //      creep.healthColor = 'yellow';
-        //      console.log("yellow");
-        //  }
-        //  else if(health < creep.life * 0.333 && health >= 1){
-        //      creep.healthColor = 'red';
-        //      console.log('red');
-        //  }
-        //  else{
-        //      creeps.pop(); // change to that = undefined when moved to computent creep.update section
-        //  }
-         
+
         creeps.push(creep);
     }
     
     function createPersonCreep(){
         
-        var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
-        
+        var randomStart = creepStartingPostitionsLevel1[Math.floor(Math.random()*creepStartingPostitionsLevel1.length)];
+        var randomStartTime = delayStartTimes[Math.floor(Math.random() *delayStartTimes.length)];
+
         person = components.AnimatedMoveModel({
             spriteSheet : 'images/personSprite.png',
             spriteCount : 7,
@@ -673,19 +674,23 @@ towerDefense.model = (function (components, graphics, input) {
 			rotation : 0,
             // percent_of_size: 100/150,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 15/1000,			// pixels per millisecond
+			moveRate : 20/1000,			// pixels per millisecond
 			rotateRate : Math.PI / 2 / 1000,
             armor : 0,
-            flying : false,
+            type : 'ground',
             life : 70,
             rightBar : 25,
+            delayTime : randomStartTime,
             topBar : 25,
+            
         }, graphics);
         creeps.push(person);
     }
     
     function createNaziCreep(){
-        var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
+        var randomStart = creepStartingPostitionsLevel1[Math.floor(Math.random()*creepStartingPostitionsLevel1.length)];
+        var randomStartTime = delayStartTimes[Math.floor(Math.random() *delayStartTimes.length)];
+ 
         
         nazi = components.AnimatedMoveModel({
             spriteSheet : 'images/naziSprite.png',
@@ -698,12 +703,13 @@ towerDefense.model = (function (components, graphics, input) {
             percent_of_size: 20/150,
 			rotation : 0,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 15/1000,			// pixels per millisecond
+			moveRate : 100/1000,			// pixels per millisecond
 			rotateRate : Math.PI / 2 / 1000,
             armor : 30,
-            flying : false,
+            type : 'ground',
             life : 80,
             rightBar : 25,
+            delayTime : randomStartTime,
             topBar : 25,
         }, graphics);
         creeps.push(nazi);
@@ -711,7 +717,8 @@ towerDefense.model = (function (components, graphics, input) {
     
     function createDragonCreep() {
         
-        var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
+        var randomStart = creepStartingPostitionsLevel1[Math.floor(Math.random()*creepStartingPostitionsLevel1.length)];
+        var randomStartTime = delayStartTimes[Math.floor(Math.random() *delayStartTimes.length)];
         
         dragon = components.AnimatedMoveModel( {
 			spriteSheet : 'images/dragonSprite.png',
@@ -723,12 +730,13 @@ towerDefense.model = (function (components, graphics, input) {
             width : 150,
             height: 150,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 20 / 1000,			// pixels per millisecond
+			moveRate : 100 / 1000,			// pixels per millisecond
 			rotateRate : 0,	// Radians per millisecond
             armor: 10,
-            flying : true,
+            type : 'flying',
             life : 100,
             rightBar : 25,
+            delayTime : randomStartTime,
             topBar : 50,
 		}, graphics);
         creeps.push(dragon);
@@ -736,7 +744,8 @@ towerDefense.model = (function (components, graphics, input) {
     }
 
     function createBossCreep(){
-        var randomStart = creepStartingPostitions[Math.floor(Math.random()*creepStartingPostitions.length)];
+        var randomStart = creepStartingPostitionsLevel1[Math.floor(Math.random()*creepStartingPostitionsLevel1.length)];
+        var randomStartTime = delayStartTimes[Math.floor(Math.random() *delayStartTimes.length)];
         
         boss = components.AnimatedMoveModel({
             spriteSheet : 'images/bossSprite.png',
@@ -754,22 +763,135 @@ towerDefense.model = (function (components, graphics, input) {
             flying : false,
             life : 120,
             rightBar : 25,
+            delayTime : randomStartTime,
             topBar : 30,
         }, graphics);
         creeps.push(boss);
     }
+    
+    
+    
+    // Create a Wave
+    function Wave1(LevelStartingPositions) {
+        var temp = delayStartTimes;
+        // 10 total creeps all easy creeps
+        for(var i = 0; i < 10; i++) {
+            createCreep(temp, LevelStartingPositions);
+            if(temp.length === 0) {
+                temp = delayStartTimes;
+            } else {
+                temp.pop();
+            }
+        }
+    }
+    
+    function Wave2(LevelStartingPositions) {
+        // 12 total creeps differenct varaity
+        var temp = delayStartTimes;
+        
+        createCreep();
+        createCreep();
+        createCreep();
+        createPersonCreep()
+        createPersonCreep()
+        createCreep();
+        createPersonCreep()
+        createPersonCreep()
+        createPersonCreep()
+        createCreep();
+        createCreep();
+        createNaziCreep();
+    }
+    
+    function Wave3 (LevelStartingPositions) {
+        //16 total creeps
+        var temp = delayStartTimes;
+        
+        createCreep();
+        createCreep();
+        createNaziCreep();
+        createCreep();
+        createPersonCreep()
+        createNaziCreep();
+        createPersonCreep()
+        createCreep();
+        createPersonCreep()
+        createPersonCreep()
+        createNaziCreep();
+        createPersonCreep()
+        createCreep();
+        createNaziCreep();
+        createCreep();
+        createNaziCreep();
+    }
+    
+    function Wave4(LevelStartingPositions) {
+        // 20 total creeps
+        var temp = delayStartTimes;
+        
+        createDragonCreep();
+        createDragonCreep();
+        createCreep();
+        createCreep();
+        createNaziCreep();
+        createCreep();
+        createPersonCreep()
+        createNaziCreep();
+        createPersonCreep()
+        createCreep();
+        createPersonCreep()
+        createPersonCreep()
+        createNaziCreep();
+        createPersonCreep()
+        createCreep();
+        createDragonCreep();
+        createDragonCreep();
+        createNaziCreep();
+        createCreep();
+        createNaziCreep();
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
         
     function updatePlaying(elapsedTime) {
         if( count < 1 && count <=2) {
-            createCreep();
-            createPersonCreep();
-            createDragonCreep();
-            createNaziCreep();
-            createBossCreep();
-            
+        //     createCreep();
+            // createPersonCreep();
+        //     // createCreep();
+        //     createDragonCreep();
+        //     // createNaziCreep();
+        //     // createBossCreep();
+            Wave1(creepStartingPostitionsLevel1);
             count++;
         }
-        
         
         // Update each tower
         for(var i = 0; i < towers.length; i++) {
@@ -787,16 +909,14 @@ towerDefense.model = (function (components, graphics, input) {
         
         // Update each creep
         for(var i = 0; i < creeps.length; i++) {
-            // internalUpdate = createPersonCreep;
-            // creeps[i].moveForward(elapsedTime);
+
             creeps[i].update(elapsedTime, gameGrid); // need to create update fuction to update creep movement, life, sprite postion
-            if(creeps[i].x >= 41 || creeps[i].dead === true) {
+            if(creeps[i].x >= 41 || creeps[i].dead === true || creeps[i].health <= 0) {
                 var index = creeps.indexOf(creeps[i]);
                 creeps.splice(index, 1);
             }
         }
         
-        //update munitions
         
         // Create update for score based on creeps killed/ creeps pass to other side
     }
@@ -805,27 +925,16 @@ towerDefense.model = (function (components, graphics, input) {
         gameGrid.render(graphics);
 
         for(var i = 0; i < towers.length; i++) {
-            if (towers[i].tower.base) {
-                // for (var i = 0; i < towers.length; i++) {
-                    // for (var j = 0; i < bases.length; j++){
-                    //     bases[j].render(graphics);
-                    // }                    
-                    towers[i].base.render(graphics);
-                    towers[i].tower.render(graphics);
-                // }
+            if (towers[i].tower.base) {                  
+               towers[i].base.render(graphics);
+               towers[i].tower.render(graphics);
             }
             if (towers[i].tower.tower) {
-                // for (var i = 0; i < towers.length; i++) {
-                    towers[i].tower.render(graphics);
-                    towers[i].roof.render(graphics);
-                    // createLowLevelTower3.createdRoof.render;
-                    // render(graphics);
-                // }
+               towers[i].tower.render(graphics);
+               towers[i].roof.render(graphics);
             }
             if (towers[i].tower.nonBase) {
-                // for (var i = 0; i < towers.length; i++) {
-                    towers[i].tower.render(graphics);
-                // }
+                towers[i].tower.render(graphics);
             }
         }
         
@@ -857,44 +966,6 @@ towerDefense.model = (function (components, graphics, input) {
 
     function render() {
         internalRender();
-
-        // if (towers.length > 0) {
-        //     // for(var i = 0; i < towers.length; i++) {
-        // if (base) {
-        //     for (var i = 0; i < towers.length; i++) {
-        //         bases[i].render(graphics);
-        //         towers[i].render(graphics);
-        //     }
-        // }
-        // if (tower) {
-        //     for (var i = 0; i < towers.length; i++) {
-        //         towers[i].render(graphics);
-        //         // createLowLevelTower3.createdRoof.render;
-        //         roof[i].render(graphics);
-        //     }
-        // }
-        // if (nonBase) {
-        //     for (var i = 0; i < towers.length; i++) {
-        //         towers[i].render(graphics);
-        //     }
-        // }
-        // // }
-        // }
-        
-        // if(bullets.length > 0) {
-        //     for(var i = 0; i < bullets.length; i++) {
-        //         bullets[i].render();
-        //     }
-        // }
-        
-        // if(creeps.length > 0 ) {
-        //     for(var i = 0; i < creeps.length; i++) {
-        //         creeps[i].render(graphics);
-        //     }
-        // }
-        
-        // document.getElementById('moneyLabel').innerHTML = 'Money = $' + money;
-        
     } // End render
     
         
@@ -913,4 +984,4 @@ towerDefense.model = (function (components, graphics, input) {
        upgrade : upgrade,
    }
     
-}(towerDefense.components, towerDefense.graphics, towerDefense.input));
+}(towerDefense.components, towerDefense.graphics, towerDefense.input, towerDefense.sound));

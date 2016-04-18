@@ -1,21 +1,22 @@
 
-towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, input) {
+towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, input, sound) {
 
-    var keyboard = input.Keyboard(),
-        stopGame = false,
+    var stopGame = false,
         mouseCapture = false,
-        mouse = input.Mouse();
-        lastTime = performance.now();
+        mouse = input.Mouse(),
+        lastTime = performance.now(),
+        backgroundSound;
+        // keyboard = input.Keyboard(),
 
     function initialize() {
     
-        keyboard.registerCommand(KeyEvent.DOM_VK_ESCAPE, function() {
+        // keyboard.registerCommand(KeyEvent.DOM_VK_ESCAPE, function() {
             
-            stopGame = true;
+        //     stopGame = true;
             
-            screens.showScreen('mainMenu');
-        });
-    
+        //     screens.showScreen('mainMenu');
+        // });
+        
         document.getElementById('gameBack').addEventListener(
             'click',
             function() {screens.showScreen('mainMenu'); });
@@ -25,7 +26,7 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
     
     // Process Input
     function processInput(elapsedTime) {
-        keyboard.update(elapsedTime);
+        // keyboard.update(elapsedTime);
         gameModel.processInput(elapsedTime);
     }
     
@@ -64,6 +65,10 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
         lastTime = performance.now();
         
         stopGame = false;
+        
+        backgroundSound = sound.sound('sounds/determination.mp3');
+        backgroundSound.play();
+        
         requestAnimationFrame(gameLoop);
         
     }
@@ -74,4 +79,4 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
     };
 
 
-}(towerDefense.model, towerDefense.screens, towerDefense.graphics, towerDefense.input));
+}(towerDefense.model, towerDefense.screens, towerDefense.graphics, towerDefense.input, towerDefense.sound));

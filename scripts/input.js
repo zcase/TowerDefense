@@ -156,6 +156,7 @@ towerDefense.input = (function() {
             
         function keyPress(e) {
             that.keys[e.keyCode] = e.timestamp;
+            console.log("KEYS PRESSED = "+ e.keyCode);
         }
         
         function keyRelease(e) {
