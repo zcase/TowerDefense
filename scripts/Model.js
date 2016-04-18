@@ -6,6 +6,7 @@ towerDefense.model = (function (components, graphics, input) {
         roof = [],
         bullets = [],
         creeps = [],
+        displayArray = [],
         creep,
         score,
         livesRemaining = 10,
@@ -18,6 +19,7 @@ towerDefense.model = (function (components, graphics, input) {
         towerCount = 0,
         startGameValue = false,
         money,
+        
         towerCount = 0;
         creepStartingPostitions = [{x : 0, y : 310}, {x: 0, y : 330}, {x: 0 , y: 270}];
     
@@ -150,7 +152,7 @@ towerDefense.model = (function (components, graphics, input) {
                 level : 1,
                 cost : 5,
                 strength : 5,
-                attackDistance : 20 * 3,
+                attackDistance : 20 * 6,
                 upgradeCost : 8,
                 base : true,
                 tower : false,
@@ -276,7 +278,7 @@ towerDefense.model = (function (components, graphics, input) {
                 level : 1,
                 cost : 8,
                 strength : 20,
-                attackDistance : 20 * 3,
+                attackDistance : 20 * 8,
                 upgradeCost : 11,
                 base : true,
                 tower : false,
@@ -402,7 +404,7 @@ towerDefense.model = (function (components, graphics, input) {
                 level: 1,
                 cost: 12,
                 strength: 10,
-                attackDistance: 20 * 4,
+                attackDistance: 20 * 10,
                 upgradeCost: 15,
                 base : false,
                 tower : true,
@@ -525,7 +527,7 @@ towerDefense.model = (function (components, graphics, input) {
                 towerNum : towerCount,
                 inCanvas : false,
                 strength : 20,
-                attackDistance : 20 * 5,
+                attackDistance : 20 * 15,
                 level : 1,
                 cost : 12,
                 upgradeCost : 15,
@@ -629,7 +631,7 @@ towerDefense.model = (function (components, graphics, input) {
             rotation : 0,
             moveRate : 10,
             flying : false,
-            
+            point : 2,
             life : 100,
             // healthColor : 'green',
             
@@ -680,6 +682,7 @@ towerDefense.model = (function (components, graphics, input) {
             life : 70,
             rightBar : 25,
             topBar : 25,
+            point : 5
         }, graphics);
         creeps.push(person);
     }
@@ -705,6 +708,7 @@ towerDefense.model = (function (components, graphics, input) {
             life : 80,
             rightBar : 25,
             topBar : 25,
+            point : 10
         }, graphics);
         creeps.push(nazi);
     }
@@ -730,6 +734,7 @@ towerDefense.model = (function (components, graphics, input) {
             life : 100,
             rightBar : 25,
             topBar : 50,
+            point : 15
 		}, graphics);
         creeps.push(dragon);
         
@@ -755,17 +760,45 @@ towerDefense.model = (function (components, graphics, input) {
             life : 120,
             rightBar : 25,
             topBar : 30,
+            point : 20,
         }, graphics);
         creeps.push(boss);
     }
+    
+    function displayCreepScore(spec) {
+        var that = {
+          score : spec.score,
+          x : spec.x,
+          y : spec.y,
+          time : 0,  
+        };
+        
+        that.update = function(elapsedTime) {
+            if(that.time <= 3000){
+                that.time -= elapsedTime;
+            }
+        }
+        
+        that.render = function() {
+           graphics.popUpScore({
+                        x: that.x,
+                        y: that.y,
+                        score : that.score.toString(),
+                    }); 
+        }
+        
+        return that;
+    }
+    
+    
         
     function updatePlaying(elapsedTime) {
         if( count < 1 && count <=2) {
             createCreep();
             createPersonCreep();
-            createDragonCreep();
-            createNaziCreep();
-            createBossCreep();
+            // createDragonCreep();
+            // createNaziCreep();
+            // createBossCreep();
             
             count++;
         }
@@ -787,12 +820,29 @@ towerDefense.model = (function (components, graphics, input) {
         
         // Update each creep
         for(var i = 0; i < creeps.length; i++) {
-            // internalUpdate = createPersonCreep;
-            // creeps[i].moveForward(elapsedTime);
+
             creeps[i].update(elapsedTime, gameGrid); // need to create update fuction to update creep movement, life, sprite postion
-            if(creeps[i].x >= 41 || creeps[i].dead === true) {
-                var index = creeps.indexOf(creeps[i]);
-                creeps.splice(index, 1);
+            // if(creeps[i].x >= 41 || creeps[i].dead === true) {
+            //     var deathx = creeps[i].x;
+            //     var deathy = creeps[i].y;
+            //     var dead = creeps[i].dead;
+            //     var index = creeps.indexOf(creeps[i]);
+            //     creeps.splice(index, 1);
+            //     // if(dead) {
+            //     //     var num = 5;
+            //     //     graphics.popUpScore({
+            //     //         x: deathx,
+            //     //         y: deathy,
+            //     //         score : num.toString(),
+            //     //     });
+            //     //     console.log("Score: ", num);
+            //     // }
+            // }
+        }
+        
+        if(displayArray.length > 0) {
+            for(var i = 0; i < displayArray.length; i++) {
+                displayArray[i].update(elapsedTime);
             }
         }
         
@@ -801,8 +851,12 @@ towerDefense.model = (function (components, graphics, input) {
         // Create update for score based on creeps killed/ creeps pass to other side
     }
     
-    function renderPlaying() {
+    function renderPlaying(elapsedTime) {
         gameGrid.render(graphics);
+        var deathx;
+        var deathy;
+        var score;
+        
 
         for(var i = 0; i < towers.length; i++) {
             if (towers[i].tower.base) {
@@ -837,7 +891,37 @@ towerDefense.model = (function (components, graphics, input) {
 
         for (var i = 0; i < creeps.length; i++) {
             creeps[i].render(graphics);
+           if(creeps[i].x >= 41 || creeps[i].dead === true ) {
+                deathx = creeps[i].x;
+                deathy = creeps[i].y;
+                var dead = creeps[i].dead;
+                score = 5;
+                
+                if(dead === true) {
+                    creepIsDead = true;
+                    var display = displayCreepScore({
+                        x: deathx,
+                        y : deathy,
+                        score : score,
+                    });
+                    
+                    displayArray.push(display);
+
+                }
+                
+                var index = creeps.indexOf(creeps[i]);
+                    creeps.splice(index, 1);
+            }
         }
+        
+        
+        if(displayArray.length > 0) {
+            for(var i = 0; i < displayArray.length; i++) {
+                displayArray[i].render();
+            }
+        }
+        
+        
 
         document.getElementById('moneyLabel').innerHTML = 'Money = $' + money;
     }
@@ -855,8 +939,8 @@ towerDefense.model = (function (components, graphics, input) {
         internalUpdate(elapsedTime);
     } // End update
 
-    function render() {
-        internalRender();
+    function render(elapsedTime) {
+        internalRender(elapsedTime);
 
         // if (towers.length > 0) {
         //     // for(var i = 0; i < towers.length; i++) {
