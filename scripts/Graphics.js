@@ -346,24 +346,6 @@ towerDefense.graphics = (function() {
 
         ctx.restore();
     }
-
-    function drawBase(spec) {
-        
-        ctx.save();
-
-        ctx.translate(spec.x, spec.y);
-        ctx.rotate(spec.rotation);
-        ctx.translate(-spec.x, -spec.y);
-
-        ctx.drawImage(
-            image,
-            spec.x - (spec.width * spec.scalar) / 2 + 1,
-            spec.y - ((spec.height * spec.scalar) / 2) - 1,
-            spec.width * spec.scalar,
-            spec.height * spec.scalar);
-
-        ctx.restore();
-    }
     
     function drawArc(spec, angle) {
 			ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
@@ -376,14 +358,21 @@ towerDefense.graphics = (function() {
 
 
     function drawCircleBullet(spec) {
-        ctx.clearRect(spec.x-spec.radius/2, spec.y-spec.radius/2, spec.radius, spec.radius)
+        ctx.clearRect(spec.x-spec.radius + 10, spec.y-spec.radius/2 + 10, spec.radius, spec.radius)
         ctx.fillStyle = spec.color;
         ctx.beginPath();
-        ctx.arc(spec.x-spec.radius/2, spec.y-spec.radius/2, spec.radius, 0, Math.PI*2);
+        ctx.arc(spec.x, spec.y, spec.radius, 0, Math.PI*2);
         ctx.closePath();
         ctx.fill();
     }
-
+    
+    function popUpScore(spec) {
+        ctx.save();
+        ctx.font = '20px Arial';
+        ctx.fillText (spec.score, spec.x*20, spec.y*20);
+        ctx.strokeText (spec.score, spec.x*20, spec.y*20);
+        ctx.restore;
+    }
 
 
     //************************************************************
@@ -439,8 +428,8 @@ towerDefense.graphics = (function() {
         drawCreepBasic : drawCreepBasic,
         drawHealthBar : drawHealthBar,
         TowerSprite : TowerSprite,
-        drawBase : drawBase,
         drawArc : drawArc,
+        popUpScore : popUpScore,
         drawCircleBullet : drawCircleBullet,
     }
 

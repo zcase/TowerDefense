@@ -39,9 +39,9 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
     
     
     // Render the game model
-    function render() {
+    function render(elapsedTime) {
         graphics.clear();
-        gameModel.render();
+        gameModel.render(elapsedTime);
     }
     
     function gameLoop(time) {
@@ -52,7 +52,7 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
         
         lastTime = time;
         
-        render();
+        render(elapsedTime);
         
         if(!stopGame) {
             requestAnimationFrame(gameLoop);

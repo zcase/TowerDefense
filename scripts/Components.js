@@ -2,6 +2,7 @@ towerDefense.components = (function(graphics, sound) {
     var IN = 0;
     var FRONTIER = 1;
     var VISITED = 2;
+    var popTime = 1000;
     
     //************************************************************
     //
@@ -413,6 +414,8 @@ towerDefense.components = (function(graphics, sound) {
       };
       
       
+      
+      
       // Updates the tower object.
       that.update = function(elapsedTime, gameGridObj, creeps, bullets) {
           var blocking;
@@ -499,7 +502,7 @@ towerDefense.components = (function(graphics, sound) {
               speed : 30,
               radius : 3,
               color : 'black',
-              targetX : that.target.x+10,
+              targetX : that.target.x,
               targetY : that.target.y,
               rotation : that.rotation,
               damage : damage,
@@ -763,6 +766,7 @@ towerDefense.components = (function(graphics, sound) {
       that.type = spec.type;
     //   that.rotationRate = 90;
     //   that.rotation = 0;
+      that.point = spec.point;
   
       that.render = function(graphics) {
           if(ready) {
@@ -777,12 +781,19 @@ towerDefense.components = (function(graphics, sound) {
                   rotateRate : spec.roatateRate,
               });
               graphics.drawHealthBar({
-                  x: spec.center.x- 25,
+                  x: spec.center.x - 25,
                   y: spec.center.y - 25,
                   healthColor : spec.healthColor,
                   healthBar : spec.healthBar,
                   percent : that.percent,
               });
+            //   if (that.dead === true){
+            //     graphics.popUpScore({
+            //         x: spec.center.x,
+            //         y: spec.center.y,
+            //         score : that.point
+            //     })
+            //   }
           }
       };
       
@@ -942,6 +953,15 @@ towerDefense.components = (function(graphics, sound) {
                   healthBar : spec.healthBar,
                   percent : that.percent,
               });
+              
+        //    if(!that.dead) {
+        //        var num = 5;
+        //        graphics.popUpScore({
+        //           x: that.x,
+        //           y: that.y,
+        //           score : num.toString(), 
+        //        });
+        //    }
 		};
 		
 		that.rotateRight = function(elapsedTime) {
@@ -1058,6 +1078,7 @@ towerDefense.components = (function(graphics, sound) {
         that.attackDistance = 10;
         that.startTime = spec.delayTime*1000;
         that.initialDelayTime = 0;
+        // that.popTime = 0;
 
 		that.update = function(elapsedTime, gameGridObj) {
             
@@ -1100,7 +1121,15 @@ towerDefense.components = (function(graphics, sound) {
                     //  console.log('red');
                 }
                 else {
-                    that.dead = true; // change to that = undefined when moved to computent creep.update section
+                    that.dead = true;
+                    // time -= elapsedTime;
+                    
+                    // if (time <=)
+                    // graphics.popUpScore({
+                    //     x : that.x,
+                    //     y : that.y,
+                    //     score : '5',
+                    // }) // change to that = undefined when moved to computent creep.update section
                 }
 
                 if (moveStack !== false) {
@@ -1172,7 +1201,9 @@ towerDefense.components = (function(graphics, sound) {
                     //  console.log('red');
                 }
                 else {
-                    that.dead = true; // change to that = undefined when moved to computent creep.update section
+                    that.dead = true;
+                    
+                     // change to that = undefined when moved to computent creep.update section
                 }
             }
 
