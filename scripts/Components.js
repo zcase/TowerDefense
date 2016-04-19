@@ -426,7 +426,7 @@ towerDefense.components = (function(graphics, sound) {
           var tempGridPosition = {x : xPos, y : yPos};
          
          if(that.inCanvas === true && xPos >=0 && yPos >= 0 && xPos <= gameGridObj.width && yPos <= gameGridObj.height) {
-            if(creeps.length === 0) {
+            if(creeps.length === 0 && that.placed === false) {
                 if(xPos == 0 && yPos == 14){
                     blocking = false;  // This really means it is blocking. Just using to match function output.
                 }else
@@ -436,10 +436,13 @@ towerDefense.components = (function(graphics, sound) {
                 }else {
                   blocking = that.checkBlockingPath2(gameGridObj, {center :{x: xPos*20, y : yPos*20}});
                 }
-            } else {
-               for(var i = 0; i < creeps.length; i++) {
-                 blocking = creeps[i].checkBlockingPath(gameGridObj, tempGridPosition);
-               } 
+            } else{
+               if(that.placed === false) {
+                  for(var i = 0; i < creeps.length; i++) {
+                    blocking = creeps[i].checkBlockingPath(gameGridObj, tempGridPosition);
+                  }  
+               }
+               
             }
 
             // if(blocking === false && creeps.length > 0) {
@@ -580,7 +583,7 @@ towerDefense.components = (function(graphics, sound) {
             that.velocityX = (diffX / distance) * that.speed;
             that.velocityY = (diffY / distance) * that.speed;
             
-            if(distance > that.radius) {
+            if(distance > that.radius/2) {
                 that.x += that.velocityX;
                 that.y += that.velocityY;
             }
@@ -787,13 +790,6 @@ towerDefense.components = (function(graphics, sound) {
                   healthBar : spec.healthBar,
                   percent : that.percent,
               });
-            //   if (that.dead === true){
-            //     graphics.popUpScore({
-            //         x: spec.center.x,
-            //         y: spec.center.y,
-            //         score : that.point
-            //     })
-            //   }
           }
       };
       
@@ -846,7 +842,7 @@ towerDefense.components = (function(graphics, sound) {
          
          
    
-         if(that.initialDelayTime >= that.startTime && that.reachedGoal !== true && that.type !== 'flying') {
+         if(that.initialDelayTime >= that.startTime && that.reachedGoal !== true && that.type !== 'flying' && xGrid >= 0) {
              that.movementStack = solveGrid({ x: xGrid, y: yGrid }, tempGameObj);
 
              // TODO reverse array and then pop off end value
@@ -900,7 +896,11 @@ towerDefense.components = (function(graphics, sound) {
              that.moveRight(elapsedTime);
          }
          
-         if(xGrid <= 41 && xGrid >=39) {
+         if(xGrid < 0 ) {
+             that.moveRight(elapsedTime);
+         }
+         
+         if(xGrid <= 41 && xGrid >=39)  {
         //  if(moveStack.length === 0 && xGrid < 41 && moveStack !==false) {
              that.reachedGoal = true;
              that.moveRight(elapsedTime);
@@ -953,15 +953,6 @@ towerDefense.components = (function(graphics, sound) {
                   healthBar : spec.healthBar,
                   percent : that.percent,
               });
-              
-        //    if(!that.dead) {
-        //        var num = 5;
-        //        graphics.popUpScore({
-        //           x: that.x,
-        //           y: that.y,
-        //           score : num.toString(), 
-        //        });
-        //    }
 		};
 		
 		that.rotateRight = function(elapsedTime) {
@@ -1122,14 +1113,6 @@ towerDefense.components = (function(graphics, sound) {
                 }
                 else {
                     that.dead = true;
-                    // time -= elapsedTime;
-                    
-                    // if (time <=)
-                    // graphics.popUpScore({
-                    //     x : that.x,
-                    //     y : that.y,
-                    //     score : '5',
-                    // }) // change to that = undefined when moved to computent creep.update section
                 }
 
                 if (moveStack !== false) {

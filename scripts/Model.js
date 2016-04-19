@@ -21,7 +21,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
         money,
         towerCount = 0,
         towerPlacementSound = sound.sound('sounds/towerPlacement.mp3'),
-        creepStartingPostitionsLevel1 = [{x : -20, y : 310}, {x: -20, y : 330}, {x: -20 , y: 270}], // Left to right
+        creepStartingPostitionsLevel1 = [{x : -20, y : 310}, {x: -20, y : 330}, {x: -20 , y: 270}, {x : -40, y : 310}, {x: -40, y : 330}, {x: -40 , y: 270}, {x : -60, y : 310}, {x: -60, y : 330}, {x: -60 , y: 270}], // Left to right
         creepStartingPostitionsLevel2 = [{x : 19, y : 0}, {x: 19, y : 0}, {x: 19 , y: 0}], // Top to bottom,
         creepStartingPostitionsLevel3 = [{x : -20, y : 310}, {x: -20, y : 330}, {x: -20 , y: 270}, {x : 19, y : 0}, {x: 19, y : 0}, {x: 19 , y: 0}], //Left to Right, Top to Bottom
         
@@ -183,10 +183,8 @@ towerDefense.model = (function (components, graphics, input, sound) {
             });
             
             money -= createdTower.cost;
-            
             towers.push({tower : createdTower, base : createdBase, roof: undefined});
-            // bases.push(createdBase);
-            
+                        
             var createdMouse = input.Mouse();
             createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
                 if(createdTower.isSelected === true) {
@@ -311,12 +309,8 @@ towerDefense.model = (function (components, graphics, input, sound) {
             });
             
             money -= createdTower.cost;
-            
             towers.push({tower : createdTower, base : createdBase, roof: undefined});
 
-            // towers.push(createdTower);
-            // bases.push(createdBase);
-            
             var createdMouse = input.Mouse();
             createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
                 if(createdTower.isSelected === true) {
@@ -439,13 +433,8 @@ towerDefense.model = (function (components, graphics, input, sound) {
             });
 
             money -= createdTower.cost;
-
             towers.push({tower : createdTower, base : undefined, roof: createdRoof});
-            
-            // towers.push(createdTower);
-            // roof.push(createdRoof);
-            
-            
+
             var createdMouse = input.Mouse();
             createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
                 if(createdTower.isSelected === true) {
@@ -554,12 +543,8 @@ towerDefense.model = (function (components, graphics, input, sound) {
                 scalar : 2.5,
             });
             
-            money -= createdTower.cost;
-            // createdTower.attackDistance = createdTower.width * 5;
-            
+            money -= createdTower.cost;            
             towers.push({tower : createdTower, base : undefined, roof: undefined});
-
-            // towers.push(createdTower);
             
             var createdMouse = input.Mouse();
             createdMouse.registerCommand('mousedown', function(e, elapsedTime) {
@@ -881,7 +866,10 @@ towerDefense.model = (function (components, graphics, input, sound) {
         
         that.update = function(elapsedTime) {
             if(that.time <= 3000){
-                that.time -= elapsedTime;
+                that.time += elapsedTime;
+                that.render();
+            }else {
+                that.time = undefined;
             }
         }
         
@@ -948,6 +936,10 @@ towerDefense.model = (function (components, graphics, input, sound) {
         if(displayArray.length > 0) {
             for(var i = 0; i < displayArray.length; i++) {
                 displayArray[i].update(elapsedTime);
+                if(displayArray[i].time === undefined) {
+                    var index = displayArray.indexOf(displayArray[i]);
+                    displayArray.splice(index, 1);
+                }
             }
         }
         
