@@ -987,7 +987,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
                     var display = displayCreepScore({
                         x: deathx,
                         y : deathy,
-                        score : score,
+                        score : '+' + score,
                     });
                     
                     displayArray.push(display);

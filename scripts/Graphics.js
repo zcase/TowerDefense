@@ -235,10 +235,21 @@ towerDefense.graphics = (function() {
         return that;
     }
     
+    function popUpScore(spec) {
+        // ctx.save();
+        ctx.font = '20px Arial';
+        ctx.fillText (spec.score, spec.x*20, spec.y*20);
+        ctx.fillStyle = 'rgba(0,0,255,1)';
+        ctx.fill();
+        // ctx.save();
+        // ctx.strokeText (spec.score, spec.x*20, spec.y*20);
+        // ctx.strokeStyle = 'rgba(0,0,255,1)';
+        // ctx.restore;
+    }
+    
     function drawHealthBar(spec){
+        // ctx.save()
         ctx.beginPath();
-        
-        
         if (spec.healthColor === 'green'){
             ctx.fillStyle = 'rgba(80,80,80,0.4)';
             ctx.fillRect(spec.x, spec.y, 50, 8);
@@ -270,7 +281,9 @@ towerDefense.graphics = (function() {
   
         ctx.fillRect(spec.x, spec.y, spec.healthBar, 8);
         ctx.strokeRect(spec.x, spec.y, 50, 8);
-        ctx.closePath();
+        ctx.fill();
+        // ctx.closePath();
+        // ctx.restore();
     }
 
     //************************************************************
@@ -366,13 +379,7 @@ towerDefense.graphics = (function() {
         ctx.fill();
     }
     
-    function popUpScore(spec) {
-        ctx.save();
-        ctx.font = '20px Arial';
-        ctx.fillText (spec.score, spec.x*20, spec.y*20);
-        ctx.strokeText (spec.score, spec.x*20, spec.y*20);
-        ctx.restore;
-    }
+    
 
 
     //************************************************************
