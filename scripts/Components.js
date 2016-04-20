@@ -502,7 +502,7 @@ towerDefense.components = (function(graphics, sound, effects) {
           var newBullet = Bullet({
               x : that.x*20 + 10,
               y : that.y*20 + 10,
-              speed : 30,
+              speed : 100,
               radius : 3,
               color : 'black',
               targetX : that.target.x,
