@@ -43,6 +43,24 @@ towerDefense.graphics = (function() {
         ctx.clear();
     }
     
+    function drawImage(spec) {
+        ctx.save();
+        
+        ctx.translate(spec.center.x, spec.center.y);
+        ctx.rotate(spec.rotation);
+        ctx.translate(-spec.center.x, -spec.center.y);
+        
+        ctx.drawImage(
+            spec.image,
+            spec.center.x - spec.size/2,
+            spec.center.y - spec.size/2,
+            spec.size,
+            spec.size
+        );
+        
+        ctx.restore();
+    }
+    
     //------------------------------------------------------------------
 	//
 	// Simple sprite, one image in the texture.
@@ -431,6 +449,8 @@ towerDefense.graphics = (function() {
         drawArc : drawArc,
         popUpScore : popUpScore,
         drawCircleBullet : drawCircleBullet,
+        drawImage : drawImage,
+        
     }
 
 } ());

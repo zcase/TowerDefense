@@ -1,4 +1,4 @@
-towerDefense.components = (function(graphics, sound) {
+towerDefense.components = (function(graphics, sound, effects) {
     var IN = 0;
     var FRONTIER = 1;
     var VISITED = 2;
@@ -417,7 +417,7 @@ towerDefense.components = (function(graphics, sound) {
       
       
       // Updates the tower object.
-      that.update = function(elapsedTime, gameGridObj, creeps, bullets) {
+      that.update = function(elapsedTime, gameGridObj, creeps, bullets, particleSystems) {
           var blocking;
           
           var xPos = Math.floor(that.x);
@@ -486,7 +486,7 @@ towerDefense.components = (function(graphics, sound) {
                 
                 that.timeSinceLastFire += elapsedTime;
                 if(fire === true && that.timeSinceLastFire >= that.fireRate){
-                  that.fire(bullets, that.strength);
+                  that.fire(bullets, that.strength, particleSystems);
                   that.shotsound.play();
                   that.timeSinceLastFire = 0;
                 }
@@ -498,7 +498,7 @@ towerDefense.components = (function(graphics, sound) {
       }; // END TOWER UPDATE FUNCTION
       
       
-      that.fire = function(bullets, damage) {
+      that.fire = function(bullets, damage, particleSystems) {
           var newBullet = Bullet({
               x : that.x*20 + 10,
               y : that.y*20 + 10,
@@ -511,9 +511,38 @@ towerDefense.components = (function(graphics, sound) {
               damage : damage,
           });
           
-        //   newBullet.update(that.target.x*20, that.target.y*20);
-        //   newBullet.update();
+          var xPos = ((that.x*20)+15);
+          var yPos = ((that.y*20)+15);
+          var gunSmoke = effects.ParticleSystem({
+             image : 'images/smoke.png',
+             center : {x : xPos, y : yPos},
+             speed : {mean : 50, std : 25},
+             rotation : spec.rotation,
+             lifetime : {mean : 1, std: 0},
+             usedFor : 'gun',
+          }, graphics);
+          
+          var gunSpark = effects.ParticleSystem({
+             image : 'images/fire.png',
+             center : {x : xPos, y : yPos},
+             speed : {mean : 50, std : 25},
+             rotation : spec.rotation,
+             lifetime : {mean : 1, std: 0},
+             usedFor : 'spark',
+          }, graphics);
+          
+          
+          for(var j = 0; j < 10; j++){
+             gunSmoke.create();
+          }
+          gunSpark.create();
+          gunSpark.create();
+
           bullets.push(newBullet);
+          particleSystems.push(gunSmoke);
+          particleSystems.push(gunSpark);
+          
+          
       }
       
       // Function to set the were the target is located
@@ -570,7 +599,7 @@ towerDefense.components = (function(graphics, sound) {
             attackDistance : spec.radius,
         }
         
-        that.update = function (creeps) {
+        that.update = function (creeps, particleSystems) {
             
             var targetX = that.targetX,
                 targetY = that.targetY;
@@ -593,6 +622,25 @@ towerDefense.components = (function(graphics, sound) {
             for(var i = 0; i < creeps.length; i++) {
                 if(distanceCheck(that, creeps[i])) {
                     creeps[i].health -= that.damage;
+                    
+                    var xPos = ((that.x*20));
+                    var yPos = ((that.y*20));
+                    var hitCreep = effects.ParticleSystem({
+                        image : 'images/blood.png',
+                        center : {x : xPos, y : yPos},
+                        speed : {mean : 25, std : 25},
+                        rotation : spec.rotation,
+                        lifetime : {mean : 1, std: 1},
+                        usedFor : 'creep',
+                    }, graphics);
+          
+          
+                    for(var j = 0; j < 10; j++){
+                        hitCreep.create();
+                    }
+                    
+                    particleSystems.push(hitCreep);
+
                     that.hitCreep = true;
                 } 
             }
@@ -1253,4 +1301,4 @@ towerDefense.components = (function(graphics, sound) {
         reset : reset,
         Bullet : Bullet,
     }
-}(towerDefense.graphics, towerDefense.sound));
+}(towerDefense.graphics, towerDefense.sound, towerDefense.effects));

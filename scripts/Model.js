@@ -7,6 +7,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
         bullets = [],
         creeps = [],
         displayArray = [],
+        particleSystems = [],
         creep,
         score,
         livesRemaining = 10,
@@ -629,7 +630,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
         var creep = components.Creep({
             image : 'images/USU-Logo.png',
             // center : { x: 10, y: 290 },
-            center : randomStart,
+            center : {x: randomStart.x, y: randomStart.y},
             width : 20,
             height : 20,
             rotation : 0,
@@ -911,12 +912,12 @@ towerDefense.model = (function (components, graphics, input, sound) {
         
         // Update each tower
         for(var i = 0; i < towers.length; i++) {
-            towers[i].tower.update(elapsedTime, gameGrid, creeps, bullets); // need to create up date function to change rotation of tower pic based on creeps
+            towers[i].tower.update(elapsedTime, gameGrid, creeps, bullets, particleSystems); // need to create up date function to change rotation of tower pic based on creeps
         }
         
         for(var i = 0; i < bullets.length; i++) {
             if(bullets[i].hitCreep !== true){
-                bullets[i].update(creeps);
+                bullets[i].update(creeps, particleSystems);
             }else{
               var index = bullets.indexOf(bullets[i]);
               bullets.splice(index, 1);
@@ -927,10 +928,6 @@ towerDefense.model = (function (components, graphics, input, sound) {
         for(var i = 0; i < creeps.length; i++) {
 
             creeps[i].update(elapsedTime, gameGrid); // need to create update fuction to update creep movement, life, sprite postion
-            // if(creeps[i].x >= 41 || creeps[i].dead === true || creeps[i].health <= 0) {
-            //     var index = creeps.indexOf(creeps[i]);
-            //     creeps.splice(index, 1);
-
         }
         
         if(displayArray.length > 0) {
@@ -940,6 +937,17 @@ towerDefense.model = (function (components, graphics, input, sound) {
                     var index = displayArray.indexOf(displayArray[i]);
                     displayArray.splice(index, 1);
                 }
+            }
+        }
+        
+        if(particleSystems.length > 0) {
+            for(var i = 0; i < particleSystems.length; i++) {
+                particleSystems[i].update(elapsedTime);
+                // for(var j = 0; j < 10; j++){
+                //     particleSystems[i].create();
+                // }
+                
+                // particleSystems[i].update(elapsedTime);
             }
         }
         
@@ -1004,6 +1012,10 @@ towerDefense.model = (function (components, graphics, input, sound) {
             for(var i = 0; i < displayArray.length; i++) {
                 displayArray[i].render();
             }
+        }
+        
+        for(var i = 0; i < particleSystems.length; i++) {
+                particleSystems[i].render();
         }
         
         
