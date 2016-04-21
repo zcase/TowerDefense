@@ -1,0 +1,16 @@
+{
+	"parserOptions": {
+		"ecmaVersion": 5
+	},
+	"rules": {
+		"brace-style": [2, "1tbs", { "allowSingleLine": true } ],
+		"curly": 2,
+		"quotes":[2, "single"],
+		"no-trailing-spaces": 2,
+		"indent":[2, "tab"]
+	},
+	"env": {
+		"browser": true,
+		"node": true
+	}
+}
