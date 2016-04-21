@@ -27,6 +27,7 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
     // Process Input
     function processInput(elapsedTime) {
         // keyboard.update(elapsedTime);
+        gameModel.processInputGeneral(elapsedTime);
         gameModel.processInput(elapsedTime);
         // gameModel.processInputGeneral(elapsedTime);
     }

@@ -256,9 +256,10 @@ towerDefense.graphics = (function() {
     function popUpScore(spec) {
         // ctx.save();
         ctx.font = '20px Arial';
-        ctx.fillText (spec.score, spec.x*20, spec.y*20);
         ctx.fillStyle = 'rgba(0,0,255,1)';
-        ctx.fill();
+        ctx.fillText (spec.score, spec.x*20, spec.y*20);
+        // ctx.fillStyle = 'rgba(0,0,255,1)';
+        // ctx.fill();
         // ctx.save();
         // ctx.strokeText (spec.score, spec.x*20, spec.y*20);
         // ctx.strokeStyle = 'rgba(0,0,255,1)';
