@@ -101,7 +101,20 @@
 
         <!-- This is the screen where the controls of the game are configured -->
         <div id="controlsScreen" class="screen">
-
+            <h1>Game Controls</h1>
+            
+            <div id="upgradeTower">
+                <p>Tower Upgrade Shortcut =  <span id="upgradeShortcut"></span> <button onclick="towerDefense.controls.capture('upgrade')">Capture ShortCut</button></p>
+            </div>
+            
+            <div id="sellTower">
+                <p>Sell Tower Shortcut = <span id="sellShortcut"></span> <button onclick="towerDefense.controls.capture('sell')">Capture ShortCut</button></p>
+            </div>
+            
+            <div id="startLevel">
+                <p>Start Next Level Shortcut = <span id="startShortcut"></span> <button onclick="towerDefense.controls.capture('start')">Capture ShortCut</button></p>
+            </div>
+            
             <ul class="menu">
                 <li>
                     <button id="controlsBack">Back</button>
@@ -130,13 +143,14 @@
         };
     </script>
     <script type="text/javascript" src="scripts/Graphics.js"></script>
-    <script type="text/javascript" src="scripts/input.js"></script>
     <script type="text/javascript" src="scripts/Sound.js"></script>
     <script type="text/javascript" src="scripts/effects.js"></script>
     <script type="text/javascript" src="scripts/random.js"></script>
     <script type="text/javascript" src="scripts/screens.js"></script>
+    <script type="text/javascript" src="scripts/input.js"></script>
     <script type="text/javascript" src="scripts/Components.js"></script>
     <script type="text/javascript" src="scripts/Model.js"></script>
+    <script type="text/javascript" src="scripts/controls.js"></script>
     <script type="text/javascript" src="scripts/MainMenuScreen.js"></script>
     <script type="text/javascript" src="scripts/AboutScreen.js"></script>
     <script type="text/javascript" src="scripts/ControlScreen.js"></script>

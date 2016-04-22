@@ -258,11 +258,6 @@ towerDefense.graphics = (function() {
         ctx.font = '20px Arial';
         ctx.fillStyle = 'rgba(0,0,255,1)';
         ctx.fillText (spec.score, spec.x*20, spec.y*20);
-        // ctx.fill();
-        // ctx.save();
-        // ctx.strokeText (spec.score, spec.x*20, spec.y*20);
-        // ctx.strokeStyle = 'rgba(0,0,255,1)';
-        // ctx.restore;
     }
     
     function drawHealthBar(spec){
