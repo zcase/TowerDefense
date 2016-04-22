@@ -1,7 +1,7 @@
 var express = require('express'),
     http = require('http'),
     path = require('path'),
-    score = require('./public/scripts/scores'),
+    score = require('./public/scripts/scores.js'),
     app = express();
     
 app.set('port', 2000);
@@ -16,9 +16,9 @@ app.get('/', function(req, res){
 app.get('/v1/high-scores', score.all);
 app.post('/v1/high-scores', score.add);
 
-app.all('/v1/*', function(request, response) {
-	response.writeHead(501);
-	response.end();
+app.all('/v1/*', function(req, res) {
+	res.writeHead(501);
+	res.end();
 });
 
 http.createServer(app).listen(app.get('port'),function(){

@@ -14,6 +14,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
         // keyboard = input.Keyboard(),
         creep,
         score,
+        live,
         livesRemaining = 10,
         // mouse = input.Keyboard(),
         mouseCapture = true,
@@ -97,7 +98,22 @@ towerDefense.model = (function (components, graphics, input, sound) {
     function initialize() {
         initializeGameGrid();
         
-        score = 0;
+        score = {
+            total : 0,
+            position : {x : 10, y : 30},
+            font : '32px Arial, sans-serif',
+            color : 'rgba(255,255,255,1)',
+            text : '' ,
+        };
+        
+        live = {
+            lives: livesRemaining,
+            position : {x : 650, y : 30},
+            font : '32px Arial, sans-serif',
+            color : 'rgba(255,255,255,1)',
+            text : '',
+        }
+        
         livesRemaining = 10;
         money = 200;
         
@@ -865,7 +881,15 @@ towerDefense.model = (function (components, graphics, input, sound) {
     }
     
     
+    function renderScore(){
+       score.text = 'Score: ' + score.total;
+       graphics.drawText(score);
+    }
     
+    function renderLive(){
+        live.text = 'Live: ' + live.lives;
+        graphics.drawText(live);
+    }
     
     
     
@@ -979,6 +1003,8 @@ towerDefense.model = (function (components, graphics, input, sound) {
     
     function renderPlaying(elapsedTime) {
         gameGrid.render(graphics);
+        renderScore();
+        renderLive();
         var deathx;
         var deathy;
         var score;

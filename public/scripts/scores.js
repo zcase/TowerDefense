@@ -21,7 +21,7 @@ exports.all = function(req, res){
 
 exports.add = function(req, res) {
 	console.log('add new person called');
-	console.log('Name: ' + request.query.name);
+	console.log('Request: ' + JSON.stringify(req.body));
 
 	var now = new Date();
 	score.push( {

@@ -20,7 +20,7 @@ function showScores(){
         cache : false,
         type : 'GET',
         error : function(){
-            alert('POST failed');
+            alert('Get failed');
         },
         success : function(data){
             var list = $('#id-highScoresList'),
