@@ -1,5 +1,5 @@
 
-towerDefense.input = (function() {
+towerDefense.input = (function(screens) {
     
     function Mouse() {
         var that = {
@@ -148,19 +148,66 @@ towerDefense.input = (function() {
  
     function Keyboard() {
         var that =  {
-            keys : {},
-            handlers : [],
-             
+                keys : {},
+                handlers : [],
             },
             keys;
+            var captureKeys = [];
+            var captureInfo;
             
         function keyPress(e) {
             that.keys[e.keyCode] = e.timestamp;
             console.log("KEYS PRESSED = "+ e.keyCode);
         }
         
+        function keyPressCapture(e) {
+            // that.keys[e.keyCode] = e.timestamp;
+            captureInfo = towerDefense.controls.getCaptureInfo();
+            captureKeys = [];
+            console.log("KEYS PRESSED = "+ e.keyCode);
+            
+            if(captureInfo.startCapture === true) {
+                captureKeys.push(e.keyCode);
+            }
+        }
+        
         function keyRelease(e) {
             delete that.keys[e.keyCode];
+        }
+        
+        function keyReleaseCapture(e) {
+            // delete that.keys[e.keyCode];
+            // captureInfo = towerDefense.controls.getCaptureInfo();
+            if(captureInfo.startCapture === true) {
+                for(var i = 0; i < captureKeys.length; i++) {
+                    if(captureInfo.shortcut === 'upgrade'){
+                        if(captureKeys[i] !== captureInfo.shortcutControls.upgrade) {
+                            captureInfo.shortcutControls.upgrade = captureKeys;
+                            captureInfo.shortcutControls.sell = captureInfo.shortcutControls.sell;
+                            captureInfo.shortcutControls.start = captureInfo.shortcutControls.start;
+                        }
+                    }
+                
+                    if(captureInfo.shortcut === 'sell'){
+                        if(captureKeys[i] !== captureInfo.shortcutControls.sell) {
+                            captureInfo.shortcutControls.sell = captureKeys;
+                            captureInfo.shortcutControls.upgrade = captureInfo.shortcutControls.upgrade;
+                            captureInfo.shortcutControls.start = captureInfo.shortcutControls.start;
+                        }
+                    }
+                
+                    if(captureInfo.shortcut === 'start'){
+                        if(captureKeys[i] !== captureInfo.shortcutControls.start) {
+                            captureInfo.shortcutControls.start = captureKeys;
+                            captureInfo.shortcutControls.sell = captureInfo.shortcutControls.sell;
+                            captureInfo.shortcutControls.upgrade = captureInfo.shortcutControls.upgrade;
+                        }
+                    }
+                }
+            }
+           
+           captureInfo.startCapture = false;
+           screens.showScreen('controlsScreen');
         }
         
         
@@ -177,8 +224,8 @@ towerDefense.input = (function() {
             }
         };
         
-        window.addEventListener('keydown', keyPress);
-        window.addEventListener('keyRelease', keyRelease);
+        window.addEventListener('keydown', keyPressCapture);
+        window.addEventListener('keyup', keyReleaseCapture);
         
         return that;
      
@@ -189,7 +236,7 @@ towerDefense.input = (function() {
         Keyboard : Keyboard
     }
     
-}());
+}(towerDefense.screens));
 
 //------------------------------------------------------------------
 //

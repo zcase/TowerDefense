@@ -11,7 +11,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
         mouseArray = [],
         // generalMouseArray = [],
         GeneralMouse = input.Mouse(),
-        keyboard = input.Keyboard(),
+        // keyboard = input.Keyboard(),
         creep,
         score,
         livesRemaining = 10,
@@ -123,7 +123,6 @@ towerDefense.model = (function (components, graphics, input, sound) {
             
             
             for(var i = 0; i < towers.length; i++) {
-                // var options = document.getElementById('options');
                 var upgradeButton = document.getElementById('upgradeButton');
                 var sell = document.getElementById('sellButton');
                 
@@ -133,18 +132,8 @@ towerDefense.model = (function (components, graphics, input, sound) {
                 var upperPosY = towers[i].tower.y + 1;
                 if( (xPos >= lowerPosX && xPos <= upperPosX)  && (yPos >= lowerPosY && yPos < upperPosY)) {
                     towers[i].tower.isSelected = true;
-                    // upgrade.style.display = "block";
-                    // sell.style.display = "block";
-                    // options.style.visibility = 'visible';
-                    // upgradeButton.style.visibility = 'visible';
-                    // sell.style.visibility = 'visible';
                 } else {
                     towers[i].tower.isSelected = false;
-                    // upgrade.style.display = "none";
-                    // sell.style.display = "none";
-                    // options.style.visibility = 'hidden';
-                    // upgradeButton.style.visibility = 'hidden';
-                    // sell.style.visibility = 'hidden';
                 }
             }
             
@@ -690,7 +679,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
             spriteCount : 7,
             spriteTime : [200,100, 200, 100, 200, 100, 200],	// milliseconds per sprite animation frame
 			// center : { x: 10, y: 310 },
-            center : randomStart,
+            center : {x: randomStart.x, y: randomStart.y},
             width:20,
             height:20,
 			rotation : 0,
@@ -719,7 +708,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
             spriteCount : 7,
             spriteTime : [100, 75, 75, 100, 75, 75,100],	// milliseconds per sprite animation frame
 			// center : { x: 10, y: 290 },
-            center : randomStart,
+            center : {x: randomStart.x, y: randomStart.y},
             width: 30,
             height:30,
             percent_of_size: 20/150,
@@ -748,7 +737,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
 			spriteCount : 4,
 			spriteTime : [200,150, 150, 150],	// milliseconds per sprite animation frame
 			// center : { x: 10, y: 330 },
-            center : randomStart,
+            center : {x: randomStart.x, y: randomStart.y},
 			rotation : 0,
             width : 150,
             height: 150,
@@ -776,7 +765,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
             spriteCount : 8,
             spriteTime : [200, 300, 100, 200, 300,200,300,200],	// milliseconds per sprite animation frame
 			// center : { x: 400, y: 400 },
-            center : randomStart,
+            center : {x: randomStart.x, y: randomStart.y},
             width: 30,
             height:30,
             percent_of_size: 20/150,
@@ -909,10 +898,10 @@ towerDefense.model = (function (components, graphics, input, sound) {
         
         that.render = function() {
            graphics.popUpScore({
-                        x: that.x,
-                        y: that.y,
-                        score : that.score.toString(),
-                    }); 
+                x: that.x,
+                y: that.y,
+                score : that.score.toString(),
+           }); 
         }
         
         return that;
@@ -1061,7 +1050,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
     }
 
     function processInput(elapsedTime) {
-        keyboard.update(elapsedTime);
+        // keyboard.update(elapsedTime);
         // mouse.update(elapsedTime);
         for (var i = 0; i < mouseArray.length; i++) {
             mouseArray[i].update(elapsedTime);
