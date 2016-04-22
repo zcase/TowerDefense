@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Tower Defense</title>
+
+    <link rel="stylesheet" type="text/css" href="scripts/styles.css">
+</head>
+
+<body onload="towerDefense.screens.initialize();">
+    <div id="game">
+
+        <!-- This is the screen that displays the Main menu -->
+        <div id="mainMenu" class="screen">
+            <p>TOWER DEFENSE</p>
+            <ul class="menu">
+                <li>
+                    <button id="newGame">New Game</button>
+                </li>
+                <li>
+                    <button id="highScores">High Scores</button>
+                </li>
+                <li>
+                    <button id="controls">Controls</button>
+                </li>
+                <li>
+                    <button id="about">About</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- The screen where the game is played -->
+        <div id="gameScreen" class="screen">
+            <div id="canvasCenter">
+                
+                <canvas id="myCanvas" width="800" height="600"></canvas>
+                
+                
+                <div class="right">
+                    <div id="money">
+                        <p id="moneyLabel">Money = $</p>
+                    </div>
+                    
+                    <div id="tower1">
+                        <div class="button" id="createTower1" onclick="towerDefense.model.createLowLevelTower1()">
+                            <p class="name_button">gun</p>
+                        </div>
+                        
+                    </div>
+                    <div id="tower2">
+                        <div class="button" id="createTower2" onclick="towerDefense.model.createLowLevelTower2()">
+                            <p class="name_button">cannon</p>
+                        </div>
+                        
+                    </div>
+                    <div id="tower3">
+                        <div class="button" id="createTower3" onclick="towerDefense.model.createLowLevelTower3()">
+                            <p class="name_button">tower</p>
+                        </div>
+                        
+                    </div>
+                    <div id="tower4">
+                        <div class="button" id="createTower4" onclick="towerDefense.model.createLowLevelTower4()">
+                            <p class="name_button">missile</p>
+                        </div>
+                        
+                    </div>
+                    <div id="options">
+                        <button id="upgradeButton" onclick="towerDefense.model.upgrade()">Upgrade</button>
+                        <button id="sellButton" onclick="towerDefense.model.sell()">Sell</button>
+                    </div>
+                </div>
+            </div>
+            <ul class="menu">
+                <li>
+                    <button id="gameBack">Back</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- This is the screen where the High Scores are displayed -->
+        <div id="highScoresScreen" class="screen">
+            <h1>High Scores</h1>
+
+            <ol id="highScoresList">
+                <li id="1"></li>
+                <li id="2"></li>
+                <li id="3"></li>
+                <li id="4"></li>
+                <li id="5"></li>
+            </ol>
+
+            <ul class="menu">
+                <li>
+                    <button id="highScoresBack">Back</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- This is the screen where the controls of the game are configured -->
+        <div id="controlsScreen" class="screen">
+            <h1>Game Controls</h1>
+            
+            <div id="upgradeTower">
+                <p>Tower Upgrade Shortcut =  <span id="upgradeShortcut"></span> <button onclick="towerDefense.controls.capture('upgrade')">Capture ShortCut</button></p>
+            </div>
+            
+            <div id="sellTower">
+                <p>Sell Tower Shortcut = <span id="sellShortcut"></span> <button onclick="towerDefense.controls.capture('sell')">Capture ShortCut</button></p>
+            </div>
+            
+            <div id="startLevel">
+                <p>Start Next Level Shortcut = <span id="startShortcut"></span> <button onclick="towerDefense.controls.capture('start')">Capture ShortCut</button></p>
+            </div>
+            
+            <ul class="menu">
+                <li>
+                    <button id="controlsBack">Back</button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- This is the screen that displays the about information -->
+        <div id="aboutScreen" class="screen">
+            <h1>About</h1>
+            <p>Developed by</p>
+            <p>Zachary Case</p>
+            <p>Nick Hunsaker</p>
+
+            <ul class="menu">
+                <li>
+                    <button id="aboutBack">Back</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        var towerDefense = {
+            myScreens : {},
+        };
+    </script>
+    <script type="text/javascript" src="scripts/Graphics.js"></script>
+    <script type="text/javascript" src="scripts/Sound.js"></script>
+    <script type="text/javascript" src="scripts/effects.js"></script>
+    <script type="text/javascript" src="scripts/random.js"></script>
+    <script type="text/javascript" src="scripts/screens.js"></script>
+    <script type="text/javascript" src="scripts/input.js"></script>
+    <script type="text/javascript" src="scripts/Components.js"></script>
+    <script type="text/javascript" src="scripts/Model.js"></script>
+    <script type="text/javascript" src="scripts/controls.js"></script>
+    <script type="text/javascript" src="scripts/MainMenuScreen.js"></script>
+    <script type="text/javascript" src="scripts/AboutScreen.js"></script>
+    <script type="text/javascript" src="scripts/ControlScreen.js"></script>
+    <script type="text/javascript" src="scripts/HighScoresScreen.js"></script>
+    <script type="text/javascript" src="scripts/GameScreen.js"></script>
+    <!--<script type="text/javascript" src="public/scipts/loader.js"></script>-->
+</body>
+
+</html>

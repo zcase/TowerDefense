@@ -1,0 +1,13 @@
+{
+  "name": "towerdefenseexpress",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.13.4",
+    "http": "0.0.0",
+    "path": "^0.12.7"
+  }
+}
