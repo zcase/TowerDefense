@@ -1116,32 +1116,18 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
                 deathx = creeps[i].x;
                 deathy = creeps[i].y;
                 var dead = creeps[i].dead;
-<<<<<<< HEAD
-                // score = 5;
-=======
->>>>>>> 8f0e0793bb551339b3bf1d2544f53b1469fedcf7
                 
                 if(dead === true) {
                     creepIsDead = true;
                     var display = displayCreepScore({
                         x: deathx,
-<<<<<<< HEAD
                         y : deathy,
                         score : '+' + creeps[i].point,
                     });
                     
                     money += creeps[i].moneyGained;
                     score.total += creeps[i].point;
-=======
-                        y : deathy, 
-                        score : '+' + creeps[i].point,
-                    });
-                    
-                    point += creeps[i].point;
->>>>>>> 8f0e0793bb551339b3bf1d2544f53b1469fedcf7
                     displayArray.push(display);
-                    
-
                 }
                 if (creeps[i].x >= 41){
                     livesRemaining--;
