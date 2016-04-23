@@ -61,6 +61,13 @@ towerDefense.graphics = (function() {
         ctx.restore();
     }
     
+    
+    function drawText(spec) {
+        ctx.font = spec.font;
+        ctx.fillStyle = spec.color;
+        ctx.fillText (spec.text, spec.position.x, spec.position.y);
+    }
+    
     //------------------------------------------------------------------
 	//
 	// Simple sprite, one image in the texture.
@@ -253,15 +260,14 @@ towerDefense.graphics = (function() {
         return that;
     }
     
+    
     function popUpScore(spec) {
-        // ctx.save();
         ctx.font = '20px Arial';
         ctx.fillStyle = 'rgba(0,0,255,1)';
         ctx.fillText (spec.score, spec.x*20, spec.y*20);
     }
     
     function drawHealthBar(spec){
-        // ctx.save()
         ctx.beginPath();
         if (spec.healthColor === 'green'){
             ctx.fillStyle = 'rgba(80,80,80,0.4)';
@@ -293,10 +299,7 @@ towerDefense.graphics = (function() {
         }
   
         ctx.fillRect(spec.x, spec.y, spec.healthBar, 8);
-        ctx.strokeRect(spec.x, spec.y, 50, 8);
         ctx.fill();
-        // ctx.closePath();
-        // ctx.restore();
     }
 
     //************************************************************
@@ -440,6 +443,7 @@ towerDefense.graphics = (function() {
     //************************************************************
     return {
         clear: clear,
+        drawText : drawText,
         drawTower: drawTower,
         width: width,
         height: height,

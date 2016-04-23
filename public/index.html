@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Tower Defense</title>
-
+    <script type="text/javascript" src = "http://code.jquery.com/jquery-latest.min.js"></script>
+	<script type="text/javascript" src = "scripts/index.js"></script>
     <link rel="stylesheet" type="text/css" href="scripts/styles.css">
 </head>
 
@@ -19,7 +20,7 @@
                     <button id="newGame">New Game</button>
                 </li>
                 <li>
-                    <button id="highScores">High Scores</button>
+                    <button id="highScores" onclick="showScores()">High Scores</button>
                 </li>
                 <li>
                     <button id="controls">Controls</button>
@@ -83,12 +84,12 @@
         <div id="highScoresScreen" class="screen">
             <h1>High Scores</h1>
 
-            <ol id="highScoresList">
-                <li id="1"></li>
+            <ol id="id-highScoresList">
+                <!--<li id="1"></li>
                 <li id="2"></li>
                 <li id="3"></li>
                 <li id="4"></li>
-                <li id="5"></li>
+                <li id="5"></li>-->
             </ol>
 
             <ul class="menu">

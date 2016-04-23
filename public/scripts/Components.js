@@ -5,7 +5,8 @@ towerDefense.components = (function(graphics, sound, effects) {
     var popTime = 1000;
     var moneyFromCreeps = 0;
     var pointsFromCreeps = 0;
-    
+    var theta = 0;
+
     //************************************************************
     //
     // 
@@ -406,6 +407,7 @@ towerDefense.components = (function(graphics, sound, effects) {
       that.fireRate = 2000;
       that.timeSinceLastFire = 0;
       that.type = spec.type;
+      theta = spec.rotation;
       
       
       that.checkBlockingPath2 = function(gameGridObj, towerPosition) {
@@ -510,9 +512,9 @@ towerDefense.components = (function(graphics, sound, effects) {
       
       that.fire = function(bullets, damage, particleSystems) {
           var newBullet = Bullet({
-              x : that.x*20 + 10,
-              y : that.y*20 + 10,
-              speed : 100,
+              x : that.x*20+10,
+              y : that.y*20+10,
+              speed : 50,
               radius : 3,
               color : 'black',
               targetX : that.target.x,
@@ -592,22 +594,24 @@ towerDefense.components = (function(graphics, sound, effects) {
         
     
     
+    
     function Bullet(spec) {
         var that = {
-            x : spec.x,
-            y : spec.y,
+            x : spec.x + 10,
+            y : spec.y + 10,
             speed : spec.speed,
             radius : spec.radius,
             color : spec.color,
             targetX : spec.targetX,
             targetY : spec.targetY,
             damage : spec.damage,
-            
             velocityX : 0,
             velocityY : 0,
             hitCreep : false,
             attackDistance : spec.radius,
         }
+        console.log("X: ", that.x);
+        console.log("Y: ", that.y);
         
         that.update = function (creeps, particleSystems) {
             
@@ -633,6 +637,8 @@ towerDefense.components = (function(graphics, sound, effects) {
                 if(distanceCheck(that, creeps[i])) {
                     creeps[i].health -= that.damage;
                     
+                    // var xPos = ((20 + that.x*20)*Math.sin(spec.rotation));
+                    // var yPos = ((20 + that.y*20)*Math.sin(spec.rotation));
                     var xPos = ((that.x*20));
                     var yPos = ((that.y*20));
                     var hitCreep = effects.ParticleSystem({

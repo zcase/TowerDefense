@@ -16,6 +16,7 @@ window.addEventListener('load', function(){
                 'preload!scripts/random.js',
                 'preload!scripts/screens.js',
                 'preload!scripts/Sound.js',
+                'preload!scripts/scores.js',
                 'preload!images/base1.png',
                 'preload!images/base2.png',
                 'preload!images/base3.png',

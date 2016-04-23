@@ -1,6 +1,7 @@
 var express = require('express'),
     http = require('http'),
     path = require('path'),
+    score = require('./public/scripts/scores.js'),
     app = express();
     
 app.set('port', 2000);
@@ -9,7 +10,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/scripts', express.static(__dirname + '/scripts'));
 
 app.get('/', function(req, res){
-    res.sendFile('index.html');
+    res.render('index.html');
+});
+
+app.get('/v1/high-scores', score.all);
+app.post('/v1/high-scores', score.add);
+
+app.all('/v1/*', function(req, res) {
+	res.writeHead(501);
+	res.end();
 });
 
 http.createServer(app).listen(app.get('port'),function(){
