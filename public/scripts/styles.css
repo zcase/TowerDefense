@@ -1,30 +1,36 @@
 body {
     margin: auto;
+    background-image: url(../images/wallpaper.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% auto;
 }
 
 #game {
     position: absolute;
     margin: auto;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
     width: 100%;
     height: 100%;
-    background-color: lightblue;
+    /*background-color: whitesmoke;*/
+
     font-size: 40px;
-    border-style: solid;
-    border-radius: 3px;
+    /*border-style: solid;*/
+    /*border-radius: 3px;*/
 }
 
 #game h1 {
+    font-family: "Arial Black", sans-serif;
+    color: rgba(45,45,45,0.9);
+    text-shadow: 5px 5px 5px rgba(2,4,7,.25);
     text-align: center;
 }
 
 #mainMenu p {
+    font-family: "Arial Black", sans-serif;
     text-align: center;
     font-weight: bold;
     color: darkred;
+    font-size: 80px;
+    text-shadow: 5px 5px 5px rgba(2,4,7,.25);
 }
 
 #game .screen {
@@ -59,19 +65,22 @@ ul.menu li {
 }
 
 ul.menu li button {
-	font-family: Arial, sans-serif;
+	font-family: "Arial Black", sans-serif;
 	font-size: 0.6em;
-	color: #CECEF6;
+	color: whitesmoke;
 	width: 10em;
-	height: 1.5em;
-	background: #0404B4;
-	border: 0.1em solid rgb(255, 0, 0);
+	height: 50px;
+	background: rgba(48,41,41,0.8);
+	/*border: 0.1em solid rgb(255, 0, 0);*/
 	border-radius: 0.5em;
-	box-shadow: 0.2em 0.2em 0.3em rgb(0, 0, 0);
+	box-shadow: 5px 5px 5px rgba(2,4,7,.25);
+}
+button {
+    cursor: pointer;
 }
 
 ul.menu li button:hover {
-	background: #2E2EFE;
+	background: rgba(25,20,20,1);
 }
 
 ul.menu li button:active {
@@ -82,44 +91,74 @@ ul.menu li button:active {
 #aboutScreen p {
     text-align: center;
 }
-
+.list{
+    margin-right: auto;
+    margin-left: auto;
+    width:500px;
+    height: auto;
+    background-color: rgba(250,250,250,0.6);
+    border-radius: 10px;
+    border: 5px solid rgba(45,45,45,0.8);
+    box-shadow: inset 5px 5px 5px rgba(2,4,7,.25);
+}
+ol {
+    text-align: center;
+    font-family: "Arial", sans-serif;
+    color: rgba(20,20,20,0.8);
+    padding: 30px 0 30px 100px;
+    cursor: default;
+}
 #id-highScoresList {
+    font-family: "Arial", sans-serif;
 	text-align: center;
-	padding: 0;
 	margin: 0;
 	list-style: decimal;
-    color: white;
+    color: rgba(20,20,20,0.8);
 }
-#tower1{
-    width: 275px;
+.tower{
+    width: 180px;
     height: auto;
-    text-align: right;
+    float: left;
+    border-radius: 5px;
+    margin: 0 10px;
+    color:rgba(100,100,100,1);
+    background-color: rgba(250,250,250,0.6);
+    box-shadow: 5px 5px 5px rgba(2,4,7,.25);
 }
-#tower2{
-    width: 275px;
-    height: auto;
-    text-align: right;
+.tower:hover{
+    background-color: rgba(100,100,100,0.8);
+    color:whitesmoke;
+    cursor: pointer;
 }
-#tower3{
-    width: 275px;
-    height: auto;
-    text-align: right;
-}
-#tower4{
-    width: 275px;
-    height: auto;
-    text-align: right;
-}
-div.right{
+.right{
     float: right;
-    margin-right: 100px;
-    width: 300px;
+    width: 400px;
     height: auto;
+    margin: auto;
+    background-color: rgba(250,250,250,0.6);
+    padding: 10px;
+    border-radius: 10px;
+    border: 5px solid rgba(45,45,45,0.8);
+    box-shadow: 5px 5px 5px rgba(2,4,7,.25);
+}
+.top{
+    width: 100%;
+    height: auto;
+    float: right;
+    margin-bottom: 20px;
+}
+.bottom{
+    width: 100%;
+    height: auto;
+    float: right;
 }
 p.name_button{
-    /*margin: 0 0 0 75px;*/
+    margin: -10px 0 0 50px;
+    text-align: center;
     font-family:"Lucida Console", Monaco, monospace;
-    font-size: 30px;
+    font-size: 25px;
+    text-shadow: 5px 5px 5px rgba(2,4,7,.25);
+    
 }
 #createTower1{
     text-align: left;
@@ -130,13 +169,12 @@ p.name_button{
     width: 20px;
     height: 20px;
     padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 5px;
+    border-radius: 5px;    
 }
-div.button:hover{
+/*div.button:hover{
     background-color: cornflowerblue;
     cursor: pointer;
-}
+}*/
 #createTower2{
     background-image: url(../images/cannon.png);
     background-color:whitesmoke;
@@ -145,7 +183,6 @@ div.button:hover{
     width: 20px;
     height: 20px;
     padding: 20px;
-    margin-bottom: 20px;
     border-radius: 5px;
 }
 #createTower3{
@@ -156,8 +193,7 @@ div.button:hover{
     width: 20px;
     height: 20px;
     padding: 20px;
-    margin-bottom:  20px;
-    border-radius: 5px;
+    border-radius: 5px;   
 }
 #createTower4{
     background-image: url(../images/missile1.png);
@@ -167,24 +203,29 @@ div.button:hover{
     width: 20px;
     height: 20px;
     padding: 20px;
-    margin-bottom:  20px;
-    border-radius: 5px;
+    border-radius: 5px;   
 }
 #canvasCenter {
     margin-top: 50px;
     width:90%;
     height:auto; 
     margin-right:auto;
-    
     margin-left:auto;
 }
 #myCanvas {
     background-image: url(../images/grassa.jpg);
+    border-radius: 15px;
+    border:10px solid rgba(45,45,45,0.8);
+    box-shadow: 5px 5px 5px rgba(2,4,7,.5);
 }
 
-#money {
-    font-size: 24;
-    color: green;
+#moneyLabel {
+    text-align: center;
+    margin: 0 0 20px 0;
+    font-family:"Arial Black", Monaco, monospace;
+    color: rgba(0,65,0,1);
+    text-shadow: 5px 5px 5px rgba(2,4,7,.25);
+    cursor: default;
 }
 
 #options button {
@@ -192,16 +233,78 @@ div.button:hover{
 }
 #upgradeButton {
     font-size: 26px;
-    padding: 15px 32px;
-    background-color: green;
+    border-radius: 5px;
+    width: 180px;
+    height: 60px;
+    margin: 0 10px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px rgba(2,4,7,.25);
+    background-color: rgba(0,65,0,1);
     color: white;
 }
-
+#upgradeButton:hover{
+    background-color: rgba(0,200,0,0.8);
+}
 
 #sellButton {
     float: left;
+    border-radius: 5px;
     font-size: 26px;
-    padding: 15px 32px;
-    background-color: green;
+    width: 180px;
+    height: 60px;
+    margin: 0 10px;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px rgba(2,4,7,.25);
+    background-color: rgba(0,65,0,1);
     color: white;
+}
+#sellButton:hover{
+    background-color: rgba(0,200,0,0.8);
+}
+.noteControl{
+    margin-right: auto;
+    margin-left: auto;
+    width:800px;
+    height: auto;
+    background-color: rgba(250,250,250,0.6);
+    color: rgba(20,20,20,0.8);
+    border-radius: 10px;
+    border: 5px solid rgba(45,45,45,0.8);
+    box-shadow: inset 5px 5px 5px rgba(2,4,7,.25);
+    font-family: "Arial", sans-serif;
+    padding: 20px;
+}
+.noteControl button{
+    background: rgba(45,45,45,1);
+    color: whitesmoke;
+    padding: 10px 20px;
+    font-size: 0.6em;
+    float: right;
+    margin: 0 20px 0 0;
+    border-radius: 15px;
+    box-shadow: 5px 5px 5px rgba(2,4,7,.25);
+}
+.noteControl button:hover{
+    background: rgba(65,65,65,0.8);
+}
+.noteAbout{
+    text-align: left;
+    margin-right: auto;
+    margin-left: auto;
+    width:400px;
+    height: auto;
+    background-color: rgba(250,250,250,0.6);
+    border-radius: 10px;
+    border: 5px solid rgba(45,45,45,0.8);
+    box-shadow: inset 5px 5px 5px rgba(2,4,7,.25);
+}
+.topAbout{
+    margin: 10px 0 0 -100px;
+    font-family: "Arial", sans-serif;
+    color: rgba(20,20,20,0.8);
+}
+.centerAbout{
+    font-family:"Courier New", Courier, monospace;
+    font-weight: bold;
+    color: rgba(20,20,20,0.8);
 }

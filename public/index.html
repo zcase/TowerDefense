@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Tower Defense</title>
-    <script type="text/javascript" src = "http://code.jquery.com/jquery-latest.min.js"></script>
-	<script type="text/javascript" src = "scripts/index.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="scripts/index.js"></script>
     <link rel="stylesheet" type="text/css" href="scripts/styles.css">
 </head>
 
@@ -34,38 +34,41 @@
         <!-- The screen where the game is played -->
         <div id="gameScreen" class="screen">
             <div id="canvasCenter">
-                
+
                 <canvas id="myCanvas" width="800" height="600"></canvas>
-                
-                
+
+
                 <div class="right">
-                    <div id="money">
-                        <p id="moneyLabel">Money = $</p>
+                    <div class="moneyLable" id="money">
+                        <p id="moneyLabel"></p>
                     </div>
-                    
-                    <div id="tower1">
-                        <div class="button" id="createTower1" onclick="towerDefense.model.createLowLevelTower1()">
-                            <p class="name_button">gun</p>
+                    <div class="top">
+                        <div class="tower">
+                            <div class="button" id="createTower1" onclick="towerDefense.model.createLowLevelTower1()">
+                                <p class="name_button">gun</p>
+                            </div>
+
                         </div>
-                        
+                        <div class="tower">
+                            <div class="button" id="createTower2" onclick="towerDefense.model.createLowLevelTower2()">
+                                <p class="name_button">cannon</p>
+                            </div>
+
+                        </div>
                     </div>
-                    <div id="tower2">
-                        <div class="button" id="createTower2" onclick="towerDefense.model.createLowLevelTower2()">
-                            <p class="name_button">cannon</p>
+                    <div class="bottom">
+                        <div class="tower">
+                            <div class="button" id="createTower3" onclick="towerDefense.model.createLowLevelTower3()">
+                                <p class="name_button">tower</p>
+                            </div>
+
                         </div>
-                        
-                    </div>
-                    <div id="tower3">
-                        <div class="button" id="createTower3" onclick="towerDefense.model.createLowLevelTower3()">
-                            <p class="name_button">tower</p>
+                        <div class="tower">
+                            <div class="button" id="createTower4" onclick="towerDefense.model.createLowLevelTower4()">
+                                <p class="name_button">missile</p>
+                            </div>
+
                         </div>
-                        
-                    </div>
-                    <div id="tower4">
-                        <div class="button" id="createTower4" onclick="towerDefense.model.createLowLevelTower4()">
-                            <p class="name_button">missile</p>
-                        </div>
-                        
                     </div>
                     <div id="options">
                         <button id="upgradeButton" onclick="towerDefense.model.upgrade()">Upgrade</button>
@@ -83,15 +86,15 @@
         <!-- This is the screen where the High Scores are displayed -->
         <div id="highScoresScreen" class="screen">
             <h1>High Scores</h1>
-
-            <ol id="id-highScoresList">
-                <!--<li id="1"></li>
+            <div class="list">
+                <ol id="id-highScoresList">
+                    <!--<li id="1"></li>
                 <li id="2"></li>
                 <li id="3"></li>
                 <li id="4"></li>
                 <li id="5"></li>-->
-            </ol>
-
+                </ol>
+            </div>
             <ul class="menu">
                 <li>
                     <button id="highScoresBack">Back</button>
@@ -102,19 +105,19 @@
         <!-- This is the screen where the controls of the game are configured -->
         <div id="controlsScreen" class="screen">
             <h1>Game Controls</h1>
-            
+            <div class="noteControl">
             <div id="upgradeTower">
-                <p>Tower Upgrade Shortcut =  <span id="upgradeShortcut"></span> <button onclick="towerDefense.controls.capture('upgrade')">Capture ShortCut</button></p>
+                <p>Tower Upgrade Shortcut = <span id="upgradeShortcut"></span> <button onclick="towerDefense.controls.capture('upgrade')">Capture ShortCut</button></p>
             </div>
-            
+
             <div id="sellTower">
                 <p>Sell Tower Shortcut = <span id="sellShortcut"></span> <button onclick="towerDefense.controls.capture('sell')">Capture ShortCut</button></p>
             </div>
-            
+
             <div id="startLevel">
                 <p>Start Next Level Shortcut = <span id="startShortcut"></span> <button onclick="towerDefense.controls.capture('start')">Capture ShortCut</button></p>
             </div>
-            
+            </div>
             <ul class="menu">
                 <li>
                     <button id="controlsBack">Back</button>
@@ -125,10 +128,10 @@
         <!-- This is the screen that displays the about information -->
         <div id="aboutScreen" class="screen">
             <h1>About</h1>
-            <p>Developed by</p>
-            <p>Zachary Case</p>
-            <p>Nick Hunsaker</p>
-
+            <div class="noteAbout">
+            <p class="topAbout">Developed by</p>
+            <p class="centerAbout">Zachary Case<br/>and<br/>Nick Hunsaker</p>
+            </div>
             <ul class="menu">
                 <li>
                     <button id="aboutBack">Back</button>
