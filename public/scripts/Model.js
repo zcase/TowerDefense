@@ -13,7 +13,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         GeneralMouse = input.Mouse(),
         modelKeyboard = input.Keyboard(),
         creep,
-        score,
+        score = {},
         live,
         livesRemaining = 10,
         // mouse = input.Keyboard(),
@@ -29,10 +29,32 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         creepStartingPostitionsLevel2 = [{x : 19, y : 0}, {x: 19, y : 0}, {x: 19 , y: 0}], // Top to bottom,
         creepStartingPostitionsLevel3 = [{x : -20, y : 310}, {x: -20, y : 330}, {x: -20 , y: 270}, {x : 19, y : 0}, {x: 19, y : 0}, {x: 19 , y: 0}], //Left to Right, Top to Bottom
         
-        delayStartTimes = [0, 0.50, 1, 1.50, 2, 2.50, 3, 3.50, 4, 4.50, 5, 5.50, 6, 6.50, 7, 7.50, 8, 8.50, 9];
+        delayStartTimes = [0, 0.50, 1, 1.50, 2, 2.50, 3, 3.50, 4, 4.50, 5, 5.50, 6, 6.50, 7, 7.50, 8, 8.50, 9, 9.50, 10, 10.50, 11];
 
     
     var count = 0;
+    
+    function checkControls(e){
+        
+        var mycontrols = {};
+        mycontrols.upgrade = controls.getControls().upgrade;
+        mycontrols.sell = controls.getControls().sell;
+        mycontrols.start = controls.getControls().start;
+        
+        // for(var i = 0; i < mycontrols.upgrade.length; i++) {
+            if(modelKeyboard.keys === mycontrols.update) {
+                upgrade();
+            }
+            
+            if(modelKeyboard.keys === mycontrols.sell) {
+                sell();
+            }
+            
+            // if(modelKeyboard.keys === mycontrols.start) {
+            //     start();
+            // }
+        // }
+    }
     
     function sell() {
         var remove = false;
@@ -148,9 +170,11 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         internalUpdate = updatePlaying;
         internalRender = renderPlaying;
         
-        modelKeyboard.registerCommand(KeyEvent.DOM_VK_6, function () {
-            console.log("HELLO BRO");
-        });
+        
+        modelKeyboard.registerCommand('keydown', checkControls());
+        // modelKeyboard.registerCommand(KeyEvent.DOM_VK_6, function () {
+        //     console.log("HELLO BRO");
+        // });
         // modelKeyboard.registerCommand(controls.getControls().upgrade, sell);
         // modelKeyboard.registerCommand(controls.getControls().upgrade, start);
         
@@ -827,7 +851,6 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
             spriteSheet : 'images/bossSprite.png',
             spriteCount : 8,
             spriteTime : [200, 300, 100, 200, 300,200,300,200],	// milliseconds per sprite animation frame
-			// center : { x: 400, y: 400 },
             center : {x: randomStart.x, y: randomStart.y},
             width: 30,
             height:30,
@@ -866,66 +889,66 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         // 12 total creeps differenct varaity
         var temp = delayStartTimes;
         
-        createCreep();
-        createCreep();
-        createCreep();
-        createPersonCreep()
-        createPersonCreep()
-        createCreep();
-        createPersonCreep()
-        createPersonCreep()
-        createPersonCreep()
-        createCreep();
-        createCreep();
-        createNaziCreep();
+        createCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
     }
     
     function Wave3 (LevelStartingPositions) {
         //16 total creeps
         var temp = delayStartTimes;
         
-        createCreep();
-        createCreep();
-        createNaziCreep();
-        createCreep();
-        createPersonCreep()
-        createNaziCreep();
-        createPersonCreep()
-        createCreep();
-        createPersonCreep()
-        createPersonCreep()
-        createNaziCreep();
-        createPersonCreep()
-        createCreep();
-        createNaziCreep();
-        createCreep();
-        createNaziCreep();
+        createCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
     }
     
     function Wave4(LevelStartingPositions) {
         // 20 total creeps
         var temp = delayStartTimes;
         
-        createDragonCreep();
-        createDragonCreep();
-        createCreep();
-        createCreep();
-        createNaziCreep();
-        createCreep();
-        createPersonCreep()
-        createNaziCreep();
-        createPersonCreep()
-        createCreep();
-        createPersonCreep()
-        createPersonCreep()
-        createNaziCreep();
-        createPersonCreep()
-        createCreep();
-        createDragonCreep();
-        createDragonCreep();
-        createNaziCreep();
-        createCreep();
-        createNaziCreep();
+        createDragonCreep(temp, LevelStartingPositions);
+        createDragonCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
+        createPersonCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createDragonCreep(temp, LevelStartingPositions);
+        createDragonCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
+        createCreep(temp, LevelStartingPositions);
+        createNaziCreep(temp, LevelStartingPositions);
     }
     
     
@@ -994,12 +1017,12 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         
     function updatePlaying(elapsedTime) {
         if( count < 1 && count <=2) {
-        //     createCreep();
-            // createPersonCreep();
-        //     // createCreep();
-        //     createDragonCreep();
-        //     // createNaziCreep();
-        //     // createBossCreep();
+        //     createCreep(temp, LevelStartingPositions);
+            // createPersonCreep(temp, LevelStartingPositions);;
+        //     // createCreep(temp, LevelStartingPositions);
+            // createDragonCreep();
+            // createNaziCreep(temp, LevelStartingPositions);
+            // createBossCreep();
             Wave1(creepStartingPostitionsLevel1);
             count++;
         }
@@ -1055,7 +1078,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         renderLive();
         var deathx;
         var deathy;
-        var score;
+        // var score;
         
 
         for(var i = 0; i < towers.length; i++) {
@@ -1084,18 +1107,18 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
                 deathx = creeps[i].x;
                 deathy = creeps[i].y;
                 var dead = creeps[i].dead;
-                score = 5;
+                // score = 5;
                 
                 if(dead === true) {
                     creepIsDead = true;
                     var display = displayCreepScore({
                         x: deathx,
                         y : deathy,
-                        score : '+' + score,
+                        score : '+' + creeps[i].point,
                     });
                     
                     money += creeps[i].moneyGained;
-                    score += creeps[i].point;
+                    score.total += creeps[i].point;
                     displayArray.push(display);
 
                 }
