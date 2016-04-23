@@ -63,9 +63,16 @@ towerDefense.graphics = (function() {
     
     
     function drawText(spec) {
+        ctx.save();
+        ctx.shadowColor = spec.shadowColor;
+        ctx.shadowOffsetX = spec.offsetX;
+        ctx.shadowOffsetY = spec.offsetY;
+        ctx.shadowBlur = spec.blur;
         ctx.font = spec.font;
         ctx.fillStyle = spec.color;
         ctx.fillText (spec.text, spec.position.x, spec.position.y);
+        ctx.fill();
+        ctx.restore();
     }
     
     //------------------------------------------------------------------

@@ -14,6 +14,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
         // keyboard = input.Keyboard(),
         creep,
         score,
+        point=0,
         live,
         livesRemaining = 10,
         // mouse = input.Keyboard(),
@@ -100,16 +101,24 @@ towerDefense.model = (function (components, graphics, input, sound) {
         
         score = {
             total : 0,
+            shadowColor : 'rgba(0,0,0,0.6)',
+            offsetX: 10,
+            offsetY: 10,
+            blur : 7,
             position : {x : 10, y : 30},
-            font : '32px Arial, sans-serif',
+            font : '32px Arial Black, sans-serif',
             color : 'rgba(255,255,255,1)',
             text : '' ,
         };
         
         live = {
             lives: livesRemaining,
+            shadowColor : 'rgba(0,0,0,0.6)',
+            offsetX: 10,
+            offsetY: 10,
+            blur : 7,
             position : {x : 650, y : 30},
-            font : '32px Arial, sans-serif',
+            font : '32px Arial Black, sans-serif',
             color : 'rgba(255,255,255,1)',
             text : '',
         }
@@ -882,12 +891,12 @@ towerDefense.model = (function (components, graphics, input, sound) {
     
     
     function renderScore(){
-       score.text = 'Score: ' + score.total;
+       score.text = 'Score: ' + point;
        graphics.drawText(score);
     }
     
     function renderLive(){
-        live.text = 'Live: ' + live.lives;
+        live.text = 'Live: ' + livesRemaining;
         graphics.drawText(live);
     }
     
@@ -1036,22 +1045,26 @@ towerDefense.model = (function (components, graphics, input, sound) {
                 deathx = creeps[i].x;
                 deathy = creeps[i].y;
                 var dead = creeps[i].dead;
-                score = 5;
                 
                 if(dead === true) {
                     creepIsDead = true;
                     var display = displayCreepScore({
                         x: deathx,
-                        y : deathy,
-                        score : '+' + score,
+                        y : deathy, 
+                        score : '+' + creeps[i].point,
                     });
                     
+                    point += creeps[i].point;
                     displayArray.push(display);
+                    
 
                 }
-                
+                if (creeps[i].x >= 41){
+                    livesRemaining--;
+                }
                 var index = creeps.indexOf(creeps[i]);
                     creeps.splice(index, 1);
+                    
             }
         }
         
@@ -1068,7 +1081,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
         
         
 
-        document.getElementById('moneyLabel').innerHTML = 'Money = $' + money;
+        document.getElementById('moneyLabel').innerHTML = 'money: $' + money;
     }
 
     function processInputGeneral(elapsedTime) {
