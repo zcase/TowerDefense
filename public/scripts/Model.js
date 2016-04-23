@@ -1,4 +1,4 @@
-towerDefense.model = (function (components, graphics, input, sound) {
+towerDefense.model = (function (components, graphics, input, sound, controls) {
     var gameGrid,
         tower,
         towers = [],
@@ -11,7 +11,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
         mouseArray = [],
         // generalMouseArray = [],
         GeneralMouse = input.Mouse(),
-        // keyboard = input.Keyboard(),
+        modelKeyboard = input.Keyboard(),
         creep,
         score,
         livesRemaining = 10,
@@ -33,6 +33,29 @@ towerDefense.model = (function (components, graphics, input, sound) {
     
     var count = 0;
     
+    function sell() {
+        var remove = false;
+        for(var i = 0; i < towers.length; i++) {
+            if(towers[i].tower.isSelected === true) {
+                var xGrid = towers[i].tower.x;
+                var yGrid = towers[i].tower.y;
+                gameGrid.layout[xGrid][yGrid].taken = false;
+                
+                money += towers[i].tower.cost / 2;
+                towers[i].tower.placed = false;
+                
+               var index = towers.indexOf(towers[i].tower);
+               remove = true;
+            }else {
+                towers[i].tower.isSelected = false;
+                // remove = false;
+            }
+        }
+        if(remove){
+            towers.splice(index, 1);
+        }
+    }
+    
     function upgrade() {
         for(var i = 0; i < towers.length; i++) {
             if(towers[i].tower.isSelected === true && (money - towers[i].tower.upgradeCost) >=0) {
@@ -52,14 +75,18 @@ towerDefense.model = (function (components, graphics, input, sound) {
                         towers[i].tower.image = towers[i].tower.image2;
                         towers[i].roof.image = towers[i].roof.image2; 
                     }
-
-                    towers[i].tower.cost += 4;             // Change to a percentage of current tower.
-                    towers[i].tower.strength += 3;         // Change to a percentage of current tower.
-                    towers[i].tower.attackDistance += 20;  
-                    towers[i].tower.upgradeCost += 4;      // Change to a percentage of current tower.
-                    // Change fire rate by percentage
-                    money -= towers[i].tower.upgradeCost;
                     
+                    money -= towers[i].tower.upgradeCost;
+
+                    var cost = towers[i].tower.cost;
+                    var strength = towers[i].tower.strength;
+                    var upCost = towers[i].tower.upgradeCost;
+                    towers[i].tower.cost +=  (cost * 0.75);             // Change to a percentage of current tower.
+                    towers[i].tower.strength +=  (strength * .60);         // Change to a percentage of current tower.
+                    towers[i].tower.attackDistance += 20;  
+                    towers[i].tower.upgradeCost += (upCost * 0.75);      // Change to a percentage of current tower.
+                    // Change fire rate by percentage
+
                 } else if(towers[i].tower.level === 3) {
                     if(towers[i].tower.base){
                       towers[i].base.image = towers[i].base.image3; 
@@ -104,6 +131,12 @@ towerDefense.model = (function (components, graphics, input, sound) {
         // Potentially set these to something else if there is a count down screen or something
         internalUpdate = updatePlaying;
         internalRender = renderPlaying;
+        
+        modelKeyboard.registerCommand(KeyEvent.DOM_VK_6, function () {
+            console.log("HELLO BRO");
+        });
+        // modelKeyboard.registerCommand(controls.getControls().upgrade, sell);
+        // modelKeyboard.registerCommand(controls.getControls().upgrade, start);
         
         
         // var GeneralKeyboard = input.Keyboard();
@@ -165,10 +198,13 @@ towerDefense.model = (function (components, graphics, input, sound) {
         if(money - 5 >= 0) {
             // GeneralMouse.deregisterCommand('mousedown');
         towerCount++;
+        var cost = 20;
+        var temp = 20;
+        var nextUpGrade = temp + (cost/2);
             var createdTower = components.Tower({
                 image : 'images/gun1.png',
-                image2 : 'pulbic/images/gun2.png',
-                image3 : 'pulbic/images/gun3.png',
+                image2 : 'images/gun2.png',
+                image3 : 'images/gun3.png',
                 center : {x : 12000, y : 300},
                 target : {x : 100, y : 0},
                 width : 20,
@@ -179,11 +215,11 @@ towerDefense.model = (function (components, graphics, input, sound) {
                 towerNum : towerCount,
                 inCanvas : false,
                 level : 1,
-                cost : 5,
+                cost : cost,
                 placed : false,
                 strength : 5,
                 attackDistance : 20 * 6,
-                upgradeCost : 8,
+                upgradeCost : nextUpGrade,
                 base : true,
                 tower : false,
                 nonBase : false,
@@ -292,6 +328,9 @@ towerDefense.model = (function (components, graphics, input, sound) {
         
         if(money - 8 >= 0) {
             towerCount++;
+            var cost = 40;
+            var temp = 40;
+            var nextUpGrade = temp + (cost/2);
             var createdTower = components.Tower({
                 image : 'images/cannon1or2.png',
                 image2 : 'images/cannon1or2.png',
@@ -306,11 +345,11 @@ towerDefense.model = (function (components, graphics, input, sound) {
                 towerNum : towerCount,
                 inCanvas : false,
                 level : 1,
-                cost : 8,
+                cost : cost,
                 placed : false,
-                strength : 20,
+                strength : 8,
                 attackDistance : 20 * 8,
-                upgradeCost : 11,
+                upgradeCost : nextUpGrade,
                 base : true,
                 tower : false,
                 nonBase : false,
@@ -416,6 +455,9 @@ towerDefense.model = (function (components, graphics, input, sound) {
     function createLowLevelTower3() {
         if (money - 12 >= 0) {
             towerCount++;
+            var cost = 70;
+            var temp = 70;
+            var nextUpGrade = temp + (cost / 2);
             var createdTower = components.Tower({
                 image: 'images/tower1.png',
                 image2: 'images/tower2or3.png',
@@ -431,11 +473,11 @@ towerDefense.model = (function (components, graphics, input, sound) {
                 towerNum: towerCount,
                 inCanvas: false,
                 level: 1,
-                cost: 12,
+                cost: cost,
                 placed : false,
                 strength: 10,
                 attackDistance: 20 * 10,
-                upgradeCost: 15,
+                upgradeCost: nextUpGrade,
                 base : false,
                 tower : true,
                 nonBase : false,
@@ -539,6 +581,9 @@ towerDefense.model = (function (components, graphics, input, sound) {
     function createLowLevelTower4() {
         if(money - 12 >= 0) {
             towerCount++;
+            var cost = 60;
+            var temp = 60;
+            var nextUpGrade = temp + (cost/2);
             var createdTower = components.Tower({
                 image : 'images/missile1.png',
                 image2 : 'images/missile2.png',
@@ -553,12 +598,12 @@ towerDefense.model = (function (components, graphics, input, sound) {
                 isSelected : true,
                 towerNum : towerCount,
                 inCanvas : false,
-                strength : 20,
+                strength : 12,
                 attackDistance : 20 * 15,
                 level : 1,
-                cost : 12,
+                cost : cost,
                 placed : false,
-                upgradeCost : 15,
+                upgradeCost : nextUpGrade,
                 base : false,
                 tower : false,
                 nonBase : true,
@@ -659,9 +704,10 @@ towerDefense.model = (function (components, graphics, input, sound) {
             moveRate : 10,
             type : 'ground',
             delayTime : randomStartTime,
-            point : 2,
+            point : 5,
             // delayTime : randomStartTime,
             life : 100,
+            moneyGained : 10,
             // healthColor : 'green',
             
         });
@@ -669,10 +715,9 @@ towerDefense.model = (function (components, graphics, input, sound) {
         creeps.push(creep);
     }
     
-    function createPersonCreep(){
-        
-        var randomStart = creepStartingPostitionsLevel1[Math.floor(Math.random()*creepStartingPostitionsLevel1.length)];
-        var randomStartTime = delayStartTimes[Math.floor(Math.random() *delayStartTimes.length)];
+    function createPersonCreep(delayTimes, startPositions){
+       var randomStart = startPositions[Math.floor(Math.random()*startPositions.length)];
+       var randomStartTime = delayTimes[Math.floor(Math.random() *delayTimes.length)];
 
         person = components.AnimatedMoveModel({
             spriteSheet : 'images/personSprite.png',
@@ -693,14 +738,15 @@ towerDefense.model = (function (components, graphics, input, sound) {
             rightBar : 25,
             delayTime : randomStartTime,
             topBar : 25,
-            point : 5
+            point : 5,
+            moneyGained : 10,
         }, graphics);
         creeps.push(person);
     }
     
-    function createNaziCreep(){
-        var randomStart = creepStartingPostitionsLevel1[Math.floor(Math.random()*creepStartingPostitionsLevel1.length)];
-        var randomStartTime = delayStartTimes[Math.floor(Math.random() *delayStartTimes.length)];
+    function createNaziCreep(delayTimes, startPositions){
+        var randomStart = startPositions[Math.floor(Math.random()*startPositions.length)];
+        var randomStartTime = delayTimes[Math.floor(Math.random() *delayTimes.length)];
  
         
         nazi = components.AnimatedMoveModel({
@@ -722,15 +768,15 @@ towerDefense.model = (function (components, graphics, input, sound) {
             rightBar : 25,
             delayTime : randomStartTime,
             topBar : 25,
-            point : 10
+            point : 15,
+            moneyGained : 20,
         }, graphics);
         creeps.push(nazi);
     }
     
-    function createDragonCreep() {
-        
-        var randomStart = creepStartingPostitionsLevel1[Math.floor(Math.random()*creepStartingPostitionsLevel1.length)];
-        var randomStartTime = delayStartTimes[Math.floor(Math.random() *delayStartTimes.length)];
+    function createDragonCreep(delayTimes, startPositions) {
+        var randomStart = startPositions[Math.floor(Math.random()*startPositions.length)];
+        var randomStartTime = delayTimes[Math.floor(Math.random() *delayTimes.length)];
         
         dragon = components.AnimatedMoveModel( {
 			spriteSheet : 'images/dragonSprite.png',
@@ -750,15 +796,16 @@ towerDefense.model = (function (components, graphics, input, sound) {
             rightBar : 25,
             delayTime : randomStartTime,
             topBar : 50,
-            point : 15
+            point : 45,
+            moneyGained : 40,
 		}, graphics);
         creeps.push(dragon);
         
     }
 
-    function createBossCreep(){
-        var randomStart = creepStartingPostitionsLevel1[Math.floor(Math.random()*creepStartingPostitionsLevel1.length)];
-        var randomStartTime = delayStartTimes[Math.floor(Math.random() *delayStartTimes.length)];
+    function createBossCreep(delayTimes, startPositions){
+        var randomStart = startPositions[Math.floor(Math.random()*startPositions.length)];
+        var randomStartTime = delayTimes[Math.floor(Math.random() *delayTimes.length)];
         
         boss = components.AnimatedMoveModel({
             spriteSheet : 'images/bossSprite.png',
@@ -774,11 +821,12 @@ towerDefense.model = (function (components, graphics, input, sound) {
 			moveRate : 20/1000,			// pixels per millisecond
 			rotateRate : Math.PI / 2 / 1000,
             flying : false,
-            life : 120,
+            life : 200,
             rightBar : 25,
             delayTime : randomStartTime,
             topBar : 30,
-            point : 20,
+            point : 100,
+            moneyGained : 100,
         }, graphics);
         creeps.push(boss);
     }
@@ -1020,6 +1068,8 @@ towerDefense.model = (function (components, graphics, input, sound) {
                         score : '+' + score,
                     });
                     
+                    money += creeps[i].moneyGained;
+                    score += creeps[i].point;
                     displayArray.push(display);
 
                 }
@@ -1046,6 +1096,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
     }
 
     function processInputGeneral(elapsedTime) {
+        modelKeyboard.update(elapsedTime);
         GeneralMouse.update(elapsedTime);
     }
 
@@ -1080,6 +1131,7 @@ towerDefense.model = (function (components, graphics, input, sound) {
        update : update,
        render : render,
        upgrade : upgrade,
+       sell : sell,
    }
     
-}(towerDefense.components, towerDefense.graphics, towerDefense.input, towerDefense.sound));
+}(towerDefense.components, towerDefense.graphics, towerDefense.input, towerDefense.sound, towerDefense.controls));

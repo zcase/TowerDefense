@@ -1,5 +1,5 @@
 
-towerDefense.input = (function(screens) {
+towerDefense.input = (function() {
     
     function Mouse() {
         var that = {
@@ -150,64 +150,89 @@ towerDefense.input = (function(screens) {
         var that =  {
                 keys : {},
                 handlers : [],
+                captureMultKeys : [],
             },
-            keys;
-            var captureKeys = [];
+            key,
+            handler;
+            
+            // var captureMultKeys = [];
             var captureInfo;
             
         function keyPress(e) {
             that.keys[e.keyCode] = e.timestamp;
             console.log("KEYS PRESSED = "+ e.keyCode);
         }
-        
-        function keyPressCapture(e) {
-            // that.keys[e.keyCode] = e.timestamp;
-            captureInfo = towerDefense.controls.getCaptureInfo();
-            captureKeys = [];
-            console.log("KEYS PRESSED = "+ e.keyCode);
-            
-            if(captureInfo.startCapture === true) {
-                captureKeys.push(e.keyCode);
-            }
-        }
-        
         function keyRelease(e) {
             delete that.keys[e.keyCode];
         }
         
-        function keyReleaseCapture(e) {
-            // delete that.keys[e.keyCode];
-            // captureInfo = towerDefense.controls.getCaptureInfo();
+        function keyPressCapture(e) {
+            // that.keys[e.keyCode] = e.timestamp;
+            captureInfo = towerDefense.controls.getCaptureInfo();
+            captureMultKeys = [];
+            // console.log("KEYS PRESSED = "+ e.keyCode);
+            
             if(captureInfo.startCapture === true) {
-                for(var i = 0; i < captureKeys.length; i++) {
+                that.captureMultKeys.push(e.keyCode);
+                // captureKeys[e.keyCode] = true;
+                console.log("KEYS PRESSED = "+ e.keyCode);
+            } else {
+                that.keys[e.keyCode] = e.timestamp;
+                console.log("KEYS PRESSED = "+ e.keyCode);
+            }
+            
+            // return false;
+        }
+        
+        
+        
+        function keyReleaseCapture(e) {
+            if(captureInfo.startCapture === true) {
+                var newCapture = towerDefense.controls.getControls();
+                for(var i = 0; i < that.captureMultKeys.length; i++) {
                     if(captureInfo.shortcut === 'upgrade'){
-                        if(captureKeys[i] !== captureInfo.shortcutControls.upgrade) {
-                            captureInfo.shortcutControls.upgrade = captureKeys;
+                        if(that.captureMultKeys[i] !== captureInfo.shortcutControls.upgrade) {
+                            captureInfo.shortcutControls.upgrade = that.captureMultKeys.slice(0);
                             captureInfo.shortcutControls.sell = captureInfo.shortcutControls.sell;
                             captureInfo.shortcutControls.start = captureInfo.shortcutControls.start;
+                            newCapture = {upgrade : captureInfo.shortcutControls.upgrade, sell : captureInfo.shortcutControls.sell, start : captureInfo.shortcutControls.start}
+
+                            break;
                         }
                     }
                 
                     if(captureInfo.shortcut === 'sell'){
-                        if(captureKeys[i] !== captureInfo.shortcutControls.sell) {
-                            captureInfo.shortcutControls.sell = captureKeys;
+                        if(that.captureMultKeys[i] !== captureInfo.shortcutControls.sell) {
+                            captureInfo.shortcutControls.sell = that.captureMultKeys.slice(0);
                             captureInfo.shortcutControls.upgrade = captureInfo.shortcutControls.upgrade;
                             captureInfo.shortcutControls.start = captureInfo.shortcutControls.start;
+                            newCapture = {upgrade : captureInfo.shortcutControls.upgrade, sell : captureInfo.shortcutControls.sell, start : captureInfo.shortcutControls.start}
+
+                            break;
                         }
                     }
                 
                     if(captureInfo.shortcut === 'start'){
-                        if(captureKeys[i] !== captureInfo.shortcutControls.start) {
-                            captureInfo.shortcutControls.start = captureKeys;
+                        if(that.captureMultKeys[i] !== captureInfo.shortcutControls.start) {
+                            captureInfo.shortcutControls.start = that.captureMultKeys.slice(0);
                             captureInfo.shortcutControls.sell = captureInfo.shortcutControls.sell;
                             captureInfo.shortcutControls.upgrade = captureInfo.shortcutControls.upgrade;
+                            newCapture = {upgrade : captureInfo.shortcutControls.upgrade, sell : captureInfo.shortcutControls.sell, start : captureInfo.shortcutControls.start}
+
+                            break;
                         }
                     }
                 }
+                towerDefense.screens.showScreen('controlsScreen');
+                that.captureMultKeys.length = 0;
+                captureInfo.startCapture = false;
+                towerDefense.controls.setShortCutControls(newCapture);
+            } else{
+                delete that.keys[e.keyCode];
+                // return false;
             }
-           
-           captureInfo.startCapture = false;
-           screens.showScreen('controlsScreen');
+            
+            // return false;
         }
         
         
@@ -217,15 +242,26 @@ towerDefense.input = (function(screens) {
         };
         
         that.update = function(elapsedTime) {
-            for(key = 0; key < that.handlers.length; key++) {
-                if(typeof that.keys[that.handlers[key].key] != 'undefined') {
-                    that.handlers[key].handler(elapsedTime);
+            for(handler = 0; handler < that.handlers.length; handler++) {
+                  if (that.keys.hasOwnProperty(that.handlers[handler].key)) {
+                    console.log('pressed: ' + that.handlers[handler].key);
+                    that.handlers[handler].handler(elapsedTime);
                 }
             }
         };
         
+        // that.update = function(elapsedTime) {
+        //     for(key = 0; key < that.handlers.length; key++) {
+        //         if(typeof that.keys[that.handlers[key].key] != 'undefined') {
+        //             that.handlers[key].handler(elapsedTime);
+        //         }
+        //     }
+        // };
+        
         window.addEventListener('keydown', keyPressCapture);
         window.addEventListener('keyup', keyReleaseCapture);
+        // window.addEventListener('keydown', keyPress);
+        // window.addEventListener('keyup', keyRelease);
         
         return that;
      
@@ -236,7 +272,7 @@ towerDefense.input = (function(screens) {
         Keyboard : Keyboard
     }
     
-}(towerDefense.screens));
+}());
 
 //------------------------------------------------------------------
 //

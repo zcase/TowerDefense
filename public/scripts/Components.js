@@ -3,6 +3,8 @@ towerDefense.components = (function(graphics, sound, effects) {
     var FRONTIER = 1;
     var VISITED = 2;
     var popTime = 1000;
+    var moneyFromCreeps = 0;
+    var pointsFromCreeps = 0;
     
     //************************************************************
     //
@@ -20,6 +22,14 @@ towerDefense.components = (function(graphics, sound, effects) {
     // 
     //         
     //************************************************************
+    
+    function getCreepMoney() {
+        return moneyFromCreeps;
+    }
+    
+    function getCreepPoints() {
+        return pointsFromCreeps;
+    }
     
     // This function reverses an array that isn't a number.
     // If trying to reverse a number just use .reverse() on array (built in function)
@@ -815,8 +825,7 @@ towerDefense.components = (function(graphics, sound, effects) {
       that.startTime = spec.delayTime*1000;
       that.initialDelayTime = 0;
       that.type = spec.type;
-    //   that.rotationRate = 90;
-    //   that.rotation = 0;
+      that.moneyGained = spec.moneyGained;
       that.point = spec.point;
   
       that.render = function(graphics) {
@@ -1117,9 +1126,10 @@ towerDefense.components = (function(graphics, sound, effects) {
         that.attackDistance = 10;
         that.startTime = spec.delayTime*1000;
         that.initialDelayTime = 0;
-        // that.popTime = 0;
+        that.moneyGained = spec.moneyGained;
+        that.point = spec.point;
 
-		that.update = function(elapsedTime, gameGridObj) {
+        that.update = function(elapsedTime, gameGridObj) {
             
             var xGrid = Math.floor(spec.center.x/ 20);
          
@@ -1300,5 +1310,7 @@ towerDefense.components = (function(graphics, sound, effects) {
         AnimatedModel : AnimatedModel,
         reset : reset,
         Bullet : Bullet,
+        getCreepMoney : getCreepMoney,
+        getCreepPoints : getCreepPoints,
     }
 }(towerDefense.graphics, towerDefense.sound, towerDefense.effects));

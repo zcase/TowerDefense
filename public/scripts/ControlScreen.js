@@ -1,5 +1,5 @@
 
-towerDefense.myScreens['controlsScreen'] = (function(screens, input) {
+towerDefense.myScreens['controlsScreen'] = (function(screens, input, controls) {
 
     function initialize() {
     
@@ -11,35 +11,45 @@ towerDefense.myScreens['controlsScreen'] = (function(screens, input) {
     
     
     function displayShortcuts() {
-        var controls = towerDefense.controls.getControls();
+        var myControls = controls.getControls();
         
         var upgradeShortcut = document.getElementById('upgradeShortcut'),
             sellShortcut = document.getElementById('sellShortcut'),
             startShortcut = document.getElementById('startShortcut');
         
-        for(var i = 0; i < controls.upgrade.length; i++ ) {
-            if(controls.upgrade.length === 1) {
-                upgradeShortcut.innerHTML = String.fromCharCode(controls.upgrade[i]);
+        var controlString = '';
+        for(var i = 0; i < myControls.upgrade.length; i++ ) {
+            
+            if(i === myControls.upgrade.length-1) {
+                controlString += String.fromCharCode(myControls.upgrade[i]);
+                // upgradeShortcut.innerHTML = String.fromCharCode(controls.upgrade[i]);
             } else {
-                upgradeShortcut.innerHTML = String.fromCharCode(controls.upgrade[i]) + " ";
+                controlString += String.fromCharCode(myControls.upgrade[i]) + " + ";
+                // upgradeShortcut.innerHTML = String.fromCharCode(controls.upgrade[i]) + " ";
             }
         }
+        upgradeShortcut.innerHTML = controlString;
+        controlString = '';
         
-        for(var i = 0; i < controls.sell.length; i++ ) {
-            if(controls.sell.length === 1) {
-                sellShortcut.innerHTML = String.fromCharCode(controls.sell[i]);
+        for(var i = 0; i < myControls.sell.length; i++ ) {
+            if(i === myControls.sell.length-1) {
+                controlString += String.fromCharCode(myControls.sell[i]);
             } else {
-                sellShortcut.innerHTML = String.fromCharCode(controls.sell[i]) + " ";
+                controlString += String.fromCharCode(myControls.sell[i]) + " + ";
             }
         }
+        sellShortcut.innerHTML = controlString;
+        controlString = '';
         
-        for(var i = 0; i < controls.start.length; i++ ) {
-            if(controls.start.length === 1) {
-                startShortcut.innerHTML = String.fromCharCode(controls.start[i]);
+        for(var i = 0; i < myControls.start.length; i++ ) {
+            if(i === myControls.start.length-1) {
+                controlString += String.fromCharCode(myControls.start[i]);
             } else {
-                startShortcut.innerHTML = String.fromCharCode(controls.start[i]) + " ";
+                controlString += String.fromCharCode(myControls.start[i]) + " + ";
             }
         }
+        startShortcut.innerHTML = controlString;
+        controlString = '';
     }
     
     function run() {
@@ -52,4 +62,4 @@ towerDefense.myScreens['controlsScreen'] = (function(screens, input) {
     };
 
 
-}(towerDefense.screens, towerDefense.input));
+}(towerDefense.screens, towerDefense.input, towerDefense.controls));

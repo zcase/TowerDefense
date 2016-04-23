@@ -6,27 +6,28 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
         mouse = input.Mouse(),
         lastTime = performance.now(),
         backgroundSound;
-        // keyboard = input.Keyboard(),
+      var  gameScreenkeyboard = input.Keyboard();
 
     function initialize() {
     
-        // keyboard.registerCommand(KeyEvent.DOM_VK_ESCAPE, function() {
-            
-        //     stopGame = true;
-            
-        //     screens.showScreen('mainMenu');
-        // });
+        gameScreenkeyboard.registerCommand(KeyEvent.DOM_VK_ESCAPE, function() {
+            stopGame = true;
+            screens.showScreen('mainMenu');
+        });
         
         document.getElementById('gameBack').addEventListener(
             'click',
-            function() {screens.showScreen('mainMenu'); });
+            function() {
+                stopGame = true;
+                screens.showScreen('mainMenu');
+        });
     }
     
     
     
     // Process Input
     function processInput(elapsedTime) {
-        // keyboard.update(elapsedTime);
+        gameScreenkeyboard.update(elapsedTime);
         gameModel.processInputGeneral(elapsedTime);
         gameModel.processInput(elapsedTime);
         // gameModel.processInputGeneral(elapsedTime);
