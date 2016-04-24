@@ -1301,8 +1301,13 @@ function level1(waveNum, elapsedTime) {
         if(livesRemaining <= 0) {
             startGameValue = false;
             isOver = true;
+            myIndex.addScore(point);
         }
         // Create update for score based on creeps killed/ creeps pass to other side
+    }
+    
+    function getGameOver() {
+        return isOver;
     }
 
     function renderPlaying(elapsedTime) {
@@ -1387,7 +1392,7 @@ function level1(waveNum, elapsedTime) {
 
         if (isOver){
             renderOver();
-            myIndex.addScore(point);
+            // myIndex.addScore(point);
         }
 
         document.getElementById('moneyLabel').innerHTML = 'money: $' + money;
@@ -1430,6 +1435,7 @@ function level1(waveNum, elapsedTime) {
        upgrade : upgrade,
        sell : sell,
        start : start,
+       getGameOver : getGameOver,
    }
     
 }(towerDefense.components, towerDefense.graphics, towerDefense.input, towerDefense.sound, towerDefense.controls, towerDefense.effects));

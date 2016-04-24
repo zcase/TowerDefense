@@ -37,7 +37,7 @@ towerDefense.myScreens['gameScreen'] = (function(gameModel, screens, graphics, i
     // Update the game model
     function update(elapsedTime) {
         gameModel.update(elapsedTime);
-
+        stopGame = gameModel.getGameOver();
     }
     
     
