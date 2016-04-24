@@ -2,7 +2,7 @@ var myIndex = (function() {
 function addScore(score){
         
     $.ajax({
-        url : 'http://localhost:2000/v1/high-scores?score=' + score,
+        url : 'http://localhost:2000/v1/high-scores&score=' + score,
         type : 'POST',
         error : function(){
             alert('POST failed');
