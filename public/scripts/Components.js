@@ -408,6 +408,7 @@ towerDefense.components = (function(graphics, sound, effects) {
       that.timeSinceLastFire = 0;
       that.type = spec.type;
       theta = spec.rotation;
+      that.weaponType = spec.weaponType;
       
       
       that.checkBlockingPath2 = function(gameGridObj, towerPosition) {
@@ -498,7 +499,7 @@ towerDefense.components = (function(graphics, sound, effects) {
                 
                 that.timeSinceLastFire += elapsedTime;
                 if(fire === true && that.timeSinceLastFire >= that.fireRate){
-                  that.fire(bullets, that.strength, particleSystems);
+                  that.fire(bullets, that.strength, that.weaponType, particleSystems);
                   that.shotsound.play();
                   that.timeSinceLastFire = 0;
                 }
@@ -510,51 +511,84 @@ towerDefense.components = (function(graphics, sound, effects) {
       }; // END TOWER UPDATE FUNCTION
       
       
-      that.fire = function(bullets, damage, particleSystems) {
+      that.fire = function(bullets, damage, weaponType, particleSystems) {
+          var color = '';
+          if(weaponType !== 'freeze'){
+              color = 'black';
+          } else {
+              color = 'blue';
+          }
+          
           var newBullet = Bullet({
               x : that.x*20+10,
               y : that.y*20+10,
               speed : 50,
               radius : 3,
-              color : 'black',
+              color : color,
               targetX : that.target.x,
               targetY : that.target.y,
               rotation : that.rotation,
               damage : damage,
+              type : weaponType,
+              level : that.level,
           });
           
-          var xPos = ((that.x*20)+15);
-          var yPos = ((that.y*20)+15);
-          var gunSmoke = effects.ParticleSystem({
-             image : 'images/smoke.png',
-             center : {x : xPos, y : yPos},
-             speed : {mean : 50, std : 25},
-             rotation : spec.rotation,
-             lifetime : {mean : 1, std: 0},
-             usedFor : 'gun',
-          }, graphics);
           
-          var gunSpark = effects.ParticleSystem({
-             image : 'images/fire.png',
-             center : {x : xPos, y : yPos},
-             speed : {mean : 50, std : 25},
-             rotation : spec.rotation,
-             lifetime : {mean : 1, std: 0},
-             usedFor : 'spark',
-          }, graphics);
+          // put condition here for weapon type
           
-          
-          for(var j = 0; j < 10; j++){
-             gunSmoke.create();
-          }
-          gunSpark.create();
-          gunSpark.create();
+          if(weaponType !== 'freeze'){
+                var xPos = ((that.x*20)+15);
+                var yPos = ((that.y*20)+15);
+                var gunSmoke = effects.ParticleSystem({
+                    image : 'images/smoke.png',
+                    center : {x : xPos, y : yPos},
+                    speed : {mean : 50, std : 25},
+                    rotation : spec.rotation,
+                    lifetime : {mean : 1, std: 0},
+                    usedFor : 'gun',
+                }, graphics);
+                
+                var gunSpark = effects.ParticleSystem({
+                    image : 'images/fire.png',
+                    center : {x : xPos, y : yPos},
+                    speed : {mean : 50, std : 25},
+                    rotation : spec.rotation,
+                    lifetime : {mean : 1, std: 0},
+                    usedFor : 'spark',
+                }, graphics);
+                
+                
+                for(var j = 0; j < 10; j++){
+                    gunSmoke.create();
+                }
+                gunSpark.create();
+                gunSpark.create();
 
-          bullets.push(newBullet);
-          particleSystems.push(gunSmoke);
-          particleSystems.push(gunSpark);
-          
-          
+                bullets.push(newBullet);
+                particleSystems.push(gunSmoke);
+                particleSystems.push(gunSpark);
+          } else {
+              var xPos = ((that.x*20)+15);
+                var yPos = ((that.y*20)+12);
+                var frost = effects.ParticleSystem({
+                    image : 'images/frost.png',
+                    center : {x : xPos, y : yPos},
+                    speed : {mean : 50, std : 25},
+                    rotation : spec.rotation,
+                    lifetime : {mean : 1, std: 0},
+                    usedFor : 'gun',
+                }, graphics);
+                
+                
+                for(var j = 0; j < 20; j++){
+                    frost.create();
+                }
+
+
+                bullets.push(newBullet);
+                particleSystems.push(frost);
+          }
+
       }
       
       // Function to set the were the target is located
@@ -605,10 +639,15 @@ towerDefense.components = (function(graphics, sound, effects) {
             targetX : spec.targetX,
             targetY : spec.targetY,
             damage : spec.damage,
+            rotation : spec.rotation,
             velocityX : 0,
             velocityY : 0,
             hitCreep : false,
             attackDistance : spec.radius,
+            type : spec.type,
+            level : spec.level,
+            creepX : 0,
+            creepY : 0,
         }
         console.log("X: ", that.x);
         console.log("Y: ", that.y);
@@ -635,27 +674,55 @@ towerDefense.components = (function(graphics, sound, effects) {
             that.y /=20; // Scale to the grid.
             for(var i = 0; i < creeps.length; i++) {
                 if(distanceCheck(that, creeps[i])) {
-                    creeps[i].health -= that.damage;
                     
-                    // var xPos = ((20 + that.x*20)*Math.sin(spec.rotation));
-                    // var yPos = ((20 + that.y*20)*Math.sin(spec.rotation));
-                    var xPos = ((that.x*20));
-                    var yPos = ((that.y*20));
-                    var hitCreep = effects.ParticleSystem({
-                        image : 'images/blood.png',
-                        center : {x : xPos, y : yPos},
-                        speed : {mean : 25, std : 25},
-                        rotation : spec.rotation,
-                        lifetime : {mean : 1, std: 1},
-                        usedFor : 'creep',
-                    }, graphics);
-          
-          
-                    for(var j = 0; j < 10; j++){
-                        hitCreep.create();
+                    if(that.type !== 'freeze'){
+                        creeps[i].health -= that.damage;
+
+                        var xPos = ((that.x*20));
+                        var yPos = ((that.y*20));
+                        var hitCreep = effects.ParticleSystem({
+                            image : 'images/blood.png',
+                            center : {x : xPos, y : yPos},
+                            speed : {mean : 25, std : 25},
+                            rotation : spec.rotation,
+                            lifetime : {mean : 1, std: 1},
+                            usedFor : 'creep',
+                        }, graphics);
+            
+            
+                        for(var j = 0; j < 10; j++){
+                            hitCreep.create();
+                        }
+                        
+                        particleSystems.push(hitCreep);
+                    } else {
+                        if(creeps[i].moveRate <= 0 || that.level === 3){
+                            creeps[i].moveRate = 0;
+                        }else {
+                          creeps[i].moveRate -= (that.damage /3000);
+
+                        }
+                        console.log("Creep Move Rate = " + creeps[i].moveRate );
+                        
+                        var xPos = ((that.x*20));
+                        var yPos = ((that.y*20));
+                        var hitCreepFreeze = effects.ParticleSystem({
+                            image : 'images/frostPart.png',
+                            center : {x : xPos, y : yPos},
+                            speed : {mean : 25, std : 25},
+                            rotation : spec.rotation,
+                            lifetime : {mean : 1, std: 1},
+                            usedFor : 'creep',
+                        }, graphics);
+            
+            
+                        for(var j = 0; j < 10; j++){
+                            hitCreepFreeze.create();
+                        }
+                        
+                        particleSystems.push(hitCreepFreeze);
+                        creeps[i].health -= that.damage;
                     }
-                    
-                    particleSystems.push(hitCreep);
 
                     that.hitCreep = true;
                 } 
@@ -669,14 +736,30 @@ towerDefense.components = (function(graphics, sound, effects) {
         };
         
         that.render = function() {
-            if(that.hitCreep !== true) {
+            if(that.type !== 'missile' && that.hitCreep !== true) {
                 graphics.drawCircleBullet({
                     x : that.x,
                     y : that.y,
                     radius : that.radius,
                     color : that.color
                 });
-            
+                
+            } else {
+                var image = new Image();
+                image.src = 'images/missile.png';
+                graphics.drawImage({
+                    image : image,
+                    rotation : theta,
+                    center : {x : that.x, y : that.y},
+                    size : 20,
+                })
+                // graphics.drawMissile({
+                //     image : 'images/missile.png',
+                //     x : that.x,
+                //     y : that.y,
+                //     width : 20,
+                //     height : 20
+                // });
             }
         }
         
@@ -777,14 +860,14 @@ towerDefense.components = (function(graphics, sound, effects) {
       };
       
       that.moveLeft = function(elapsedTime, gameGridObj) {
-          spec.center.x -= spec.moveRate * (elapsedTime / 1000);
+          spec.center.x -= that.moveRate * (elapsedTime / 1000);
         //   spec.center.x -= spec.moveRate;
         that.x = spec.center.x/20;
         that.y = spec.center.y/20;
       };
       
       that.moveRight = function(elapsedTime, gameGridObj) {
-        spec.center.x += spec.moveRate * (elapsedTime / 1000);
+        spec.center.x += that.moveRate * (elapsedTime / 1000);
         //   spec.center.x += spec.moveRate;
         that.x = spec.center.x/20;
         that.y = spec.center.y/20;
@@ -792,14 +875,16 @@ towerDefense.components = (function(graphics, sound, effects) {
       
       that.moveUp = function(elapsedTime, gameGridObj) {
         //   spec.rotation += 90;
-          spec.center.y -= Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
+        spec.center.y -= Math.ceil(that.moveRate * (elapsedTime / 1000))+20;
+
+        //   spec.center.y -= Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
         // spec.center.y -= spec.moveRate;
         that.x = spec.center.x/20;
         that.y = spec.center.y/20;
       };
       
       that.moveDown = function(elapsedTime, gameGridObj) {
-          spec.center.y += Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
+          spec.center.y += Math.ceil(that.moveRate * (elapsedTime / 1000))+20;
         //   spec.center.y += spec.moveRate;
         that.x = spec.center.x/20;
         that.y = spec.center.y/20;
@@ -833,6 +918,7 @@ towerDefense.components = (function(graphics, sound, effects) {
       that.type = spec.type;
       that.moneyGained = spec.moneyGained;
       that.point = spec.point;
+      that.moveRate = spec.moveRate;
   
       that.render = function(graphics) {
           if(ready) {
@@ -856,24 +942,6 @@ towerDefense.components = (function(graphics, sound, effects) {
           }
       };
       
-    //   that.checkPosition = function(width, height, gridObj) {
-    //     if(width < 0  || width >= gridObj.width || height < 0 || height >= gridObj.height){
-    //         return null; // out of bounds
-    //     }
-    //     return gridObj.layout[width][height];
-    //   };
-      
-    //   that.getNeighbors = function (Cell, gridObj) {
-    //       var neighbors = {
-    //             North: that.checkPosition(Cell.row, Cell.col-1, gridObj),
-    //             South: that.checkPosition(Cell.row, Cell.col+1, gridObj),
-    //             West: that.checkPosition(Cell.row-1, Cell.col, gridObj),
-    //             East: that.checkPosition(Cell.row+1, Cell.col, gridObj)
-    //         };
-    
-    //     return neighbors;
-    //   };
-      
       that.checkBlockingPath = function(gameGridObj, towerPosition) {
           var xGrid = Math.floor(spec.center.x/ 20);
          
@@ -889,7 +957,7 @@ towerDefense.components = (function(graphics, sound, effects) {
          return checkBlock;
       }
             
-      that.update = function(elapsedTime, gameGridObj) {
+      that.update = function(elapsedTime, gameGridObj, particleSystems) {
           
          var xGrid = Math.floor(spec.center.x/ 20);
          
@@ -933,6 +1001,32 @@ towerDefense.components = (function(graphics, sound, effects) {
              }
              else {
                  that.dead = true; // change to that = undefined when moved to computent creep.update section
+                 
+                 var death = effects.ParticleSystem({
+                    image : 'images/blood.png',
+                    center : {x : (that.x * 20), y : (that.y * 20)},
+                    speed : {mean : 50, std : 25},
+                    rotation : spec.rotation,
+                    lifetime : {mean : 1, std: 0},
+                    usedFor : 'creepDeath',
+                }, graphics);
+                
+                var deathSmoke = effects.ParticleSystem({
+                    image : 'images/green.png',
+                    center : {x : (that.x * 20), y : (that.y * 20)},
+                    speed : {mean : 50, std : 25},
+                    rotation : spec.rotation,
+                    lifetime : {mean : 1, std: 0},
+                    usedFor : 'creepDeath',
+                }, graphics);
+ 
+                for(var j = 0; j < 10; j++){
+                    death.create();
+                    deathSmoke.create();
+                }
+
+                particleSystems.push(death);
+                particleSystems.push(deathSmoke);
              }
 
              if (moveStack !== false ) {
@@ -1001,6 +1095,7 @@ towerDefense.components = (function(graphics, sound, effects) {
              
         that.x = spec.center.x;
         that.y = spec.center.y;
+        that.moveRate = spec.moveRate;
              
 		that.update = function(elapsedTime) {
 			sprite.update(elapsedTime);
@@ -1031,8 +1126,8 @@ towerDefense.components = (function(graphics, sound, effects) {
 			var vectorX = Math.cos(spec.rotation + spec.orientation),
 				vectorY = Math.sin(spec.rotation + spec.orientation);
 
-			spec.center.x += (vectorX * spec.moveRate * elapsedTime);
-			spec.center.y += (vectorY * spec.moveRate * elapsedTime);
+			spec.center.x += (vectorX * that.moveRate * elapsedTime);
+			spec.center.y += (vectorY * that.moveRate * elapsedTime);
             
             that.x = spec.center.x/20;
             that.y = spec.center.y/20;
@@ -1041,8 +1136,8 @@ towerDefense.components = (function(graphics, sound, effects) {
 			var vectorX = Math.cos(spec.rotation + spec.orientation),
 				vectorY = Math.sin(spec.rotation + spec.orientation);
                 
-			spec.center.x -= (vectorX * spec.moveRate * elapsedTime);
-			spec.center.y -= (vectorY * spec.moveRate * elapsedTime);
+			spec.center.x -= (vectorX * that.moveRate * elapsedTime);
+			spec.center.y -= (vectorY * that.moveRate * elapsedTime);
             
             that.x = spec.center.x/20;
             that.y = spec.center.y/20;
@@ -1050,14 +1145,14 @@ towerDefense.components = (function(graphics, sound, effects) {
         
         that.moveUp = function(elapsedTime) {
             // that.rotateLeft(elapsedTime);
-            spec.center.y -= Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
+            spec.center.y -= Math.ceil(that.moveRate * (elapsedTime / 1000))+20;
             // that.rotateLeft(elapsedTime);
             // that.moveForward(elapsedTime);
             // that.rotateRight(elapsedTime);
         };
       
         that.moveDown = function(elapsedTime) {
-            spec.center.y += Math.ceil(spec.moveRate * (elapsedTime / 1000))+20;
+            spec.center.y += Math.ceil(that.moveRate * (elapsedTime / 1000))+20;
             //   spec.center.y += spec.moveRate;
         };
         
@@ -1249,6 +1344,32 @@ towerDefense.components = (function(graphics, sound, effects) {
                 }
                 else {
                     that.dead = true;
+                    
+                    var death = effects.ParticleSystem({
+                        image : 'images/blood.png',
+                        center : {x : (that.x * 20), y : (that.y * 20)},
+                        speed : {mean : 50, std : 25},
+                        rotation : spec.rotation,
+                        lifetime : {mean : 1, std: 0},
+                        usedFor : 'creepDeath',
+                    }, graphics);
+                    
+                    var deathSmoke = effects.ParticleSystem({
+                        image : 'images/green.png',
+                        center : {x : (that.x * 20), y : (that.y * 20)},
+                        speed : {mean : 50, std : 25},
+                        rotation : spec.rotation,
+                        lifetime : {mean : 1, std: 0},
+                        usedFor : 'creepDeath',
+                    }, graphics);
+    
+                    for(var j = 0; j < 10; j++){
+                        death.create();
+                        deathSmoke.create();
+                    }
+
+                    particleSystems.push(death);
+                    particleSystems.push(deathSmoke);
                     
                      // change to that = undefined when moved to computent creep.update section
                 }

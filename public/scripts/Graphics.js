@@ -61,6 +61,20 @@ towerDefense.graphics = (function() {
         ctx.restore();
     }
     
+    function drawMissile(spec) {
+        var image = new Image();
+        
+        image.src = spec.image;
+        
+        image.onload = function() {
+            ctx.drawImage(
+			  image,
+			  spec.x - (image.width) /2,
+		      spec.y - (image.height) / 2,
+		      image.width, image.height);
+        }
+    }
+    
     
     function drawText(spec) {
         ctx.save();
@@ -463,6 +477,7 @@ towerDefense.graphics = (function() {
         popUpScore : popUpScore,
         drawCircleBullet : drawCircleBullet,
         drawImage : drawImage,
+        drawMissile : drawMissile,
         
     }
 

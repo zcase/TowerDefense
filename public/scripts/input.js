@@ -152,8 +152,9 @@ towerDefense.input = (function() {
                 handlers : [],
                 captureMultKeys : [],
             },
-            key,
+            // key,
             handler;
+            var key = [];
             
             // var captureMultKeys = [];
             var captureInfo;
@@ -166,6 +167,20 @@ towerDefense.input = (function() {
             delete that.keys[e.keyCode];
         }
         
+        
+        function getIDArray(arr) {
+            var idArray = new Array();
+            for(var i = 0; i < arr.length; i++) {
+                if(typeof arr[i] === 'number') {
+                    idArray[idArray.length] = arr[i];
+                }
+            }
+            
+            return idArray;
+        }
+        
+        
+        
         function keyPressCapture(e) {
             // that.keys[e.keyCode] = e.timestamp;
             captureInfo = towerDefense.controls.getCaptureInfo();
@@ -177,8 +192,22 @@ towerDefense.input = (function() {
                 // captureKeys[e.keyCode] = true;
                 console.log("KEYS PRESSED = "+ e.keyCode);
             } else {
-                that.keys[e.keyCode] = e.timestamp;
-                console.log("KEYS PRESSED = "+ e.keyCode);
+                key[e.keyCode] = e.keyCode;
+                var keysArray = getIDArray(key);
+                console.log(towerDefense.controls.getControls().upgrade.toString());
+                if(keysArray.toString() === towerDefense.controls.getControls().upgrade.toString()) {
+                    towerDefense.model.upgrade();
+                    key.length = 0;
+                    
+                }else if(keysArray.toString() === towerDefense.controls.getControls().sell.toString()) {
+                    towerDefense.model.sell();
+                    key.length = 0;
+                }else if(keysArray.toString() === towerDefense.controls.getControls().start.toString()) {
+                    // towerDefense.model.start();
+                    key.length = 0;
+                }
+                // that.keys[e.keyCode] = e.timestamp;
+                // console.log("KEYS PRESSED = "+ e.keyCode);
             }
             
             // return false;
@@ -228,7 +257,8 @@ towerDefense.input = (function() {
                 captureInfo.startCapture = false;
                 towerDefense.controls.setShortCutControls(newCapture);
             } else{
-                delete that.keys[e.keyCode];
+                key[e.keyCode] = false;
+                // delete that.keys[e.keyCode];
                 // return false;
             }
             

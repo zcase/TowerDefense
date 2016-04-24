@@ -1,4 +1,4 @@
-towerDefense.model = (function (components, graphics, input, sound, controls) {
+towerDefense.model = (function (components, graphics, input, sound, controls, effects) {
     var gameGrid,
         tower,
         towers = [],
@@ -11,7 +11,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         mouseArray = [],
         // generalMouseArray = [],
         GeneralMouse = input.Mouse(),
-        modelKeyboard = input.Keyboard(),
+        // modelKeyboard = input.Keyboard(),
         creep,
         score = {},
         point=0,
@@ -35,28 +35,6 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
     
     var count = 0;
     
-    function checkControls(e){
-        
-        var mycontrols = {};
-        mycontrols.upgrade = controls.getControls().upgrade;
-        mycontrols.sell = controls.getControls().sell;
-        mycontrols.start = controls.getControls().start;
-        
-        // for(var i = 0; i < mycontrols.upgrade.length; i++) {
-            if(modelKeyboard.keys === mycontrols.update) {
-                upgrade();
-            }
-            
-            if(modelKeyboard.keys === mycontrols.sell) {
-                sell();
-            }
-            
-            // if(modelKeyboard.keys === mycontrols.start) {
-            //     start();
-            // }
-        // }
-    }
-    
     function sell() {
         var remove = false;
         for(var i = 0; i < towers.length; i++) {
@@ -68,11 +46,27 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
                 money += towers[i].tower.cost / 2;
                 towers[i].tower.placed = false;
                 
-               var index = towers.indexOf(towers[i].tower);
+                var sellBack = effects.ParticleSystem({
+                        image : 'images/dollar.png',
+                        center : {x : ((xGrid*20) + 10), y : ((yGrid*20) + 10)},
+                        speed : {mean : 50, std : 25},
+                        rotation : 260,
+                        lifetime : {mean : 2, std: 1},
+                        usedFor : 'sellBack',
+                    }, graphics);
+    
+                    for(var j = 0; j < 2; j++){
+                        sellBack.create();
+                    }
+
+                    particleSystems.push(sellBack);
+                
+               var index = towers.indexOf(towers[i]);
                remove = true;
+               var dollar = effects.p
+               break;
             }else {
                 towers[i].tower.isSelected = false;
-                // remove = false;
             }
         }
         if(remove){
@@ -180,7 +174,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         internalRender = renderPlaying;
         
         
-        modelKeyboard.registerCommand('keydown', checkControls());
+        // modelKeyboard.registerCommand('keydown', checkControls());
         // modelKeyboard.registerCommand(KeyEvent.DOM_VK_6, function () {
         //     console.log("HELLO BRO");
         // });
@@ -242,7 +236,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         
     } // End initialize
     
-    // Creates the gun tower
+    // Creates the gun tower - FREEZE GUN
     function createLowLevelTower1() {
         if(money - 5 >= 0) {
             // GeneralMouse.deregisterCommand('mousedown');
@@ -275,6 +269,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
                 type : 'ground',
                 sound : 'sounds/gun1Shot.mp3',
                 scalar : 2.5,
+                weaponType : 'freeze',
             });
             
             var createdBase = components.Tower({
@@ -405,6 +400,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
                 type : 'ground',
                 sound : 'sounds/cannonShot.mp3',
                 scalar : 3,
+                weaponType : 'bomb',
             });
             
             var createdBase = components.Tower({
@@ -533,6 +529,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
                 type : 'both',
                 sound : 'sounds/cannonShot.mp3',
                 scalar: 2.5,
+                weaponType : 'projectile',
             }),
                 createdRoof = components.Tower({
                 image: 'images/towerRoof1.png',
@@ -659,6 +656,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
                 type : 'flying',
                 sound : 'sounds/anitAir.mp3',
                 scalar : 2.5,
+                weaponType : 'missile',
             });
             
             money -= createdTower.cost;            
@@ -772,14 +770,14 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
             spriteSheet : 'images/personSprite.png',
             spriteCount : 7,
             spriteTime : [200,100, 200, 100, 200, 100, 200],	// milliseconds per sprite animation frame
-			// center : { x: 10, y: 310 },
-            center : {x: randomStart.x, y: randomStart.y},
+			center : { x: 10, y: 310 },
+            // center : {x: randomStart.x, y: randomStart.y},
             width:20,
             height:20,
 			rotation : 0,
             // percent_of_size: 100/150,
 			orientation : 0,		// Sprite orientation with respect to "forward"
-			moveRate : 20/1000,			// pixels per millisecond
+			moveRate : 20 /1000,			// pixels per millisecond
 			rotateRate : Math.PI / 2 / 1000,
             armor : 0,
             type : 'ground',
@@ -1026,13 +1024,13 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         
     function updatePlaying(elapsedTime) {
         if( count < 1 && count <=2) {
-        //     createCreep(temp, LevelStartingPositions);
-            // createPersonCreep(temp, LevelStartingPositions);;
-        //     // createCreep(temp, LevelStartingPositions);
-            // createDragonCreep();
+            // createCreep([1], creepStartingPostitionsLevel1);
+            // createPersonCreep([1], creepStartingPostitionsLevel1);;
+            // createCreep(temp, LevelStartingPositions);
+            createDragonCreep([1], creepStartingPostitionsLevel1);
             // createNaziCreep(temp, LevelStartingPositions);
             // createBossCreep();
-            Wave1(creepStartingPostitionsLevel1);
+            // Wave1(creepStartingPostitionsLevel1);
             count++;
         }
         
@@ -1053,7 +1051,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         // Update each creep
         for(var i = 0; i < creeps.length; i++) {
 
-            creeps[i].update(elapsedTime, gameGrid); // need to create update fuction to update creep movement, life, sprite postion
+            creeps[i].update(elapsedTime, gameGrid, particleSystems); // need to create update fuction to update creep movement, life, sprite postion
         }
         
         if(displayArray.length > 0) {
@@ -1069,11 +1067,6 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
         if(particleSystems.length > 0) {
             for(var i = 0; i < particleSystems.length; i++) {
                 particleSystems[i].update(elapsedTime);
-                // for(var j = 0; j < 10; j++){
-                //     particleSystems[i].create();
-                // }
-                
-                // particleSystems[i].update(elapsedTime);
             }
         }
         
@@ -1126,9 +1119,10 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
                     });
                     
                     money += creeps[i].moneyGained;
-                    score.total += creeps[i].point;
+                    point += creeps[i].point;
                     displayArray.push(display);
                 }
+                
                 if (creeps[i].x >= 41){
                     livesRemaining--;
                 }
@@ -1155,7 +1149,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
     }
 
     function processInputGeneral(elapsedTime) {
-        modelKeyboard.update(elapsedTime);
+        // modelKeyboard.update(elapsedTime);
         GeneralMouse.update(elapsedTime);
     }
 
@@ -1193,4 +1187,4 @@ towerDefense.model = (function (components, graphics, input, sound, controls) {
        sell : sell,
    }
     
-}(towerDefense.components, towerDefense.graphics, towerDefense.input, towerDefense.sound, towerDefense.controls));
+}(towerDefense.components, towerDefense.graphics, towerDefense.input, towerDefense.sound, towerDefense.controls, towerDefense.effects));

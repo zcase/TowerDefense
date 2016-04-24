@@ -74,7 +74,33 @@ towerDefense.effects = (function(graphics) {
                 };
             }
             
+            if(that.usedFor === 'creepDeath'){
+                part = {
+                    image: spec.image,
+                    size: Random.nextGaussian(10, 5),
+                    center: {x: spec.center.x, y: spec.center.y},
+                    direction: Random.nextCircleVector(),
+                    // direction: Random.sprayForward(spec.rotation),
+                    speed: Random.nextGaussian(spec.speed.mean, spec.speed.std), // pixels per second
+                    rotation: 0,
+                    lifetime: Random.nextGaussian(spec.lifetime.mean/2, spec.lifetime.std/2),	// How long the particle should live, in seconds
+                    alive: 0	// How long the particle has been alive, in seconds
+                };
+            }
             
+            if(that.usedFor === 'sellBack'){
+                part = {
+                    image: spec.image,
+                    size: Random.nextGaussian(12, 7),
+                    center: {x: spec.center.x, y: spec.center.y},
+                    direction: Random.sprayForward(spec.rotation * 2),
+                    // direction: Random.sprayForward(spec.rotation),
+                    speed: Random.nextGaussian(spec.speed.mean, spec.speed.std), // pixels per second
+                    rotation: 0,
+                    lifetime: Random.nextGaussian(spec.lifetime.mean/2, spec.lifetime.std/2),	// How long the particle should live, in seconds
+                    alive: 0	// How long the particle has been alive, in seconds
+                };
+            }
             
             
             //
