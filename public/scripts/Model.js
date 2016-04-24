@@ -25,9 +25,12 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
         startGameValue = false,
         money,
         towerCount = 0,
+        waveCount = 0;
         towerPlacementSound = sound.sound('sounds/towerPlacement.mp3'),
-        creepStartingPostitionsLevel1 = [{ x: -40, y: 290 }, { x: -40, y: 310 }, { x: -40, y: 330 }, { x: -40, y: 270 }, { x: -60, y: 290 }, { x: -60, y: 310 }, { x: -60, y: 330 }, { x: -60, y: 270 }, { x: -80, y: 290 }, { x: -80, y: 310 }, { x: -80, y: 330 }, { x: -80, y: 270 }], // Left to right
-        creepStartingPostitionsLevel2 = [{ x:10, y: 50 }, { x: 10, y: 100 }, { x: 10, y: 80 }], // Top to bottom,
+        // creepStartingPostitionsLevel1 = [{ x: -40, y: 290 }, { x: -40, y: 310 }, { x: -40, y: 330 }, { x: -40, y: 270 }, { x: -60, y: 290 }, { x: -60, y: 310 }, { x: -60, y: 330 }, { x: -60, y: 270 }, { x: -80, y: 290 }, { x: -80, y: 310 }, { x: -80, y: 330 }, { x: -80, y: 270 }], // Left to right
+        creepStartingPostitionsLevel1 = [{ x: 0, y: 290 }, { x: 0, y: 310 }, { x: 0, y: 330 }, { x: 0, y: 270 }, { x: 0, y: 290 }, { x: 0, y: 310 }, { x: 0, y: 330 }, { x: 0, y: 270 }, { x: 0, y: 290 }, { x: 0, y: 310 }, { x: 0, y: 330 }, { x: 0, y: 270 }], // Left to right
+
+        creepStartingPostitionsLevel2 = [{ x:190, y: 10 }, { x: 210, y: 10 }, { x: 230, y: 10 }], // Top to bottom,
         creepStartingPostitionsLevel3 = [{ x: -20, y: 310 }, { x: -20, y: 330 }, { x: -20, y: 270 }, { x: 19, y: 0 }, { x: 19, y: 0 }, { x: 19, y: 0 }]; //Left to Right, Top to Bottom
 
     var count = 0;
@@ -69,6 +72,10 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
         if (remove) {
             towers.splice(index, 1);
         }
+    }
+    
+    function start() {
+        startGameValue = true;
     }
 
     function upgrade() {
@@ -235,7 +242,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
     
     // Creates the gun tower - FREEZE GUN
     function createLowLevelTower1() {
-        if (money - 5 >= 0) {
+        if (money - 20 >= 0) {
             // GeneralMouse.deregisterCommand('mousedown');
             towerCount++;
             var cost = 20;
@@ -367,7 +374,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
     // Creates the cannon tower
     function createLowLevelTower2() {
 
-        if (money - 8 >= 0) {
+        if (money - 40 >= 0) {
             towerCount++;
             var cost = 40;
             var temp = 40;
@@ -495,7 +502,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
 
     // Creates tower which is a mixed weapon
     function createLowLevelTower3() {
-        if (money - 12 >= 0) {
+        if (money - 70 >= 0) {
             towerCount++;
             var cost = 70;
             var temp = 70;
@@ -622,7 +629,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
 
     // Creates air tower
     function createLowLevelTower4() {
-        if (money - 12 >= 0) {
+        if (money - 60 >= 0) {
             towerCount++;
             var cost = 60;
             var temp = 60;
@@ -759,7 +766,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
         creeps.push(creep);
     }
 
-    function createPersonCreep(delayTimes, startPositions) {
+    function createPersonCreep(delayTimes, startPositions, rotation, goal) {
         var randomStart = startPositions[Math.floor(Math.random() * startPositions.length)];
 
         person = components.AnimatedMoveModel({
@@ -770,7 +777,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             center: { x: randomStart.x, y: randomStart.y },
             width: 20,
             height: 20,
-            rotation: 0,
+            rotation: rotation, //0,
             // percent_of_size: 100/150,
             orientation: 0,		// Sprite orientation with respect to "forward"
             moveRate: 20 / 1000,			// pixels per millisecond
@@ -783,11 +790,12 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             topBar: 25,
             point: 5,
             moneyGained: 10,
+            goal : goal,
         }, graphics);
         creeps.push(person);
     }
 
-    function createNaziCreep(delayTimes, startPositions) {
+    function createNaziCreep(delayTimes, startPositions, rotation, goal) {
         var randomStart = startPositions[Math.floor(Math.random() * startPositions.length)];
 
         nazi = components.AnimatedMoveModel({
@@ -799,7 +807,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             width: 30,
             height: 30,
             percent_of_size: 20 / 150,
-            rotation: 0,
+            rotation: rotation, //0,
             orientation: 0,		// Sprite orientation with respect to "forward"
             moveRate: 30 / 1000,			// pixels per millisecond
             rotateRate: Math.PI / 2 / 1000,
@@ -811,18 +819,19 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             topBar: 25,
             point: 15,
             moneyGained: 20,
+            goal : goal,
         }, graphics);
         creeps.push(nazi);
     }
 
-    function createDragonCreep(delayTimes, startPositions, rotation) {
+    function createDragonCreep(delayTimes, startPositions, rotation, goal) {
         var randomStart = startPositions[Math.floor(Math.random() * startPositions.length)];
 
         dragon = components.AnimatedMoveModel({
             spriteSheet: 'images/dragonSprite.png',
             spriteCount: 4,
             spriteTime: [200, 150, 150, 150],	// milliseconds per sprite animation frame
-            // center : { x: 10, y: 330 },
+            // center : { x: 400, y: 400 },
             center: { x: randomStart.x, y: randomStart.y },
             rotation: rotation, //89.56, // Turns the creep to face down
             width: 150,
@@ -838,12 +847,13 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             topBar: 50,
             point: 45,
             moneyGained: 40,
+            goal : goal,
         }, graphics);
         creeps.push(dragon);
 
     }
 
-    function createBossCreep(delayTimes, startPositions) {
+    function createBossCreep(delayTimes, startPositions, rotation, goal) {
         var randomStart = startPositions[Math.floor(Math.random() * startPositions.length)];
 
         boss = components.AnimatedMoveModel({
@@ -853,8 +863,8 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             center: { x: randomStart.x, y: randomStart.y },
             width: 30,
             height: 30,
-            percent_of_size: 20 / 150,
-            rotation: 0,
+            // percent_of_size: 20 / 150,
+            rotation: rotation, //0,
             orientation: 0,		// Sprite orientation with respect to "forward"
             moveRate: 20 / 1000,			// pixels per millisecond
             rotateRate: Math.PI / 2 / 1000,
@@ -865,18 +875,23 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             topBar: 30,
             point: 100,
             moneyGained: 100,
+            goal :goal,
         }, graphics);
         creeps.push(boss);
     }
 
 
     // Create a Wave
-    function Wave1(LevelStartingPositions) {
+    function Wave1(LevelStartingPositions, goal, level) {
         var sumSecond = 0;
+        var rotation = 0;
 
+        if (level === 2) {
+            rotation = 89.55;
+        }
         // 10 total creeps all easy creeps
 
-        var random = Math.floor(Math.random() * (10 - 7 + 1)) + 7;
+        var random = Math.floor(Math.random() * (8 - 6 + 1)) + 6;
 
         console.log("random = " + random);
 
@@ -884,18 +899,25 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             var randomSecond = Math.random() * (2 - 0.5) + 0.5;
             sumSecond += randomSecond;
             console.log("sum  = " + (sumSecond).toFixed(2));
-            createPersonCreep((sumSecond).toFixed(2), LevelStartingPositions);
+            createPersonCreep((sumSecond).toFixed(2), LevelStartingPositions, rotation, goal);
         }
     }
 
-    function Wave2(LevelStartingPositions) {
+    function Wave2(LevelStartingPositions, goal, level) {
         // 12 total creeps differenct varaity
         var sumSecond1 = 0;
         var sumSecond2 = 0;
+        var rotation = 0;
+        
+        if (level === 2) {
+            rotation = 89.55;
+        } else {
+            rotation = 0;
+        }
 
         var creep1 = 0;
         var creep2 = 0;
-        var random1 = Math.floor(Math.random() * (15 - 10 + 1)) + 10;
+        var random1 = Math.floor(Math.random() * (8 - 6 + 1)) + 6;
         var random2 = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
 
         console.log("random person = " + random1);
@@ -910,33 +932,41 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
                 if (creep1 < random1) {
                     creep1++;
                     sumSecond1 += randomSecond1;
-                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions);
+                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else {
                     creep2++;
                     sumSecond2 += randomSecond2;
-                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions);
+                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
             }
             else {
                 if (creep2 < random2) {
                     creep2++;
                     sumSecond2 += randomSecond2;
-                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions);
+                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else {
                     creep1++;
                     sumSecond1 += randomSecond1;
-                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions);
+                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
             }
         }
     }
 
-    function Wave3(LevelStartingPositions) {
+    function Wave3(LevelStartingPositions, goal, level) {
         //16 total creeps
 
         var sumSecond = 0;
+        
+        var rotation = 0;
+        
+        if (level === 2) {
+            rotation = 89.55;
+        } else {
+            rotation = 0;
+        }
 
         // 10 total creeps all easy creeps
 
@@ -948,22 +978,30 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             var randomSecond = Math.random() * (3.25 - 0.75) + 0.75;
             sumSecond += randomSecond;
             console.log("sum  = " + (sumSecond).toFixed(2));
-            createDragonCreep((sumSecond).toFixed(2), LevelStartingPositions, 89.55);
+            createDragonCreep((sumSecond).toFixed(2), LevelStartingPositions, rotation, goal);
         }
     }
 
-    function Wave4(LevelStartingPositions) {
+    function Wave4(LevelStartingPositions, goal, level) {
         // 20 total creeps
         var sumSecond1 = 0;
         var sumSecond2 = 0;
         var sumSecond3 = 0;
+        
+        var rotation = 0;
+        
+        if (level === 2) {
+            rotation = 89.55;
+        } else {
+            rotation = 0;
+        }
 
         var creep1 = 0;
         var creep2 = 0;
 
-        var random1 = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
-        var random2 = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
-        var random3 = Math.floor(Math.random() * (8 - 5 + 1)) + 5;
+        var random1 = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
+        var random2 = Math.floor(Math.random() * (5 - 2 + 1)) + 2;
+        var random3 = Math.floor(Math.random() * (4 - 2 + 1)) + 2;
 
         console.log("random person = " + random1);
         console.log("random nazi = " + random2);
@@ -979,52 +1017,60 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
                 if (creep1 < random1) {
                     creep1++;
                     sumSecond1 += randomSecond1;
-                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions);
+                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else {
                     creep2++;
                     sumSecond2 += randomSecond2;
-                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions);
+                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
             }
             else {
                 if (creep2 < random2) {
                     creep2++;
                     sumSecond2 += randomSecond2;
-                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions);
+                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else {
                     creep1++;
                     sumSecond1 += randomSecond1;
-                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions);
+                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
             }
         }
 
-        createBossCreep(randomSecond4, LevelStartingPositions);
+        createBossCreep(randomSecond4, LevelStartingPositions, rotation, goal);
 
         for (var i = 0; i < random3; i++) {
             var randomSecond3 = Math.random() * (3.25 - 0.75) + 0.75;
             sumSecond3 += randomSecond3;
-            createDragonCreep((sumSecond3).toFixed(2), LevelStartingPositions);
+            createDragonCreep((sumSecond3).toFixed(2), LevelStartingPositions, rotation, goal);
         }
     }
 
 
-    function Wave5(LevelStartingPositions) {
+    function Wave5(LevelStartingPositions, goal, level) {
         var sumSecond1 = 0;
         var sumSecond2 = 0;
         var sumSecond3 = 0;
         var sumSecond4 = 0;
+        
+        var rotation = 0;
+        
+        if (level === 2) {
+            rotation = 89.55;
+        } else {
+            rotation = 0;
+        }
 
         var creep1 = 0;
         var creep2 = 0;
         var creep3 = 0;
 
-        var random1 = Math.floor(Math.random() * (20 - 16 + 1)) + 16;
-        var random2 = Math.floor(Math.random() * (18 - 14 + 1)) + 14;
-        var random3 = Math.floor(Math.random() * (12 - 8 + 1)) + 8;
-        var random4 = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
+        var random1 = Math.floor(Math.random() * (10 - 8 + 1)) + 8;
+        var random2 = Math.floor(Math.random() * (8 - 6 + 1)) + 6;
+        var random3 = Math.floor(Math.random() * (6 - 4 + 1)) + 4;
+        var random4 = Math.floor(Math.random() * (3 - 2 + 1)) + 2;
 
         console.log("random person = " + random1);
         console.log("random nazi = " + random2);
@@ -1042,51 +1088,51 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
                 if (creep1 < random1) {
                     creep1++;
                     sumSecond1 += randomSecond1;
-                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions);
+                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else if (creep2 < random2 && creep1 === random1) {
                     creep3++;
                     sumSecond2 += randomSecond2;
-                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions);
+                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else {
                     creep3++;
                     sumSecond4 += randomSecond4;
-                    createBossCreep((sumSecond4).toFixed(2), LevelStartingPositions);
+                    createBossCreep((sumSecond4).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
             }
             else if (switchCreep === 2) {
                 if (creep2 < random2) {
                     creep2++;
                     sumSecond2 += randomSecond2;
-                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions);
+                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else if (creep1 < random1 && creep2 === random2) {
                     creep1++;
                     sumSecond1 += randomSecond1;
-                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions);
+                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else {
                     creep3++;
                     sumSecond4 += randomSecond4;
-                    createBossCreep((sumSecond4).toFixed(2), LevelStartingPositions);
+                    createBossCreep((sumSecond4).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
             }
             else {
                 if (creep3 < random4) {
                     creep4++;
                     sumSecond4 += randomSecond4;
-                    createNaziCreep((sumSecond4).toFixed(2), LevelStartingPositions);
+                    createNaziCreep((sumSecond4).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else if (creep1 < random1 && creep3 === random4) {
                     creep1++;
                     sumSecond1 += randomSecond1;
-                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions);
+                    createPersonCreep((sumSecond1).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
                 else {
                     creep2++;
                     sumSecond2 += randomSecond2;
-                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions);
+                    createNaziCreep((sumSecond2).toFixed(2), LevelStartingPositions, rotation, goal);
                 }
             }
         }
@@ -1094,7 +1140,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
         for (var i = 0; i < random3; i++) {
             var randomSecond3 = Math.random() * (3.25 - 0.75) + 0.75;
             sumSecond3 += randomSecond3;
-            createDragonCreep((sumSecond3).toFixed(2), LevelStartingPositions);
+            createDragonCreep((sumSecond3).toFixed(2), LevelStartingPositions, rotation, goal);
         }
     }
 
@@ -1151,7 +1197,26 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
 
 
 
-
+function level1(waveNum, elapsedTime) {
+    
+    switch(waveNum) {
+        case 1:
+            Wave1(creepStartingPostitionsLevel1, 'one', 1);
+            break;
+        case 2:
+            Wave2(creepStartingPostitionsLevel1, 'one', 1);
+            break;
+        case 3:
+            Wave3(creepStartingPostitionsLevel1, 'one', 1);
+            break;
+        case 4:
+            Wave4(creepStartingPostitionsLevel1, 'one', 1);
+            break;
+        case 5:
+            Wave5(creepStartingPostitionsLevel1, 'one', 1);
+            break;
+    }
+}
 
 
 
@@ -1162,54 +1227,65 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
 
 
     function updatePlaying(elapsedTime) {
-        if (count < 1 && count <= 2) {
+        
             //     createCreep(temp, LevelStartingPositions);
             // createPersonCreep(temp, LevelStartingPositions);;
             //     // createCreep(temp, LevelStartingPositions);
             // createDragonCreep(1, [{ x: 0, y: 400 }]);
             // createNaziCreep(temp, LevelStartingPositions);
             // createBossCreep();
-            Wave3(creepStartingPostitionsLevel2);
-            count++;
-        }
+            // Wave1(creepStartingPostitionsLevel1, 'one', 1);
+            // Wave1(creepStartingPostitionsLevel1, 'one', 1);
+            
+        
 
         // Update each tower
-        for (var i = 0; i < towers.length; i++) {
-            towers[i].tower.update(elapsedTime, gameGrid, creeps, bullets, particleSystems); // need to create up date function to change rotation of tower pic based on creeps
-        }
-
-        for (var i = 0; i < bullets.length; i++) {
-            if (bullets[i].hitCreep !== true) {
-                bullets[i].update(creeps, particleSystems);
-            } else {
-                var index = bullets.indexOf(bullets[i]);
-                bullets.splice(index, 1);
+            for (var i = 0; i < towers.length; i++) {
+                towers[i].tower.update(elapsedTime, gameGrid, creeps, bullets, particleSystems); // need to create up date function to change rotation of tower pic based on creeps
             }
-        }
+            
+           if (startGameValue === true) {
 
-        // Update each creep
-        for (var i = 0; i < creeps.length; i++) {
-
-            creeps[i].update(elapsedTime, gameGrid, particleSystems); // need to create update fuction to update creep movement, life, sprite postion
-        }
-
-        if (displayArray.length > 0) {
-            for (var i = 0; i < displayArray.length; i++) {
-                displayArray[i].update(elapsedTime);
-                if (displayArray[i].time === undefined) {
-                    var index = displayArray.indexOf(displayArray[i]);
-                    displayArray.splice(index, 1);
+            for (var i = 0; i < bullets.length; i++) {
+                if (bullets[i].hitCreep !== true) {
+                    bullets[i].update(creeps, particleSystems);
+                } else {
+                    var index = bullets.indexOf(bullets[i]);
+                    bullets.splice(index, 1);
                 }
             }
-        }
 
-        if (particleSystems.length > 0) {
-            for (var i = 0; i < particleSystems.length; i++) {
-                particleSystems[i].update(elapsedTime);
+            // Update each creep
+            if(creeps.length !== 0 ){
+                for (var i = 0; i < creeps.length; i++) {
+                    creeps[i].update(elapsedTime, gameGrid, particleSystems); // need to create update fuction to update creep movement, life, sprite postion
+                }
+            } else {
+                waveCount++;
+                level1(waveCount);
             }
+
+            if (displayArray.length > 0) {
+                for (var i = 0; i < displayArray.length; i++) {
+                    displayArray[i].update(elapsedTime);
+                    if (displayArray[i].time === undefined) {
+                        var index = displayArray.indexOf(displayArray[i]);
+                        displayArray.splice(index, 1);
+                    }
+                }
+            }
+
+            if (particleSystems.length > 0) {
+                for (var i = 0; i < particleSystems.length; i++) {
+                    particleSystems[i].update(elapsedTime);
+                }
+            }
+
         }
-
-
+        
+        if(livesRemaining <= 0) {
+            startGameValue = false;
+        }
         // Create update for score based on creeps killed/ creeps pass to other side
     }
 
@@ -1323,6 +1399,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
        render : render,
        upgrade : upgrade,
        sell : sell,
+       start : start,
    }
     
 }(towerDefense.components, towerDefense.graphics, towerDefense.input, towerDefense.sound, towerDefense.controls, towerDefense.effects));

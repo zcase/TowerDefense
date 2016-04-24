@@ -203,7 +203,7 @@ towerDefense.input = (function() {
                     towerDefense.model.sell();
                     key.length = 0;
                 }else if(keysArray.toString() === towerDefense.controls.getControls().start.toString()) {
-                    // towerDefense.model.start();
+                    towerDefense.model.start();
                     key.length = 0;
                 }
                 // that.keys[e.keyCode] = e.timestamp;

@@ -52,8 +52,12 @@ towerDefense.components = (function(graphics, sound, effects) {
             for(var j = 0; j < a.height; j++ ) {
                 a.layout[i][j].solvedState = FRONTIER;
                 if(i === 39 && j === 15) {
-                    a.layout[i][j].end = true;
+                    a.layout[i][j].end = 'one';
                     a.layout[i][j].solvedState = "Finished";
+                }
+                
+                if(i == 19 && j == 29) {
+                    a.layout[i][j].end = 'two';
                 }
             }
         }
@@ -150,7 +154,7 @@ towerDefense.components = (function(graphics, sound, effects) {
     //************************************************************
     
     // This is the main function that is used for the Breath First Search Algo
-    function solveGrid(startlocation, gameObj){
+    function solveGrid(startlocation, gameObj, goal){
           var distFromTop = startlocation.y;
           var distFromLeft = startlocation.x;
           
@@ -166,28 +170,28 @@ towerDefense.components = (function(graphics, sound, effects) {
           while (queue.length > 0) {
               var currentLocation = queue.shift();
               
-              var newLocation = exploreDirection(currentLocation, 'North', gameObj);
+              var newLocation = exploreDirection(currentLocation, 'North', gameObj, goal);
               if(newLocation.status === 'Goal') {
                   return newLocation.path;
               }else if (newLocation.status === 'Valid') {
                   queue.push(newLocation);
               }
               
-              var newLocation = exploreDirection(currentLocation, 'East', gameObj);
+              var newLocation = exploreDirection(currentLocation, 'East', gameObj, goal);
               if(newLocation.status === 'Goal') {
                   return newLocation.path;
               }else if (newLocation.status === 'Valid') {
                   queue.push(newLocation);
               }
               
-              var newLocation = exploreDirection(currentLocation, 'South', gameObj);
+              var newLocation = exploreDirection(currentLocation, 'South', gameObj, goal);
               if(newLocation.status === 'Goal') {
                   return newLocation.path;
               }else if (newLocation.status === 'Valid') {
                   queue.push(newLocation);
               }
               
-              var newLocation = exploreDirection(currentLocation, 'West', gameObj);
+              var newLocation = exploreDirection(currentLocation, 'West', gameObj, goal);
               if(newLocation.status === 'Goal') {
                   return newLocation.path;
               }else if (newLocation.status === 'Valid') {
@@ -201,14 +205,14 @@ towerDefense.components = (function(graphics, sound, effects) {
     // This function is used in the BFS algo to determine the status
     // of the loctiaon. Whether it be a valid, Blocked, Invalid, or 
     // the end goal.
-    function locationStatus(location, gameObj) {
+    function locationStatus(location, gameObj, goal) {
           var gridSize = gameObj.layout.length;
           var diffFromTop = location.distTop;
           var diffFromLeft = location.distLeft;
           
           if(location.distLeft < 0 || location.distLeft >= gridSize || location.distTop < 0 || location.distTop >= gameObj.height ) {
               return 'Invalid";'
-          } else if(gameObj.layout[diffFromLeft][diffFromTop].end === true) {
+          } else if(gameObj.layout[diffFromLeft][diffFromTop].end === goal) {
               return 'Goal';
           }else if(gameObj.layout[diffFromLeft][diffFromTop].taken === true || gameObj.layout[diffFromLeft][diffFromTop].solvedState !== FRONTIER) {
                 return 'Blocked';              
@@ -220,7 +224,7 @@ towerDefense.components = (function(graphics, sound, effects) {
       // This function is used in the BFS algo to eplore a direction that is
       // passed into the function. returns a locaton and all of the information
       // regarding the location like its status.
-      function exploreDirection(currentLocation, direction, gameObj) {
+      function exploreDirection(currentLocation, direction, gameObj, goal) {
           
           var newPath = currentLocation.path.slice();
           newPath.push(direction);
@@ -245,7 +249,7 @@ towerDefense.components = (function(graphics, sound, effects) {
               status : '?'
           }
           
-          newLocation.status = locationStatus(newLocation, gameObj);
+          newLocation.status = locationStatus(newLocation, gameObj, goal);
           
           if(newLocation.status === 'Valid') {
               gameObj.layout[newLocation.distLeft][newLocation.distTop].solvedState = 'Visited';
@@ -308,7 +312,11 @@ towerDefense.components = (function(graphics, sound, effects) {
                 that.layout[i][j] = cell;
                 that.numberofCells++;
                 if(i === 39 && j === 15) {
-                    that.layout[i][j].end = true;
+                    that.layout[i][j].end = 'one';
+                }
+                
+                if(i == 19 && j == 29) {
+                    that.layout[i][j].end = 'two';
                 }
             }
         }
@@ -411,7 +419,7 @@ towerDefense.components = (function(graphics, sound, effects) {
       that.weaponType = spec.weaponType;
       
       
-      that.checkBlockingPath2 = function(gameGridObj, towerPosition) {
+      that.checkBlockingPath2 = function(gameGridObj, towerPosition, goal) {
           var xGrid = Math.floor(towerPosition.center.x/ 20);
          
          var yGrid = Math.floor(towerPosition.center.y / 20); 
@@ -421,7 +429,7 @@ towerDefense.components = (function(graphics, sound, effects) {
          var isTakenInitial = tempGameObj.layout[xGrid][yGrid].taken;
          
          tempGameObj.layout[xGrid][yGrid].taken = true;
-         var checkBlock = solveGrid({x : 0, y : 14}, tempGameObj);
+         var checkBlock = solveGrid({x : 0, y : 14}, tempGameObj, goal);
          tempGameObj.layout[xGrid][yGrid].taken = isTakenInitial;
          return checkBlock;
       };
@@ -432,6 +440,7 @@ towerDefense.components = (function(graphics, sound, effects) {
       // Updates the tower object.
       that.update = function(elapsedTime, gameGridObj, creeps, bullets, particleSystems) {
           var blocking;
+          var blocking2;
           
           var xPos = Math.floor(that.x);
           var yPos = Math.floor(that.y);
@@ -447,12 +456,15 @@ towerDefense.components = (function(graphics, sound, effects) {
                 if(xPos == 39 && yPos == 15){
                     blocking = false;  // This really means it is blocking. Just using to match function output.
                 }else {
-                  blocking = that.checkBlockingPath2(gameGridObj, {center :{x: xPos*20, y : yPos*20}});
+                  blocking = that.checkBlockingPath2(gameGridObj, {center :{x: xPos*20, y : yPos*20}}, 'one');
+                  blocking2 = that.checkBlockingPath2(gameGridObj, {center :{x: xPos*20, y : yPos*20}}, 'two');
                 }
             } else{
+                
                if(that.placed === false) {
                   for(var i = 0; i < creeps.length; i++) {
-                    blocking = creeps[i].checkBlockingPath(gameGridObj, tempGridPosition);
+                    blocking = creeps[i].checkBlockingPath(gameGridObj, tempGridPosition, 'one');
+                    blocking2 = creeps[i].checkBlockingPath(gameGridObj, tempGridPosition, 'two');
                   }  
                }
                
@@ -474,6 +486,7 @@ towerDefense.components = (function(graphics, sound, effects) {
                         if(distanceCheck(that, creeps[i])) {
                             that.setTarget(creeps[i].x*20, creeps[i].y*20);
                             fire = true;
+                            break;
                         } else {
                             that. setTarget(0, 300);
                             fire = false;
@@ -1129,6 +1142,10 @@ towerDefense.components = (function(graphics, sound, effects) {
 			spec.center.x += (vectorX * that.moveRate * elapsedTime);
 			spec.center.y += (vectorY * that.moveRate * elapsedTime);
             
+            // spec.center.x += (0 * that.moveRate * elapsedTime);
+			// spec.center.y += (0.000001 * that.moveRate * elapsedTime);
+            
+            
             that.x = spec.center.x/20;
             that.y = spec.center.y/20;
 		};
@@ -1156,7 +1173,7 @@ towerDefense.components = (function(graphics, sound, effects) {
             //   spec.center.y += spec.moveRate;
         };
         
-        that.checkBlockingPath = function(gameGridObj, towerPosition) {
+        that.checkBlockingPath = function(gameGridObj, towerPosition, goal) {
           var xGrid = Math.floor(spec.center.x/ 20);
          
          var yGrid = Math.floor(spec.center.y / 20); 
@@ -1166,7 +1183,7 @@ towerDefense.components = (function(graphics, sound, effects) {
          var isTakenInitial = tempGameObj.layout[towerPosition.x][towerPosition.y].taken
          
          tempGameObj.layout[towerPosition.x][towerPosition.y].taken = true;
-         var checkBlock = solveGrid({x : xGrid, y : yGrid}, tempGameObj);
+         var checkBlock = solveGrid({x : xGrid, y : yGrid}, tempGameObj, goal);
          tempGameObj.layout[towerPosition.x][towerPosition.y].taken = isTakenInitial;
          return checkBlock;
       };
@@ -1229,6 +1246,7 @@ towerDefense.components = (function(graphics, sound, effects) {
         that.initialDelayTime = 0;
         that.moneyGained = spec.moneyGained;
         that.point = spec.point;
+        that.goal = spec.goal;
 
         that.update = function(elapsedTime, gameGridObj) {
             
@@ -1244,8 +1262,8 @@ towerDefense.components = (function(graphics, sound, effects) {
             // console.log("CREEP Y: " + yGrid);
             // console.log("\n");
    
-            if (that.initialDelayTime >= that.startTime && that.reachedGoal !== true && that.type !== 'flying') {
-                that.movementStack = solveGrid({ x: xGrid, y: yGrid }, tempGameObj);
+            if (xGrid > -1 && yGrid > -1 && that.initialDelayTime >= that.startTime && that.reachedGoal !== true && that.type !== 'flying') {
+                that.movementStack = solveGrid({ x: xGrid, y: yGrid }, tempGameObj, that.goal);
 
                 moveStack = reverse(that.movementStack);
                 
@@ -1376,7 +1394,7 @@ towerDefense.components = (function(graphics, sound, effects) {
             }
 
 
-            if (xGrid >= 39 && xGrid <= 41) {
+            if ((xGrid >= 39 && xGrid <= 41) || (yGrid >= 29 && yGrid <= 31)) {
                 that.reachedGoal = true;
                 that.moveForward(elapsedTime);
             }
@@ -1389,8 +1407,8 @@ towerDefense.components = (function(graphics, sound, effects) {
 			}
 
             if(that.initialDelayTime >= that.startTime && xGrid < 0 ) {
-             that.moveForward(elapsedTime);
-         }
+                that.moveForward(elapsedTime);
+            }
 			
             
 			didMoveForward = false;
