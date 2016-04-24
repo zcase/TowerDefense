@@ -641,7 +641,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
                 isSelected : true,
                 towerNum : towerCount,
                 inCanvas : false,
-                strength : 12,
+                strength : 20,
                 attackDistance : 20 * 15,
                 level : 1,
                 cost : cost,
@@ -828,7 +828,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             width: 150,
             height: 150,
             orientation: 0,		// Sprite orientation with respect to "forward"
-            moveRate: 60 / 1000,			// pixels per millisecond
+            moveRate: 50 / 1000,			// pixels per millisecond
             rotateRate: 0,	// Radians per millisecond
             armor: 10,
             type: 'flying',
@@ -948,7 +948,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             var randomSecond = Math.random() * (3.25 - 0.75) + 0.75;
             sumSecond += randomSecond;
             console.log("sum  = " + (sumSecond).toFixed(2));
-            createDragonCreep((sumSecond).toFixed(2), LevelStartingPositions, 89.55);
+            createDragonCreep((sumSecond).toFixed(2), LevelStartingPositions, 0);
         }
     }
 
@@ -1169,7 +1169,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             // createDragonCreep(1, [{ x: 0, y: 400 }]);
             // createNaziCreep(temp, LevelStartingPositions);
             // createBossCreep();
-            Wave3(creepStartingPostitionsLevel2);
+            Wave1(creepStartingPostitionsLevel1);
             count++;
         }
 
@@ -1256,7 +1256,18 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
                         y: deathy,
                         score: '+' + creeps[i].point,
                     });
-
+                    
+                    // var showPoint = effects.ParticleSystemText({
+                    //     text : '+' + creeps[i].point,
+                    //     x: deathx,
+                    //     y: deathy,
+                    //     speed: { mean: 50, std: 25 },
+                    //     lifetime: { mean: 1, std: 0 },
+                    //     rotation: 0,
+                    // })
+                    // showPoint.create();
+                    // displayArray.push(showPoint);
+                    
                     money += creeps[i].moneyGained;
                     point += creeps[i].point;
                     displayArray.push(display);

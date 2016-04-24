@@ -28,6 +28,14 @@ var Random = (function() {
 		}
 	}
 	
+	function sprayBackward(angle) {
+		// var angle = Math.PI / 3;
+		return {
+			x : -Math.cos(angle),
+			y : -Math.sin(angle),
+		}
+	}
+	
 	//
 	// This is used to give a small performance optimization in generating gaussian random numbers.
 	var usePrevious = false,
@@ -71,6 +79,7 @@ var Random = (function() {
 		nextCircleVector : nextCircleVector,
 		nextGaussian : nextGaussian,
 		sprayForward : sprayForward,
+		sprayBackward : sprayBackward,
 	};
 	
 }());
