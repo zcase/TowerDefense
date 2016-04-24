@@ -19,13 +19,22 @@ towerDefense.myScreens['controlsScreen'] = (function(screens, input, controls) {
         
         var controlString = '';
         for(var i = 0; i < myControls.upgrade.length; i++ ) {
-            
             if(i === myControls.upgrade.length-1) {
-                controlString += String.fromCharCode(myControls.upgrade[i]);
-                // upgradeShortcut.innerHTML = String.fromCharCode(controls.upgrade[i]);
+                if(myControls.upgrade[i] === 17){
+                    controlString += 'Ctrl';
+                }else if(myControls.upgrade[i] === 18) {
+                    controlString += 'Alt';
+                }else{
+                    controlString += String.fromCharCode(myControls.upgrade[i]);
+                }
             } else {
-                controlString += String.fromCharCode(myControls.upgrade[i]) + " + ";
-                // upgradeShortcut.innerHTML = String.fromCharCode(controls.upgrade[i]) + " ";
+                if(myControls.upgrade[i] === 17){
+                    controlString += 'Ctrl + ';
+                }else if(myControls.upgrade[i] === 18) {
+                    controlString += 'Alt + ';
+                }else{
+                    controlString += String.fromCharCode(myControls.upgrade[i]) + " + ";
+                }
             }
         }
         upgradeShortcut.innerHTML = controlString;
@@ -33,9 +42,21 @@ towerDefense.myScreens['controlsScreen'] = (function(screens, input, controls) {
         
         for(var i = 0; i < myControls.sell.length; i++ ) {
             if(i === myControls.sell.length-1) {
-                controlString += String.fromCharCode(myControls.sell[i]);
+                if(myControls.sell[i] === 17){
+                    controlString += 'Ctrl';
+                }else if(myControls.sell[i] === 18) {
+                    controlString += 'Alt';
+                }else{
+                    controlString += String.fromCharCode(myControls.sell[i]);
+                }
             } else {
-                controlString += String.fromCharCode(myControls.sell[i]) + " + ";
+                if(myControls.sell[i] === 17){
+                    controlString += 'Ctrl + ';
+                }else if(myControls.sell[i] === 18) {
+                    controlString += 'Alt + ';
+                }else{
+                    controlString += String.fromCharCode(myControls.sell[i]) + " + ";
+                }
             }
         }
         sellShortcut.innerHTML = controlString;
@@ -43,9 +64,21 @@ towerDefense.myScreens['controlsScreen'] = (function(screens, input, controls) {
         
         for(var i = 0; i < myControls.start.length; i++ ) {
             if(i === myControls.start.length-1) {
-                controlString += String.fromCharCode(myControls.start[i]);
+                if(myControls.start[i] === 17){
+                    controlString += 'Ctrl';
+                }else if(myControls.start[i] === 18) {
+                    controlString += 'Alt';
+                }else{
+                    controlString += String.fromCharCode(myControls.start[i]);
+                }
             } else {
-                controlString += String.fromCharCode(myControls.start[i]) + " + ";
+                if(myControls.start[i] === 17){
+                    controlString += 'Ctrl + ';
+                }else if(myControls.start[i] === 18) {
+                    controlString += 'Alt + ';
+                }else{
+                    controlString += String.fromCharCode(myControls.start[i]) + " + ";
+                }
             }
         }
         startShortcut.innerHTML = controlString;

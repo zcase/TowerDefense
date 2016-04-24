@@ -225,7 +225,7 @@ towerDefense.input = (function() {
                             captureInfo.shortcutControls.sell = captureInfo.shortcutControls.sell;
                             captureInfo.shortcutControls.start = captureInfo.shortcutControls.start;
                             newCapture = {upgrade : captureInfo.shortcutControls.upgrade, sell : captureInfo.shortcutControls.sell, start : captureInfo.shortcutControls.start}
-
+                            document.getElementById('upgradeButtonCapture').innerHTML = 'Start Capture';
                             break;
                         }
                     }
@@ -236,7 +236,7 @@ towerDefense.input = (function() {
                             captureInfo.shortcutControls.upgrade = captureInfo.shortcutControls.upgrade;
                             captureInfo.shortcutControls.start = captureInfo.shortcutControls.start;
                             newCapture = {upgrade : captureInfo.shortcutControls.upgrade, sell : captureInfo.shortcutControls.sell, start : captureInfo.shortcutControls.start}
-
+                            document.getElementById('sellButtonCapture').innerHTML = 'Start Capture';
                             break;
                         }
                     }
@@ -247,7 +247,7 @@ towerDefense.input = (function() {
                             captureInfo.shortcutControls.sell = captureInfo.shortcutControls.sell;
                             captureInfo.shortcutControls.upgrade = captureInfo.shortcutControls.upgrade;
                             newCapture = {upgrade : captureInfo.shortcutControls.upgrade, sell : captureInfo.shortcutControls.sell, start : captureInfo.shortcutControls.start}
-
+                            document.getElementById('startButtonCapture').innerHTML = 'Start Capture';
                             break;
                         }
                     }
