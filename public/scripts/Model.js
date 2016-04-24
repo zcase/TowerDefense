@@ -648,7 +648,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
                 isSelected : true,
                 towerNum : towerCount,
                 inCanvas : false,
-                strength : 12,
+                strength : 20,
                 attackDistance : 20 * 15,
                 level : 1,
                 cost : cost,
@@ -837,7 +837,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             width: 150,
             height: 150,
             orientation: 0,		// Sprite orientation with respect to "forward"
-            moveRate: 60 / 1000,			// pixels per millisecond
+            moveRate: 50 / 1000,			// pixels per millisecond
             rotateRate: 0,	// Radians per millisecond
             armor: 10,
             type: 'flying',
@@ -979,6 +979,7 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             sumSecond += randomSecond;
             console.log("sum  = " + (sumSecond).toFixed(2));
             createDragonCreep((sumSecond).toFixed(2), LevelStartingPositions, rotation, goal);
+
         }
     }
 
@@ -1227,18 +1228,6 @@ function level1(waveNum, elapsedTime) {
 
 
     function updatePlaying(elapsedTime) {
-        
-            //     createCreep(temp, LevelStartingPositions);
-            // createPersonCreep(temp, LevelStartingPositions);;
-            //     // createCreep(temp, LevelStartingPositions);
-            // createDragonCreep(1, [{ x: 0, y: 400 }]);
-            // createNaziCreep(temp, LevelStartingPositions);
-            // createBossCreep();
-            // Wave1(creepStartingPostitionsLevel1, 'one', 1);
-            // Wave1(creepStartingPostitionsLevel1, 'one', 1);
-            
-        
-
         // Update each tower
             for (var i = 0; i < towers.length; i++) {
                 towers[i].tower.update(elapsedTime, gameGrid, creeps, bullets, particleSystems); // need to create up date function to change rotation of tower pic based on creeps
@@ -1332,7 +1321,18 @@ function level1(waveNum, elapsedTime) {
                         y: deathy,
                         score: '+' + creeps[i].point,
                     });
-
+                    
+                    // var showPoint = effects.ParticleSystemText({
+                    //     text : '+' + creeps[i].point,
+                    //     x: deathx,
+                    //     y: deathy,
+                    //     speed: { mean: 50, std: 25 },
+                    //     lifetime: { mean: 1, std: 0 },
+                    //     rotation: 0,
+                    // })
+                    // showPoint.create();
+                    // displayArray.push(showPoint);
+                    
                     money += creeps[i].moneyGained;
                     point += creeps[i].point;
                     displayArray.push(display);
