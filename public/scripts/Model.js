@@ -13,16 +13,18 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
         GeneralMouse = input.Mouse(),
         // modelKeyboard = input.Keyboard(),
         creep,
-        score = {},
+        score,
         point = 0,
         live,
-        livesRemaining = 10,
+        over,
+        livesRemaining = 5,
         // mouse = input.Keyboard(),
         mouseCapture = true,
         internalUpdate,
         internalRender,
         towerCount = 0,
         startGameValue = false,
+        isOver = false,
         money,
         towerCount = 0,
         waveCount = 0;
@@ -169,8 +171,29 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             color: 'rgba(255,255,255,1)',
             text: '',
         }
-
-        livesRemaining = 10;
+        over = {
+            shadowColor: 'rgba(0,0,0,0.6)',
+            offsetX: 10,
+            offsetY: 10,
+            blur: 7,
+            position: { x: graphics.width()/4, y: graphics.height()/2 },
+            font: '90px Arial Black, sans-serif',
+            color: 'rgba(255,255,255,1)',
+            text: '',
+        }
+        // high = {
+        //     shadowColor: 'rgba(0,0,0,0.6)',
+        //     offsetX: 10,
+        //     offsetY: 10,
+        //     blur: 7,
+        //     position: { x: graphics.width()/4, y: graphics.height()/2 },
+        //     font: '90px Arial Black, sans-serif',
+        //     color: 'rgba(255,255,255,1)',
+        //     text: '',
+        // }
+        
+        
+        // livesRemaining = 10;
         money = 200;
 
         // Potentially set these to something else if there is a count down screen or something
@@ -1155,7 +1178,10 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
         graphics.drawText(live);
     }
 
-
+    function renderOver() {
+        over.text = 'Game Over';
+        graphics.drawText(over);
+    }
 
 
 
@@ -1274,6 +1300,7 @@ function level1(waveNum, elapsedTime) {
         
         if(livesRemaining <= 0) {
             startGameValue = false;
+            isOver = true;
         }
         // Create update for score based on creeps killed/ creeps pass to other side
     }
@@ -1358,7 +1385,10 @@ function level1(waveNum, elapsedTime) {
             particleSystems[i].render();
         }
 
-
+        if (isOver){
+            renderOver();
+            myIndex.addScore(point);
+        }
 
         document.getElementById('moneyLabel').innerHTML = 'money: $' + money;
     }

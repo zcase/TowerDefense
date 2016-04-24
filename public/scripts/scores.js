@@ -1,15 +1,13 @@
+
 var score = [{
         id : 0,
-        name : 'someone1',
-        score : '500',
+        score : '0',
     }, {
         id : 1,
-        name : 'someone2',
-        score : '450',
+        score : '0',
     }, {
         id : 2,
-        name : 'someone3',
-        score : '400',
+        score : '0',
     }],
     nextId = 3;
 
@@ -23,7 +21,6 @@ exports.add = function(req, res) {
 	console.log('add new person called');
 	console.log('Request: ' + JSON.stringify(req.body));
 
-	var now = new Date();
 	score.push( {
 		id : nextId,
 		name : request.query.name,

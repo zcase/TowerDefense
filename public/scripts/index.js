@@ -1,9 +1,8 @@
-function addScore(){
-    var name = $('#id-playername').val(),
-        score = $('#id-playerscore').val();
+var myIndex = (function() {
+function addScore(score){
         
     $.ajax({
-        url : 'http://localhost:2000/v1/high-scores?name=' + name + '&score=' + score,
+        url : 'http://localhost:2000/v1/high-scores?score=' + score,
         type : 'POST',
         error : function(){
             alert('POST failed');
@@ -29,9 +28,16 @@ function showScores(){
                 
             list.empty();
             for (value = 0; value < data.length; value++){
-                text = (data[value].name + " - " + data[value].score);
+                text = (data[value].score);
                 list.append($('<li>', { text : text }));
             }
         }
     });
 }
+
+return {
+    addScore : addScore,
+    showScores : showScores,
+}
+
+}());
