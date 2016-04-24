@@ -1267,6 +1267,9 @@ towerDefense.components = (function(graphics, sound, effects) {
 				base.update(elapsedTime, false);
 			}
 
+            if(that.initialDelayTime >= that.startTime && xGrid < 0 ) {
+             that.moveForward(elapsedTime);
+         }
 			
             
 			didMoveForward = false;
