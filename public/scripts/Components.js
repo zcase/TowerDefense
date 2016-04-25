@@ -1303,7 +1303,7 @@ towerDefense.components = (function (graphics, sound, effects) {
         that.point = spec.point;
         that.goal = spec.goal;
 
-        that.update = function (elapsedTime, gameGridObj) {
+        that.update = function (elapsedTime, gameGridObj, particleSystems) {
 
             var xGrid = Math.floor(spec.center.x / 20);
 
@@ -1323,6 +1323,8 @@ towerDefense.components = (function (graphics, sound, effects) {
                 moveStack = reverse(that.movementStack);
 
                 that.percent = that.health / that.life;
+                var death;
+                var deathSmoke;
 
                 // console.log("life: ", spec.life);
                 if (that.health === spec.life) {
@@ -1345,6 +1347,33 @@ towerDefense.components = (function (graphics, sound, effects) {
                 }
                 else {
                     that.dead = true;
+                    
+                    death = effects.ParticleSystem({
+                        image: 'images/blood.png',
+                        center: { x: (that.x * 20), y: (that.y * 20) },
+                        speed: { mean: 50, std: 25 },
+                        rotation: spec.rotation,
+                        lifetime: { mean: 1, std: 0 },
+                        usedFor: 'creepDeath',
+                    }, graphics);
+
+                    deathSmoke = effects.ParticleSystem({
+                        image: 'images/green.png',
+                        center: { x: (that.x * 20), y: (that.y * 20) },
+                        speed: { mean: 50, std: 25 },
+                        rotation: spec.rotation,
+                        lifetime: { mean: 1, std: 0 },
+                        usedFor: 'creepDeath',
+                    }, graphics);
+
+                    for (var j = 0; j < 10; j++) {
+                        death.create();
+                        deathSmoke.create();
+                    }
+
+                    particleSystems.push(death);
+                    particleSystems.push(deathSmoke);
+                    
                 }
 
                 if (moveStack !== false) {
@@ -1418,7 +1447,7 @@ towerDefense.components = (function (graphics, sound, effects) {
                 else {
                     that.dead = true;
 
-                    var death = effects.ParticleSystem({
+                    death = effects.ParticleSystem({
                         image: 'images/blood.png',
                         center: { x: (that.x * 20), y: (that.y * 20) },
                         speed: { mean: 50, std: 25 },
@@ -1427,7 +1456,7 @@ towerDefense.components = (function (graphics, sound, effects) {
                         usedFor: 'creepDeath',
                     }, graphics);
 
-                    var deathSmoke = effects.ParticleSystem({
+                    deathSmoke = effects.ParticleSystem({
                         image: 'images/green.png',
                         center: { x: (that.x * 20), y: (that.y * 20) },
                         speed: { mean: 50, std: 25 },
