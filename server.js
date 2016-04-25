@@ -13,8 +13,8 @@ app.get('/', function(req, res){
     res.render('index.html');
 });
 
-app.get('/v1/high-scores', score.all);
-app.post('/v1/high-scores', score.add);
+app.get('/v1/scores', score.all);
+app.post('/v1/scores', score.add);
 
 app.all('/v1/*', function(req, res) {
 	res.writeHead(501);
