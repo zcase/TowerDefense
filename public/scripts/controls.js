@@ -9,6 +9,16 @@ towerDefense.controls = (function(input, screens, gameModel) {
         captureInfo.startCapture = true;
         captureInfo.shortcut = shortcutKind;
         captureInfo.shortcutControls = shortcuts;
+        if(shortcutKind === 'upgrade'){
+            document.getElementById('upgradeButtonCapture').innerHTML = 'Capturing';
+            
+        } else if(shortcutKind === 'sell'){
+            document.getElementById('sellButtonCapture').innerHTML = 'Capturing';
+            
+        } else {
+            document.getElementById('startButtonCapture').innerHTML = 'Capturing';
+        }
+        
     }
     
     function setShortCutControls(spec){
