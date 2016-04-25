@@ -181,39 +181,26 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
             color: 'rgba(255,255,255,1)',
             text: '',
         }
-        // high = {
-        //     shadowColor: 'rgba(0,0,0,0.6)',
-        //     offsetX: 10,
-        //     offsetY: 10,
-        //     blur: 7,
-        //     position: { x: graphics.width()/4, y: graphics.height()/2 },
-        //     font: '90px Arial Black, sans-serif',
-        //     color: 'rgba(255,255,255,1)',
-        //     text: '',
-        // }
         
         
-        // livesRemaining = 10;
+        livesRemaining = 5;
         money = 200;
+        isOver = false;
+        startGameValue = false;
+        point = 0;
+        waveCount = 0;
+        creeps.length = 0;
+        towers.length = 0;
+        bullets.length = 0;
+        particleSystems.length = 0;
+        roof.length =0;
+        bases.length = 0;
+        displayArray.length = 0;
 
         // Potentially set these to something else if there is a count down screen or something
         internalUpdate = updatePlaying;
         internalRender = renderPlaying;        
-        
-        // modelKeyboard.registerCommand('keydown', checkControls());
 
-        // modelKeyboard.registerCommand(KeyEvent.DOM_VK_6, function () {
-        //     console.log("HELLO BRO");
-        // });
-        // modelKeyboard.registerCommand(controls.getControls().upgrade, sell);
-        // modelKeyboard.registerCommand(controls.getControls().upgrade, start);
-
-
-        // var GeneralKeyboard = input.Keyboard();
-
-        // GeneralKeyboard.registerCommand(KeyEvent.DOM_VK_S, startGame());
-
-        // GeneralMouse = input.Mouse();
 
         GeneralMouse.registerCommand('mousedown', function (e, elapsedTime) {
             var x = (e.clientX / 20) - 3;
@@ -239,6 +226,8 @@ towerDefense.model = (function (components, graphics, input, sound, controls, ef
                     towers[i].tower.isSelected = false;
                 }
             }
+            
+            
 
         });
 
