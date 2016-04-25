@@ -5,7 +5,7 @@ towerDefense.components = (function (graphics, sound, effects) {
     var popTime = 1000;
     var moneyFromCreeps = 0;
     var pointsFromCreeps = 0;
-    var missileAngle = 0;
+    var bulletAngle = 0;
 
     //************************************************************
     //
@@ -369,14 +369,16 @@ towerDefense.components = (function (graphics, sound, effects) {
       
       image.src = spec.image;
       image2.src = spec.image2;
-      image3.src = spec.image3;
-    
+      image3.src = spec.image3;    
+
       that.rotateRight = function(angle) {
           spec.rotation += angle;
+          bulletAngle = spec.rotation;
       };
       
       that.rotateLeft = function(angle) {
           spec.rotation -= angle;
+          bulletAngle = spec.rotation;
       };
       
       that.moveTo = function(center) {
@@ -415,9 +417,7 @@ towerDefense.components = (function (graphics, sound, effects) {
       that.fireRate = 2000;
       that.timeSinceLastFire = 0;
       that.type = spec.type;
-      theta = spec.rotation;
       that.weaponType = spec.weaponType;
-      
       
       that.checkBlockingPath2 = function(gameGridObj, towerPosition, goal) {
           var xGrid = Math.floor(towerPosition.center.x/ 20);
@@ -815,7 +815,7 @@ towerDefense.components = (function (graphics, sound, effects) {
                 image.src = 'images/missile.png';
                 graphics.drawImage({
                     image: image,
-                    rotation: missileAngle,
+                    rotation: bulletAngle,
                     center: { x: that.x, y: that.y },
                     size: 20,
                 });
@@ -825,7 +825,7 @@ towerDefense.components = (function (graphics, sound, effects) {
                 image.src = 'images/cannonBall.png';
                 graphics.drawImage({
                     image: image,
-                    rotation: missileAngle,
+                    rotation: bulletAngle,
                     center: { x: that.x, y: that.y },
                     size: 10,
                 });
