@@ -373,12 +373,14 @@ towerDefense.components = (function (graphics, sound, effects) {
 
       that.rotateRight = function(angle) {
           spec.rotation += angle;
-          bulletAngle = spec.rotation;
+          that.rotation = spec.rotation;
+        //   bulletAngle = spec.rotation;
       };
       
       that.rotateLeft = function(angle) {
           spec.rotation -= angle;
-          bulletAngle = spec.rotation;
+          that.rotation = spec.rotation;
+        //   bulletAngle = spec.rotation;
       };
       
       that.moveTo = function(center) {
@@ -418,6 +420,7 @@ towerDefense.components = (function (graphics, sound, effects) {
       that.timeSinceLastFire = 0;
       that.type = spec.type;
       that.weaponType = spec.weaponType;
+      
       
       that.checkBlockingPath2 = function(gameGridObj, towerPosition, goal) {
           var xGrid = Math.floor(towerPosition.center.x/ 20);
@@ -815,7 +818,7 @@ towerDefense.components = (function (graphics, sound, effects) {
                 image.src = 'images/missile.png';
                 graphics.drawImage({
                     image: image,
-                    rotation: bulletAngle,
+                    rotation: spec.rotation,
                     center: { x: that.x, y: that.y },
                     size: 20,
                 });
@@ -825,7 +828,7 @@ towerDefense.components = (function (graphics, sound, effects) {
                 image.src = 'images/cannonBall.png';
                 graphics.drawImage({
                     image: image,
-                    rotation: bulletAngle,
+                    rotation: spec.rotation,
                     center: { x: that.x, y: that.y },
                     size: 10,
                 });
